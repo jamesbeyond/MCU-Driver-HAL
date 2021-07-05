@@ -33,7 +33,7 @@ jobs:
     - name: Artifact Upload
       uses: actions/upload-artifact@v1
       with:
-        name: scancode
+        name: LicenseScan
         path: ./artifacts
 
     - name: Check Scan Reports

@@ -123,77 +123,7 @@ c_parse_init (void)
 	  continue;
 	}
 
-      id = get_identifier (c_common_reswords[i].word);
-      C_SET_RID_CODE (id, c_common_reswords[i].rid);
-      C_IS_RESERVED_WORD (id) = 1;
-      ridpointers [(int) c_common_reswords[i].rid] = id;
-    }
 
-  for (i = 0; i < NUM_INT_N_ENTS; i++)
-    {
-      /* We always create the symbols but they aren't always supported.  */
-      char name[50];
-      sprintf (name, "__int%d", int_n_data[i].bitsize);
-      id = get_identifier (name);
-      C_SET_RID_CODE (id, RID_FIRST_INT_N + i);
-      C_IS_RESERVED_WORD (id) = 1;
-
-      sprintf (name, "__int%d__", int_n_data[i].bitsize);
-      id = get_identifier (name);
-      C_SET_RID_CODE (id, RID_FIRST_INT_N + i);
-      C_IS_RESERVED_WORD (id) = 1;
-    }
-}
-
-/* A parser structure recording information about the state and
-   context of parsing.  Includes lexer information with up to two
-   tokens of look-ahead; more are not needed for C.  */
-struct GTY(()) c_parser {
-  /* The look-ahead tokens.  */
-  c_token * GTY((skip)) tokens;
-  /* Buffer for look-ahead tokens.  */
-  c_token tokens_buf[4];
-  /* How many look-ahead tokens are available (0 - 4, or
-     more if parsing from pre-lexed tokens).  */
-  unsigned int tokens_avail;
-  /* Raw look-ahead tokens, used only for checking in Objective-C
-     whether '[[' starts attributes.  */
-  vec<c_token, va_gc> *raw_tokens;
-  /* The number of raw look-ahead tokens that have since been fully
-     lexed.  */
-  unsigned int raw_tokens_used;
-  /* True if a syntax error is being recovered from; false otherwise.
-     c_parser_error sets this flag.  It should clear this flag when
-     enough tokens have been consumed to recover from the error.  */
-  BOOL_BITFIELD error : 1;
-  /* True if we're processing a pragma, and shouldn't automatically
-     consume CPP_PRAGMA_EOL.  */
-  BOOL_BITFIELD in_pragma : 1;
-  /* True if we're parsing the outermost block of an if statement.  */
-  BOOL_BITFIELD in_if_block : 1;
-  /* True if we want to lex a translated, joined string (for an
-     initial #pragma pch_preprocess).  Otherwise the parser is
-     responsible for concatenating strings and translating to the
-     execution character set as needed.  */
-  BOOL_BITFIELD lex_joined_string : 1;
-  /* True if, when the parser is concatenating string literals, it
-     should translate them to the execution character set (false
-     inside attributes).  */
-  BOOL_BITFIELD translate_strings_p : 1;
-
-  /* Objective-C specific parser/lexer information.  */
-
-  /* True if we are in a context where the Objective-C "PQ" keywords
-     are considered keywords.  */
-  BOOL_BITFIELD objc_pq_context : 1;
-  /* True if we are parsing a (potential) Objective-C foreach
-     statement.  This is set to true after we parsed 'for (' and while
-     we wait for 'in' or ';' to decide if it's a standard C for loop or an
-     Objective-C foreach loop.  */
-  BOOL_BITFIELD objc_could_be_foreach_context : 1;
-  /* The following flag is needed to contextualize Objective-C lexical
-     analysis.  In some cases (e.g., 'int NSObject;'), it is
-     undesirable to bind an identifier to an Objective-C class, even
      if a class with that name exists.  */
   BOOL_BITFIELD objc_need_raw_identifier : 1;
   /* Nonzero if we're processing a __transaction statement.  The value
