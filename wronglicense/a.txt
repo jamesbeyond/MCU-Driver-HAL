@@ -34,25 +34,15 @@ along with GCC; see the file COPYING3.  If not see
 
    Make more diagnostics in the front end generally take an explicit
    location rather than implicitly using input_location.  */
+   
+add_library(sdfx-hal-example-serial OBJECT)
 
-#include "hal/PinNameAliases.h"
-#include "hal/spi_api.h"
+target_sources(sdfx-hal-example-serial
+    PRIVATE
+        main.c
+)
 
-int main()
-{
-    spi_t spi_object;
-    uint8_t ret;
-    uint8_t val = 0xAA;
-
-    spi_init(
-        &spi_object,
-        ARDUINO_UNO_SPI_MOSI,
-        ARDUINO_UNO_SPI_MISO,
-        ARDUINO_UNO_SPI_SCK,
-        ARDUINO_UNO_SPI_CS
-    );
-    
-    ret = spi_master_write(&spi_object, val);
-
-    while(1);
-}
+target_link_libraries(sdfx-hal-example-serial
+    PRIVATE
+        mbed-os
+)
