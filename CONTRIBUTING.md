@@ -28,6 +28,6 @@ See the License for the specific language governing permissions and limitations 
 
 ## Developer’s Certificate of Origin
 
-Each commit must have at least one `Signed-off-by:` line from the committer to certify that the contribution is made under the terms of the [Developer Certificate of Origin](./dco.txt).
+Each commit must have at least one `Signed-off-by:` line from the committer to certify that the contribution is made under the terms of the [Developer Certificate of Origin](./DCO.txt).
 
 If you set your `user.name` and `user.email` as part of your git configuration, you can sign your commit automatically with `git commit -s`. You have to use your real name (i.e., pseudonyms or anonymous contributions cannot be made). This is because the DCO is a legally binding document.
