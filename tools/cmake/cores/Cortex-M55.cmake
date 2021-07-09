@@ -28,14 +28,6 @@ elseif(${MBED_TOOLCHAIN} STREQUAL "ARM")
         "-mfloat-abi=hard"
         "-mcpu=cortex-m55"
     )
-
-    # We'd like to use just "-mcpu=cortex-m55" in common_options, but due to a bug
-    # in armclang passing options to armasm, we use the following flags as a
-    # workaround to select M55.
-    list(APPEND asm_compile_options
-        -mcpu=cortex-r7
-        -Wa,--cpu=cortex-m55
-    )
 endif()
 
 function(mbed_set_cpu_core_definitions target)
