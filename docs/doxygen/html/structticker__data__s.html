@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>MCU-Driver-HAL: ticker_info_t Struct Reference</title>
+<title>MCU-Driver-HAL: ticker_data_s Struct Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -62,7 +62,7 @@ $(function() {
 </div>
 <script type="text/javascript">
 /* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(document).ready(function(){initNavTree('structticker__info__t.html',''); initResizable(); });
+$(document).ready(function(){initNavTree('structticker__data__s.html',''); initResizable(); });
 /* @license-end */
 </script>
 <div id="doc-content">
@@ -84,62 +84,35 @@ $(document).ready(function(){initNavTree('structticker__info__t.html',''); initR
   <div class="summary">
 <a href="#pub-attribs">Data Fields</a>  </div>
   <div class="headertitle">
-<div class="title">ticker_info_t Struct Reference<div class="ingroups"><a class="el" href="group__hal.html">Hal</a></div></div>  </div>
+<div class="title">ticker_data_s Struct Reference<div class="ingroups"><a class="el" href="group__hal.html">Hal</a></div></div>  </div>
 </div><!--header-->
 <div class="contents">
-
-<p>Information about the ticker implementation.  
- <a href="structticker__info__t.html#details">More...</a></p>
-
-<p><code>#include &lt;<a class="el" href="ticker__types_8h_source.html">ticker_types.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Data Fields</h2></td></tr>
-<tr class="memitem:ab632fb0b4d5156ea4df0b1e15410e913"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structticker__info__t.html#ab632fb0b4d5156ea4df0b1e15410e913">frequency</a></td></tr>
-<tr class="memdesc:ab632fb0b4d5156ea4df0b1e15410e913"><td class="mdescLeft">&#160;</td><td class="mdescRight">Frequency in Hz this ticker runs at.  <a href="structticker__info__t.html#ab632fb0b4d5156ea4df0b1e15410e913">More...</a><br /></td></tr>
-<tr class="separator:ab632fb0b4d5156ea4df0b1e15410e913"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afeda3c90a255fe7e4b1e99b4308cce2c"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structticker__info__t.html#afeda3c90a255fe7e4b1e99b4308cce2c">bits</a></td></tr>
-<tr class="memdesc:afeda3c90a255fe7e4b1e99b4308cce2c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of bits this ticker supports.  <a href="structticker__info__t.html#afeda3c90a255fe7e4b1e99b4308cce2c">More...</a><br /></td></tr>
-<tr class="separator:afeda3c90a255fe7e4b1e99b4308cce2c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a75babe50893e40aee513d47787afd264"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="structticker__interface__t.html">ticker_interface_t</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structticker__data__s.html#a75babe50893e40aee513d47787afd264">interface</a></td></tr>
+<tr class="memdesc:a75babe50893e40aee513d47787afd264"><td class="mdescLeft">&#160;</td><td class="mdescRight">Ticker's interface.  <a href="structticker__data__s.html#a75babe50893e40aee513d47787afd264">More...</a><br /></td></tr>
+<tr class="separator:a75babe50893e40aee513d47787afd264"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Information about the ticker implementation. </p>
-
-<p class="definition">Definition at line <a class="el" href="ticker__types_8h_source.html#l00036">36</a> of file <a class="el" href="ticker__types_8h_source.html">ticker_types.h</a>.</p>
+<div class="textblock">
+<p class="definition">Definition at line <a class="el" href="ticker__types_8h_source.html#l00058">58</a> of file <a class="el" href="ticker__types_8h_source.html">ticker_types.h</a>.</p>
 </div><h2 class="groupheader">Field Documentation</h2>
-<a id="afeda3c90a255fe7e4b1e99b4308cce2c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afeda3c90a255fe7e4b1e99b4308cce2c">&#9670;&nbsp;</a></span>bits</h2>
+<a id="a75babe50893e40aee513d47787afd264"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a75babe50893e40aee513d47787afd264">&#9670;&nbsp;</a></span>interface</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">uint32_t bits</td>
+          <td class="memname">const <a class="el" href="structticker__interface__t.html">ticker_interface_t</a>* interface</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Number of bits this ticker supports. </p>
+<p>Ticker's interface. </p>
 
-<p class="definition">Definition at line <a class="el" href="ticker__types_8h_source.html#l00038">38</a> of file <a class="el" href="ticker__types_8h_source.html">ticker_types.h</a>.</p>
-
-</div>
-</div>
-<a id="ab632fb0b4d5156ea4df0b1e15410e913"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab632fb0b4d5156ea4df0b1e15410e913">&#9670;&nbsp;</a></span>frequency</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">uint32_t frequency</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Frequency in Hz this ticker runs at. </p>
-
-<p class="definition">Definition at line <a class="el" href="ticker__types_8h_source.html#l00037">37</a> of file <a class="el" href="ticker__types_8h_source.html">ticker_types.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ticker__types_8h_source.html#l00059">59</a> of file <a class="el" href="ticker__types_8h_source.html">ticker_types.h</a>.</p>
 
 </div>
 </div>
@@ -148,7 +121,7 @@ Data Fields</h2></td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="structticker__info__t.html">ticker_info_t</a></li>
+    <li class="navelem"><a class="el" href="structticker__data__s.html">ticker_data_s</a></li>
     <li class="footer">Generated on Mon Jul 12 2021 13:35:57 for MCU-Driver-HAL by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.17 </li>
