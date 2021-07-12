@@ -1,0 +1,16 @@
+---
+BasedOnStyle : LLVM
+IndentWidth : 4
+BinPackArguments : false
+BinPackParameters : false
+ContinuationIndentWidth : 4
+BreakBeforeBraces: Linux
+SortIncludes : false
+IndentCaseLabels : true
+AlignConsecutiveMacros : true
+AlignConsecutiveAssignments : true
+AlignEscapedNewlines : Left
+AlignConsecutiveDeclarations : true
+ColumnLimit : 120
+...
+
