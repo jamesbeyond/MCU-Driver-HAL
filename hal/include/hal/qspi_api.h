@@ -40,19 +40,19 @@ extern "C" {
 typedef struct qspi_s qspi_t;
 
 typedef struct {
-    int peripheral;
+    int     peripheral;
     PinName data0_pin;
-    int data0_function;
+    int     data0_function;
     PinName data1_pin;
-    int data1_function;
+    int     data1_function;
     PinName data2_pin;
-    int data2_function;
+    int     data2_function;
     PinName data3_pin;
-    int data3_function;
+    int     data3_function;
     PinName sclk_pin;
-    int sclk_function;
+    int     sclk_function;
     PinName ssel_pin;
-    int ssel_function;
+    int     ssel_function;
 } qspi_pinmap_t;
 
 /** QSPI Bus width
@@ -80,7 +80,7 @@ typedef uint8_t qspi_alt_size_t;
 
 // The following defines are provided for backwards compatibilty. New code should explicitly
 // specify the required number of alt bits.
-#define QSPI_CFG_ALT_SIZE_8 8u
+#define QSPI_CFG_ALT_SIZE_8  8u
 #define QSPI_CFG_ALT_SIZE_16 16u
 #define QSPI_CFG_ALT_SIZE_24 24u
 #define QSPI_CFG_ALT_SIZE_32 32u
@@ -92,20 +92,20 @@ typedef uint8_t qspi_alt_size_t;
 typedef struct qspi_command {
     struct {
         qspi_bus_width_t bus_width; /**< Bus width for the instruction >*/
-        uint8_t value;  /**< Instruction value >*/
-        bool disabled; /**< Instruction phase skipped if disabled is set to true >*/
+        uint8_t          value;     /**< Instruction value >*/
+        bool             disabled;  /**< Instruction phase skipped if disabled is set to true >*/
     } instruction;
     struct {
-        qspi_bus_width_t bus_width; /**< Bus width for the address >*/
-        qspi_address_size_t size; /**< Address size >*/
-        uint32_t value; /**< Address value >*/
-        bool disabled; /**< Address phase skipped if disabled is set to true >*/
-    }  address;
+        qspi_bus_width_t    bus_width; /**< Bus width for the address >*/
+        qspi_address_size_t size;      /**< Address size >*/
+        uint32_t            value;     /**< Address value >*/
+        bool                disabled;  /**< Address phase skipped if disabled is set to true >*/
+    } address;
     struct {
         qspi_bus_width_t bus_width; /**< Bus width for alternative  >*/
-        qspi_alt_size_t size; /**< Alternative size >*/
-        uint32_t value; /**< Alternative value >*/
-        bool disabled; /**< Alternative phase skipped if disabled is set to true >*/
+        qspi_alt_size_t  size;      /**< Alternative size >*/
+        uint32_t         value;     /**< Alternative value >*/
+        bool             disabled;  /**< Alternative phase skipped if disabled is set to true >*/
     } alt;
     uint8_t dummy_count; /**< Dummy cycles count >*/
     struct {
@@ -116,14 +116,15 @@ typedef struct qspi_command {
 /** QSPI return status
  */
 typedef enum qspi_status {
-    QSPI_STATUS_ERROR = -1, /**< Generic error >*/
+    QSPI_STATUS_ERROR             = -1, /**< Generic error >*/
     QSPI_STATUS_INVALID_PARAMETER = -2, /**< The parameter is invalid >*/
-    QSPI_STATUS_OK    =  0, /**< Function executed sucessfully  >*/
+    QSPI_STATUS_OK                = 0,  /**< Function executed sucessfully  >*/
 } qspi_status_t;
 
 /** Initialize QSPI peripheral.
  *
- * It should initialize QSPI pins (io0-io3, sclk and ssel), set frequency, clock polarity and phase mode. The clock for the peripheral should be enabled
+ * It should initialize QSPI pins (io0-io3, sclk and ssel), set frequency, clock polarity and phase mode. The clock for
+ the peripheral should be enabled
  *
  * @param obj QSPI object
  * @param io0 Data pin 0
@@ -138,11 +139,20 @@ typedef enum qspi_status {
            QSPI_STATUS_INVALID_PARAMETER if invalid parameter found
            QSPI_STATUS_ERROR otherwise
  */
-qspi_status_t qspi_init(qspi_t *obj, PinName io0, PinName io1, PinName io2, PinName io3, PinName sclk, PinName ssel, uint32_t hz, uint8_t mode);
+qspi_status_t qspi_init(qspi_t * obj,
+                        PinName  io0,
+                        PinName  io1,
+                        PinName  io2,
+                        PinName  io3,
+                        PinName  sclk,
+                        PinName  ssel,
+                        uint32_t hz,
+                        uint8_t  mode);
 
 /** Initialize QSPI peripheral.
  *
- * It should initialize QSPI pins (io0-io3, sclk and ssel), set frequency, clock polarity and phase mode. The clock for the peripheral should be enabled
+ * It should initialize QSPI pins (io0-io3, sclk and ssel), set frequency, clock polarity and phase mode. The clock for
+ the peripheral should be enabled
  *
  * @param obj QSPI object
  * @param pinmap pointer to structure which holds static pinmap
@@ -156,7 +166,8 @@ qspi_status_t qspi_init_direct(qspi_t *obj, const qspi_pinmap_t *pinmap, uint32_
 
 /** Deinitilize QSPI peripheral
  *
- * It should release pins that are associated with the QSPI object, and disable clocks for QSPI peripheral module that was associated with the object
+ * It should release pins that are associated with the QSPI object, and disable clocks for QSPI peripheral module that
+ was associated with the object
  *
  * @param obj QSPI object
  * @return QSPI_STATUS_OK if deinitialisation successfully executed
@@ -201,7 +212,8 @@ qspi_status_t qspi_write(qspi_t *obj, const qspi_command_t *command, const void 
            QSPI_STATUS_INVALID_PARAMETER if invalid parameter found
            QSPI_STATUS_ERROR otherwise
  */
-qspi_status_t qspi_command_transfer(qspi_t *obj, const qspi_command_t *command, const void *tx_data, size_t tx_size, void *rx_data, size_t rx_size);
+qspi_status_t qspi_command_transfer(
+    qspi_t *obj, const qspi_command_t *command, const void *tx_data, size_t tx_size, void *rx_data, size_t rx_size);
 
 /** Receive a command and block of data
  *

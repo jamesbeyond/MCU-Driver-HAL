@@ -15,11 +15,11 @@
  */
 
 #if !DEVICE_SERIAL
-#error [NOT_SUPPORTED] SERIAL not supported for this target
+#error[NOT_SUPPORTED] SERIAL not supported for this target
 #elif !COMPONENT_FPGA_CI_TEST_SHIELD
-#error [NOT_SUPPORTED] FPGA CI Test Shield is needed to run this test
+#error[NOT_SUPPORTED] FPGA CI Test Shield is needed to run this test
 #elif !(defined(TARGET_FF_ARDUINO) || defined(TARGET_FF_ARDUINO_UNO)) && !defined(MBED_CONF_TARGET_DEFAULT_FORM_FACTOR)
-#error [NOT_SUPPORTED] Test not supported for this form factor
+#error[NOT_SUPPORTED] Test not supported for this form factor
 #else
 
 #include "utest/utest.h"
@@ -35,11 +35,10 @@
 #include "uart_fpga_test.h"
 #include "hal/static_pinmap.h"
 
-
 using namespace utest::v1;
 
-#define PUTC_REPS 16
-#define GETC_REPS 16
+#define PUTC_REPS         16
+#define GETC_REPS         16
 
 // In the UART RX test, the request for the FPGA to start sending data is sent
 // first. Then the execution is blocked at serial_getc() call. Since the DUT
@@ -52,16 +51,16 @@ UARTTester tester(DefaultFormFactor::pins(), DefaultFormFactor::restricted_pins(
 
 typedef struct {
     serial_t *ser;
-    int *rx_buff;
-    uint32_t rx_cnt;
-    int *tx_buff;
-    uint32_t tx_cnt;
+    int *     rx_buff;
+    uint32_t  rx_cnt;
+    int *     tx_buff;
+    uint32_t  tx_cnt;
 } serial_test_data_t;
 
 static void test_irq_handler(uint32_t id, SerialIrq event)
 {
     serial_test_data_t *td = (serial_test_data_t *)id;
-    int c = 0x01; // arbitrary, non-zero value
+    int                 c  = 0x01; // arbitrary, non-zero value
     if (event == RxIrq) {
         c = serial_getc(td->ser);
         core_util_critical_section_enter();
@@ -82,7 +81,15 @@ static void test_irq_handler(uint32_t id, SerialIrq event)
     }
 }
 
-static void uart_test_common(int baudrate, int data_bits, SerialParity parity, int stop_bits, bool init_direct, PinName tx, PinName rx, PinName cts, PinName rts)
+static void uart_test_common(int          baudrate,
+                             int          data_bits,
+                             SerialParity parity,
+                             int          stop_bits,
+                             bool         init_direct,
+                             PinName      tx,
+                             PinName      rx,
+                             PinName      cts,
+                             PinName      rts)
 {
     // The FPGA CI shield only supports None, Odd & Even.
     // Forced parity is not supported on many targets
@@ -121,9 +128,9 @@ static void uart_test_common(int baudrate, int data_bits, SerialParity parity, i
     int test_buff_bits = data_bits < 8 ? data_bits : 8;
 
     // start_bit + data_bits + parity_bit + stop_bits
-    int packet_bits = 1 + data_bits + stop_bits + (parity == ParityNone ? 0 : 1);
-    us_timestamp_t packet_tx_time = 1000000 * packet_bits / baudrate;
-    const ticker_data_t *const us_ticker = get_us_ticker_data();
+    int                        packet_bits    = 1 + data_bits + stop_bits + (parity == ParityNone ? 0 : 1);
+    us_timestamp_t             packet_tx_time = 1000000 * packet_bits / baudrate;
+    const ticker_data_t *const us_ticker      = get_us_ticker_data();
 
     bool use_flow_control = (cts != NC && rts != NC) ? true : false;
 
@@ -153,7 +160,7 @@ static void uart_test_common(int baudrate, int data_bits, SerialParity parity, i
             const serial_fc_pinmap_t pinmap = get_uart_fc_pinmap(rts, cts);
             serial_set_flow_control_direct(&serial, FlowControlRTSCTS, &pinmap);
 #else
-            //skip this test case if static pinmap is not supported
+            // skip this test case if static pinmap is not supported
             // Cleanup uart to be able execute next test case
             serial_free(&serial);
             tester.reset();
@@ -191,16 +198,10 @@ static void uart_test_common(int baudrate, int data_bits, SerialParity parity, i
         tester.cts_deassert_delay(0);
     }
 
-    int rx_buff[GETC_REPS] = {};
-    int tx_buff[PUTC_REPS] = {};
-    volatile serial_test_data_t td = {
-        &serial,
-        rx_buff,
-        0,
-        tx_buff,
-        0
-    };
-    uint32_t checksum = 0;
+    int                         rx_buff[GETC_REPS] = {};
+    int                         tx_buff[PUTC_REPS] = {};
+    volatile serial_test_data_t td                 = {&serial, rx_buff, 0, tx_buff, 0};
+    uint32_t                    checksum           = 0;
 
     // DUT TX / FPGA RX
     int tx_val;
@@ -242,7 +243,7 @@ static void uart_test_common(int baudrate, int data_bits, SerialParity parity, i
         TEST_ASSERT_EQUAL(tester_buff, rx_buff[i]);
     }
 
-    serial_irq_handler(&serial, test_irq_handler, (uint32_t) &td);
+    serial_irq_handler(&serial, test_irq_handler, (uint32_t)&td);
 
     // DUT TX (IRQ) / FPGA RX
     tx_val = rand() % ((1 << test_buff_bits) - PUTC_REPS);
@@ -315,7 +316,7 @@ static void uart_test_common(int baudrate, int data_bits, SerialParity parity, i
 
 void fpga_uart_init_free_test(PinName tx, PinName rx, PinName cts, PinName rts)
 {
-    bool use_flow_control = (cts != NC && rts != NC) ? true : false;
+    bool     use_flow_control = (cts != NC && rts != NC) ? true : false;
     serial_t serial;
     serial_init(&serial, tx, rx);
     serial_baud(&serial, 9600);
@@ -328,18 +329,15 @@ void fpga_uart_init_free_test(PinName tx, PinName rx, PinName cts, PinName rts)
     serial_free(&serial);
 }
 
-void fpga_uart_init_free_test_no_fc(PinName tx, PinName rx)
-{
-    fpga_uart_init_free_test(tx, rx);
-}
+void fpga_uart_init_free_test_no_fc(PinName tx, PinName rx) { fpga_uart_init_free_test(tx, rx); }
 
-template<int BAUDRATE, int DATA_BITS, SerialParity PARITY, int STOP_BITS, bool INIT_DIRECT>
+template <int BAUDRATE, int DATA_BITS, SerialParity PARITY, int STOP_BITS, bool INIT_DIRECT>
 void fpga_uart_test_common(PinName tx, PinName rx, PinName cts, PinName rts)
 {
     uart_test_common(BAUDRATE, DATA_BITS, PARITY, STOP_BITS, INIT_DIRECT, tx, rx, cts, rts);
 }
 
-template<int BAUDRATE, int DATA_BITS, SerialParity PARITY, int STOP_BITS, bool INIT_DIRECT>
+template <int BAUDRATE, int DATA_BITS, SerialParity PARITY, int STOP_BITS, bool INIT_DIRECT>
 void fpga_uart_test_common_no_fc(PinName tx, PinName rx)
 {
     uart_test_common(BAUDRATE, DATA_BITS, PARITY, STOP_BITS, INIT_DIRECT, tx, rx);
@@ -350,21 +348,29 @@ Case cases[] = {
     Case("init/free, FC off", all_ports<UARTNoFCPort, DefaultFormFactor, fpga_uart_init_free_test_no_fc>),
 
     // One set of pins from every peripheral.
-    Case("basic, 9600, 8N1, FC off", all_peripherals<UARTNoFCPort, DefaultFormFactor, fpga_uart_test_common_no_fc<9600, 8, ParityNone, 1, false> >),
-    Case("basic (direct init), 9600, 8N1, FC off", all_peripherals<UARTNoFCPort, DefaultFormFactor, fpga_uart_test_common_no_fc<9600, 8, ParityNone, 1, true> >),
+    Case("basic, 9600, 8N1, FC off",
+         all_peripherals<UARTNoFCPort, DefaultFormFactor, fpga_uart_test_common_no_fc<9600, 8, ParityNone, 1, false>>),
+    Case("basic (direct init), 9600, 8N1, FC off",
+         all_peripherals<UARTNoFCPort, DefaultFormFactor, fpga_uart_test_common_no_fc<9600, 8, ParityNone, 1, true>>),
 
     // same test with 7 and 9 bits data length
-    Case("basic, 9600, 7N1, FC off", all_peripherals<UARTNoFCPort, DefaultFormFactor, fpga_uart_test_common_no_fc<9600, 7, ParityNone, 1, false> >),
-    Case("basic, 9600, 9N1, FC off", all_peripherals<UARTNoFCPort, DefaultFormFactor, fpga_uart_test_common_no_fc<9600, 9, ParityNone, 1, false> >),
+    Case("basic, 9600, 7N1, FC off",
+         all_peripherals<UARTNoFCPort, DefaultFormFactor, fpga_uart_test_common_no_fc<9600, 7, ParityNone, 1, false>>),
+    Case("basic, 9600, 9N1, FC off",
+         all_peripherals<UARTNoFCPort, DefaultFormFactor, fpga_uart_test_common_no_fc<9600, 9, ParityNone, 1, false>>),
 
     // One set of pins from one peripheral.
     // baudrate
-    Case("19200, 8N1, FC off", one_peripheral<UARTNoFCPort, DefaultFormFactor, fpga_uart_test_common_no_fc<19200, 8, ParityNone, 1, false> >),
-    Case("38400, 8N1, FC off", one_peripheral<UARTNoFCPort, DefaultFormFactor, fpga_uart_test_common_no_fc<38400, 8, ParityNone, 1, false> >),
-    Case("115200, 8N1, FC off", one_peripheral<UARTNoFCPort, DefaultFormFactor, fpga_uart_test_common_no_fc<115200, 8, ParityNone, 1, false> >),
-    // stop bits
+    Case("19200, 8N1, FC off",
+         one_peripheral<UARTNoFCPort, DefaultFormFactor, fpga_uart_test_common_no_fc<19200, 8, ParityNone, 1, false>>),
+    Case("38400, 8N1, FC off",
+         one_peripheral<UARTNoFCPort, DefaultFormFactor, fpga_uart_test_common_no_fc<38400, 8, ParityNone, 1, false>>),
+    Case("115200, 8N1, FC off",
+         one_peripheral<UARTNoFCPort, DefaultFormFactor, fpga_uart_test_common_no_fc<115200, 8, ParityNone, 1, false>>),
+// stop bits
 #if !defined(UART_TWO_STOP_BITS_NOT_SUPPORTED)
-    Case("9600, 8N2, FC off", one_peripheral<UARTNoFCPort, DefaultFormFactor, fpga_uart_test_common_no_fc<9600, 8, ParityNone, 2, false> >),
+    Case("9600, 8N2, FC off",
+         one_peripheral<UARTNoFCPort, DefaultFormFactor, fpga_uart_test_common_no_fc<9600, 8, ParityNone, 2, false>>),
 #endif
 
 #if DEVICE_SERIAL_FC
@@ -372,36 +378,50 @@ Case cases[] = {
     Case("init/free, FC on", all_ports<UARTPort, DefaultFormFactor, fpga_uart_init_free_test>),
 
     // One set of pins from every peripheral.
-    Case("basic, 9600, 8N1, FC on", all_peripherals<UARTPort, DefaultFormFactor, fpga_uart_test_common<9600, 8, ParityNone, 1, false> >),
-    Case("basic (direct init), 9600, 8N1, FC on", all_peripherals<UARTPort, DefaultFormFactor, fpga_uart_test_common<9600, 8, ParityNone, 1, true> >),
+    Case("basic, 9600, 8N1, FC on",
+         all_peripherals<UARTPort, DefaultFormFactor, fpga_uart_test_common<9600, 8, ParityNone, 1, false>>),
+    Case("basic (direct init), 9600, 8N1, FC on",
+         all_peripherals<UARTPort, DefaultFormFactor, fpga_uart_test_common<9600, 8, ParityNone, 1, true>>),
 
     // same test with 7 and 9 bits data length
-    Case("basic, 9600, 7N1, FC on", all_peripherals<UARTPort, DefaultFormFactor, fpga_uart_test_common<9600, 7, ParityNone, 1, false> >),
-    Case("basic, 9600, 9N1, FC on", all_peripherals<UARTPort, DefaultFormFactor, fpga_uart_test_common<9600, 9, ParityNone, 1, false> >),
+    Case("basic, 9600, 7N1, FC on",
+         all_peripherals<UARTPort, DefaultFormFactor, fpga_uart_test_common<9600, 7, ParityNone, 1, false>>),
+    Case("basic, 9600, 9N1, FC on",
+         all_peripherals<UARTPort, DefaultFormFactor, fpga_uart_test_common<9600, 9, ParityNone, 1, false>>),
 
     // One set of pins from one peripheral.
     // baudrate
-    Case("19200, 8N1, FC on", one_peripheral<UARTPort, DefaultFormFactor, fpga_uart_test_common<19200, 8, ParityNone, 1, false> >),
-    Case("38400, 8N1, FC on", one_peripheral<UARTPort, DefaultFormFactor, fpga_uart_test_common<38400, 8, ParityNone, 1, false> >),
-    Case("115200, 8N1, FC on", one_peripheral<UARTPort, DefaultFormFactor, fpga_uart_test_common<115200, 8, ParityNone, 1, false> >),
-    // data bits: not tested (some platforms support 8 bits only)
-    // parity
+    Case("19200, 8N1, FC on",
+         one_peripheral<UARTPort, DefaultFormFactor, fpga_uart_test_common<19200, 8, ParityNone, 1, false>>),
+    Case("38400, 8N1, FC on",
+         one_peripheral<UARTPort, DefaultFormFactor, fpga_uart_test_common<38400, 8, ParityNone, 1, false>>),
+    Case("115200, 8N1, FC on",
+         one_peripheral<UARTPort, DefaultFormFactor, fpga_uart_test_common<115200, 8, ParityNone, 1, false>>),
+// data bits: not tested (some platforms support 8 bits only)
+// parity
 #if !defined(UART_ODD_PARITY_NOT_SUPPORTED)
-    Case("9600, 8O1, FC on", one_peripheral<UARTPort, DefaultFormFactor, fpga_uart_test_common<9600, 8, ParityOdd, 1, false> >),
+    Case("9600, 8O1, FC on",
+         one_peripheral<UARTPort, DefaultFormFactor, fpga_uart_test_common<9600, 8, ParityOdd, 1, false>>),
 
     // same test with 7 and 9 bits data length
-    Case("9600, 7O1, FC on", one_peripheral<UARTPort, DefaultFormFactor, fpga_uart_test_common<9600, 7, ParityOdd, 1, false> >),
-    Case("9600, 9O1, FC on", one_peripheral<UARTPort, DefaultFormFactor, fpga_uart_test_common<9600, 9, ParityOdd, 1, false> >),
+    Case("9600, 7O1, FC on",
+         one_peripheral<UARTPort, DefaultFormFactor, fpga_uart_test_common<9600, 7, ParityOdd, 1, false>>),
+    Case("9600, 9O1, FC on",
+         one_peripheral<UARTPort, DefaultFormFactor, fpga_uart_test_common<9600, 9, ParityOdd, 1, false>>),
 #endif
-    Case("9600, 8E1, FC on", one_peripheral<UARTPort, DefaultFormFactor, fpga_uart_test_common<9600, 8, ParityEven, 1, false> >),
+    Case("9600, 8E1, FC on",
+         one_peripheral<UARTPort, DefaultFormFactor, fpga_uart_test_common<9600, 8, ParityEven, 1, false>>),
 
     // same test with 7 and 9 bits data length
-    Case("9600, 7E1, FC on", one_peripheral<UARTPort, DefaultFormFactor, fpga_uart_test_common<9600, 7, ParityEven, 1, false> >),
-    Case("9600, 9E1, FC on", one_peripheral<UARTPort, DefaultFormFactor, fpga_uart_test_common<9600, 9, ParityEven, 1, false> >),
+    Case("9600, 7E1, FC on",
+         one_peripheral<UARTPort, DefaultFormFactor, fpga_uart_test_common<9600, 7, ParityEven, 1, false>>),
+    Case("9600, 9E1, FC on",
+         one_peripheral<UARTPort, DefaultFormFactor, fpga_uart_test_common<9600, 9, ParityEven, 1, false>>),
 
-    // stop bits
+// stop bits
 #if !defined(UART_TWO_STOP_BITS_NOT_SUPPORTED)
-    Case("9600, 8N2, FC on", one_peripheral<UARTPort, DefaultFormFactor, fpga_uart_test_common<9600, 8, ParityNone, 2, false> >),
+    Case("9600, 8N2, FC on",
+         one_peripheral<UARTPort, DefaultFormFactor, fpga_uart_test_common<9600, 8, ParityNone, 2, false>>),
 #endif
 #endif
 
@@ -410,15 +430,12 @@ Case cases[] = {
 utest::v1::status_t greentea_test_setup(const size_t number_of_cases)
 {
     GREENTEA_SETUP(240, "default_auto");
-    srand((unsigned) ticker_read_us(get_us_ticker_data()));
+    srand((unsigned)ticker_read_us(get_us_ticker_data()));
     return greentea_test_setup_handler(number_of_cases);
 }
 
 Specification specification(greentea_test_setup, cases, greentea_test_teardown_handler);
 
-int main()
-{
-    Harness::run(specification);
-}
+int main() { Harness::run(specification); }
 
 #endif /* !DEVICE_SERIAL */

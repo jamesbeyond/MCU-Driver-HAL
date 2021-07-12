@@ -15,7 +15,7 @@
  */
 
 #if !DEVICE_WATCHDOG
-#error [NOT_SUPPORTED] Watchdog not supported for this target
+#error[NOT_SUPPORTED] Watchdog not supported for this target
 #else
 
 #include "greentea-client/test_env.h"
@@ -25,7 +25,7 @@
 #include "watchdog_reset_tests.h"
 #include "mbed.h"
 
-#define TIMEOUT_MS 100UL
+#define TIMEOUT_MS      100UL
 
 /* This value is used to calculate the time to kick the watchdog.
  * Given the watchdog timeout is set to TIMEOUT_MS, the kick will be performed
@@ -42,15 +42,15 @@
  */
 #define KICK_ADVANCE_MS 35UL
 
-#define MSG_VALUE_DUMMY "0"
-#define CASE_DATA_INVALID 0xffffffffUL
+#define MSG_VALUE_DUMMY     "0"
+#define CASE_DATA_INVALID   0xffffffffUL
 #define CASE_DATA_PHASE2_OK 0xfffffffeUL
 
 #define MSG_VALUE_LEN 24
-#define MSG_KEY_LEN 24
+#define MSG_KEY_LEN   24
 
 #define MSG_KEY_DEVICE_READY "ready"
-#define MSG_KEY_START_CASE "start_case"
+#define MSG_KEY_START_CASE   "start_case"
 #define MSG_KEY_DEVICE_RESET "dev_reset"
 
 /* To prevent a loss of Greentea data, the serial buffers have to be flushed
@@ -68,17 +68,17 @@
  */
 #define SERIAL_FLUSH_TIME_MS 150
 
-#define TIMEOUT_US (1000 * (TIMEOUT_MS))
-#define KICK_ADVANCE_US (1000 * (KICK_ADVANCE_MS))
+#define TIMEOUT_US           (1000 * (TIMEOUT_MS))
+#define KICK_ADVANCE_US      (1000 * (KICK_ADVANCE_MS))
 #define SERIAL_FLUSH_TIME_US (1000 * (SERIAL_FLUSH_TIME_MS))
 
 using utest::v1::Case;
-using utest::v1::Specification;
 using utest::v1::Harness;
+using utest::v1::Specification;
 
 struct testcase_data {
-    int index;
-    int start_index;
+    int      index;
+    int      start_index;
     uint32_t received_data;
 };
 
@@ -89,7 +89,7 @@ Ticker wdg_kicking_ticker;
 bool send_reset_notification(testcase_data *tcdata, uint32_t delay_ms)
 {
     char msg_value[12];
-    int str_len = snprintf(msg_value, sizeof msg_value, "%02x,%08lx", tcdata->start_index + tcdata->index, delay_ms);
+    int  str_len = snprintf(msg_value, sizeof msg_value, "%02x,%08lx", tcdata->start_index + tcdata->index, delay_ms);
     if (str_len < 0) {
         utest_printf("Failed to compose a value string to be sent to host.");
         return false;
@@ -110,7 +110,7 @@ void test_simple_reset()
 
     // Phase 1. -- run the test code.
     // Init the watchdog and wait for a device reset.
-    watchdog_config_t config = { TIMEOUT_MS };
+    watchdog_config_t config = {TIMEOUT_MS};
     if (send_reset_notification(&current_case, 2 * TIMEOUT_MS + SERIAL_FLUSH_TIME_MS) == false) {
         TEST_ASSERT_MESSAGE(0, "Dev-host communication error.");
         return;
@@ -138,7 +138,7 @@ void test_sleep_reset()
     }
 
     // Phase 1. -- run the test code.
-    watchdog_config_t config = { TIMEOUT_MS };
+    watchdog_config_t config = {TIMEOUT_MS};
     if (send_reset_notification(&current_case, 2 * TIMEOUT_MS + SERIAL_FLUSH_TIME_MS) == false) {
         TEST_ASSERT_MESSAGE(0, "Dev-host communication error.");
         return;
@@ -172,7 +172,7 @@ void test_deepsleep_reset()
     }
 
     // Phase 1. -- run the test code.
-    watchdog_config_t config = { TIMEOUT_MS };
+    watchdog_config_t config = {TIMEOUT_MS};
     if (send_reset_notification(&current_case, 2 * TIMEOUT_MS + SERIAL_FLUSH_TIME_MS) == false) {
         TEST_ASSERT_MESSAGE(0, "Dev-host communication error.");
         return;
@@ -215,7 +215,7 @@ void test_restart_reset()
     }
 
     // Phase 1. -- run the test code.
-    watchdog_config_t config = { TIMEOUT_MS };
+    watchdog_config_t config = {TIMEOUT_MS};
     TEST_ASSERT_EQUAL(WATCHDOG_STATUS_OK, hal_watchdog_init(&config));
     wait_us(TIMEOUT_US / 2);
     TEST_ASSERT_EQUAL(WATCHDOG_STATUS_OK, hal_watchdog_stop());
@@ -250,7 +250,7 @@ void test_kick_reset()
     }
 
     // Phase 1. -- run the test code.
-    watchdog_config_t config = { TIMEOUT_MS };
+    watchdog_config_t config = {TIMEOUT_MS};
     TEST_ASSERT_EQUAL(WATCHDOG_STATUS_OK, hal_watchdog_init(&config));
     for (int i = 3; i; i--) {
         // The reset is prevented as long as the watchdog is kicked
@@ -287,8 +287,8 @@ int testsuite_setup(const size_t number_of_cases)
         return status;
     }
 
-    char key[MSG_KEY_LEN + 1] = { };
-    char value[MSG_VALUE_LEN + 1] = { };
+    char key[MSG_KEY_LEN + 1]     = {};
+    char value[MSG_VALUE_LEN + 1] = {};
 
     greentea_send_kv(MSG_KEY_DEVICE_READY, MSG_VALUE_DUMMY);
     greentea_parse_kv(key, value, MSG_KEY_LEN, MSG_VALUE_LEN);
@@ -304,7 +304,8 @@ int testsuite_setup(const size_t number_of_cases)
         return utest::v1::STATUS_ABORT;
     }
 
-    utest_printf("This test suite is composed of %i test cases. Starting at index %i.\n", number_of_cases,
+    utest_printf("This test suite is composed of %i test cases. Starting at index %i.\n",
+                 number_of_cases,
                  current_case.start_index);
     return current_case.start_index;
 }
@@ -321,7 +322,7 @@ Case cases[] = {
     Case("Kicking the Watchdog prevents reset", case_setup, test_kick_reset),
 };
 
-Specification specification((utest::v1::test_setup_handler_t) testsuite_setup, cases);
+Specification specification((utest::v1::test_setup_handler_t)testsuite_setup, cases);
 
 int main()
 {

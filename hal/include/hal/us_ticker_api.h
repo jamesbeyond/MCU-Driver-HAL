@@ -32,7 +32,8 @@ extern "C" {
  * Low level interface to the microsecond ticker of a target
  *
  * # Defined behavior
- * * Has a reported frequency between 250KHz and 8MHz for counters which are less than 32 bits wide - Verified by test ::us_ticker_info_test
+ * * Has a reported frequency between 250KHz and 8MHz for counters which are less than 32 bits wide - Verified by test
+ ::us_ticker_info_test
  * * Has a reported frequency up to 100MHz for counters which are 32 bits wide - Verified by test ::us_ticker_info_test
  * * Has a counter that is at least 16 bits wide - Verified by test ::us_ticker_info_test
  * * All behavior defined by the @ref hal_ticker_shared "ticker specification"
@@ -60,21 +61,22 @@ extern "C" {
  * @{
  */
 
-
 /**
  * \defgroup hal_ticker_shared Ticker Hal
  * Low level interface to the ticker of a target
  *
  * # Defined behavior
  * * The function ticker_init is safe to call repeatedly - Verified by test ::ticker_init_test
- * * The function ticker_init allows the ticker to keep counting and disables the ticker interrupt - Verified by test ::ticker_init_test
+ * * The function ticker_init allows the ticker to keep counting and disables the ticker interrupt - Verified by test
+ * ::ticker_init_test
  * * Ticker frequency is non-zero and counter is at least 8 bits - Verified by ::ticker_info_test
  * * The ticker rolls over at (1 << bits) and continues counting starting from 0 - Verified by ::ticker_overflow_test
  * * The ticker counts at the specified frequency +- 10% - Verified by ::ticker_frequency_test
  * * The ticker increments by 1 each tick - Verified by ::ticker_increment_test
  * * The ticker interrupt fires only when the ticker times increments to or past the value set by ticker_set_interrupt.
  * Verified by ::ticker_interrupt_test and ::ticker_past_test
- * * It is safe to call ticker_set_interrupt repeatedly before the handler is called - Verified by ::ticker_repeat_reschedule_test
+ * * It is safe to call ticker_set_interrupt repeatedly before the handler is called - Verified by
+ * ::ticker_repeat_reschedule_test
  * * The function ticker_fire_interrupt causes ticker_irq_handler to be called immediately from interrupt context -
  * Verified by ::ticker_fire_now_test
  * * The ticker operations ticker_read, ticker_clear_interrupt, ticker_set_interrupt and ticker_fire_interrupt
@@ -83,7 +85,8 @@ extern "C" {
  *
  * # Undefined behavior
  * * Calling any function other than ticker_init before the initialization of the ticker
- * * Whether ticker_irq_handler is called a second time if the time wraps and matches the value set by ticker_set_interrupt again
+ * * Whether ticker_irq_handler is called a second time if the time wraps and matches the value set by
+ * ticker_set_interrupt again
  * * Calling ticker_set_interrupt with a value that has more than the supported number of bits
  * * Calling any function other than us_ticker_init after calling us_ticker_free
  *
@@ -114,7 +117,6 @@ ticker_irq_handler_type set_us_ticker_irq_handler(ticker_irq_handler_type ticker
  * @return The microsecond ticker data
  */
 const ticker_data_t *get_us_ticker_data(void);
-
 
 /** The wrapper for ticker_irq_handler, to pass us ticker's data
  *
@@ -201,7 +203,7 @@ void us_ticker_free(void);
  * }
  * @endcode
  */
-uint32_t (us_ticker_read)(void);
+uint32_t(us_ticker_read)(void);
 
 /** Set interrupt for specified timestamp
  *

@@ -15,11 +15,11 @@
  */
 
 #if !DEVICE_WATCHDOG
-#error [NOT_SUPPORTED] Watchdog not supported for this target
+#error[NOT_SUPPORTED] Watchdog not supported for this target
 #elif !COMPONENT_FPGA_CI_TEST_SHIELD
-#error [NOT_SUPPORTED] FPGA CI Test Shield is needed to run this test
+#error[NOT_SUPPORTED] FPGA CI Test Shield is needed to run this test
 #elif !(defined(TARGET_FF_ARDUINO) || defined(TARGET_FF_ARDUINO_UNO)) && !defined(MBED_CONF_TARGET_DEFAULT_FORM_FACTOR)
-#error [NOT_SUPPORTED] Test not supported for this form factor
+#error[NOT_SUPPORTED] Test not supported for this form factor
 #else
 
 #include "utest/utest.h"
@@ -31,26 +31,26 @@
 #include "test_utils.h"
 #include "hal/watchdog_api.h"
 
-#define MSG_VALUE_DUMMY "0"
-#define CASE_DATA_INVALID 0xffffffffUL
+#define MSG_VALUE_DUMMY     "0"
+#define CASE_DATA_INVALID   0xffffffffUL
 #define CASE_DATA_PHASE2_OK 0xfffffffeUL
 
 #define MSG_VALUE_LEN 24
-#define MSG_KEY_LEN 24
+#define MSG_KEY_LEN   24
 
 #define MSG_KEY_DEVICE_READY "ready"
-#define MSG_KEY_START_CASE "start_case"
+#define MSG_KEY_START_CASE   "start_case"
 #define MSG_KEY_DEVICE_RESET "dev_reset"
 
 #define WATCHDOG_PULSE_PERIOD_US 1000
 
 using utest::v1::Case;
-using utest::v1::Specification;
 using utest::v1::Harness;
+using utest::v1::Specification;
 
 struct testcase_data {
-    int index;
-    int start_index;
+    int      index;
+    int      start_index;
     uint32_t received_data;
 };
 
@@ -82,7 +82,7 @@ PinName get_pin_to_restrict(const PinList *whitelist, const PinList *blacklist)
  */
 PinList *alloc_extended_pinlist(const PinList *pin_list, PinName pin)
 {
-    PinName *pins = (PinName *) calloc(pin_list->count + 1, sizeof(PinName));
+    PinName *pins = (PinName *)calloc(pin_list->count + 1, sizeof(PinName));
     if (pins == NULL) {
         return NULL;
     }
@@ -90,13 +90,13 @@ PinList *alloc_extended_pinlist(const PinList *pin_list, PinName pin)
         pins[i] = pin_list->pins[i];
     }
     pins[pin_list->count] = pin;
-    PinList *new_pinlist = (PinList *) calloc(1, sizeof(PinList));
+    PinList *new_pinlist  = (PinList *)calloc(1, sizeof(PinList));
     if (new_pinlist == NULL) {
         free(pins);
         return NULL;
     }
     new_pinlist->count = pin_list->count + 1;
-    new_pinlist->pins = pins;
+    new_pinlist->pins  = pins;
     return new_pinlist;
 }
 
@@ -109,7 +109,7 @@ void free_pinlist(PinList *pin_list)
 {
     if (pin_list) {
         if (pin_list->pins) {
-            free((PinName *) pin_list->pins);
+            free((PinName *)pin_list->pins);
         }
         free(pin_list);
     }
@@ -118,7 +118,7 @@ void free_pinlist(PinList *pin_list)
 bool send_reset_notification(testcase_data *tcdata, uint32_t delay_ms)
 {
     char msg_value[12];
-    int str_len = snprintf(msg_value, sizeof msg_value, "%02x,%08lx", tcdata->start_index + tcdata->index, delay_ms);
+    int  str_len = snprintf(msg_value, sizeof msg_value, "%02x,%08lx", tcdata->start_index + tcdata->index, delay_ms);
     if (str_len < 0) {
         utest_printf("Failed to compose a value string to be sent to host.");
         return false;
@@ -127,8 +127,7 @@ bool send_reset_notification(testcase_data *tcdata, uint32_t delay_ms)
     return true;
 }
 
-template<uint32_t timeout_ms>
-void fpga_test_watchdog_timeout_accuracy()
+template <uint32_t timeout_ms> void fpga_test_watchdog_timeout_accuracy()
 {
     watchdog_features_t features = hal_watchdog_get_platform_features();
     if (timeout_ms > features.max_timeout) {
@@ -168,10 +167,10 @@ void fpga_test_watchdog_timeout_accuracy()
     tester.reset();
     tester.pin_map_set(watchdog_pulse_pin, MbedTester::LogicalPinIOMetrics0);
     gpio_t pulse_pin;
-    int pulse_pin_value = 1;
+    int    pulse_pin_value = 1;
     gpio_init_out_ex(&pulse_pin, watchdog_pulse_pin, pulse_pin_value);
     // Init the watchdog and wait for a device reset.
-    watchdog_config_t config = { timeout_ms };
+    watchdog_config_t config = {timeout_ms};
     if (send_reset_notification(&current_case, 2 * timeout_ms_clock_accuracy) == false) {
         TEST_ASSERT_MESSAGE(0, "Dev-host communication error.");
         free_pinlist(blacklist);
@@ -200,8 +199,8 @@ int testsuite_setup(const size_t number_of_cases)
         return status;
     }
 
-    char key[MSG_KEY_LEN + 1] = { };
-    char value[MSG_VALUE_LEN + 1] = { };
+    char key[MSG_KEY_LEN + 1]     = {};
+    char value[MSG_VALUE_LEN + 1] = {};
 
     greentea_send_kv(MSG_KEY_DEVICE_READY, MSG_VALUE_DUMMY);
     greentea_parse_kv(key, value, MSG_KEY_LEN, MSG_VALUE_LEN);
@@ -217,7 +216,8 @@ int testsuite_setup(const size_t number_of_cases)
         return utest::v1::STATUS_ABORT;
     }
 
-    utest_printf("This test suite is composed of %i test cases. Starting at index %i.\n", number_of_cases,
+    utest_printf("This test suite is composed of %i test cases. Starting at index %i.\n",
+                 number_of_cases,
                  current_case.start_index);
     return current_case.start_index;
 }
@@ -229,7 +229,7 @@ Case cases[] = {
     Case("Timeout accuracy, 3000 ms", case_setup, fpga_test_watchdog_timeout_accuracy<3000UL>),
 };
 
-Specification specification((utest::v1::test_setup_handler_t) testsuite_setup, cases);
+Specification specification((utest::v1::test_setup_handler_t)testsuite_setup, cases);
 
 int main()
 {

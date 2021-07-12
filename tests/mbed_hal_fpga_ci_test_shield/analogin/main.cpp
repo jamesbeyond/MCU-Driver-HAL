@@ -15,11 +15,11 @@
  */
 
 #if !DEVICE_ANALOGIN
-#error [NOT_SUPPORTED] Analog in not supported for this target
+#error[NOT_SUPPORTED] Analog in not supported for this target
 #elif !COMPONENT_FPGA_CI_TEST_SHIELD
-#error [NOT_SUPPORTED] FPGA CI Test Shield is needed to run this test
+#error[NOT_SUPPORTED] FPGA CI Test Shield is needed to run this test
 #elif !(defined(TARGET_FF_ARDUINO) || defined(TARGET_FF_ARDUINO_UNO)) && !defined(MBED_CONF_TARGET_DEFAULT_FORM_FACTOR)
-#error [NOT_SUPPORTED] Test not supported for this form factor
+#error[NOT_SUPPORTED] Test not supported for this form factor
 #else
 
 #include "utest/utest.h"
@@ -36,11 +36,11 @@ using namespace utest::v1;
 
 #define analogin_debug_printf(...)
 
-#define DELTA_FLOAT                     (0.1f)       // 10%
-#define DELTA_U16                       (2*3277)     // 10%
+#define DELTA_FLOAT (0.1f)     // 10%
+#define DELTA_U16   (2 * 3277) // 10%
 
 const PinList *form_factor = pinmap_ff_default_pins();
-const PinList *restricted = pinmap_restricted_pins();
+const PinList *restricted  = pinmap_restricted_pins();
 
 MbedTester tester(form_factor, restricted);
 
@@ -52,8 +52,7 @@ void fpga_analogin_init_test(PinName pin)
     analogin_free(&analogin);
 }
 
-template<bool init_direct>
-void fpga_analogin_test(PinName pin)
+template <bool init_direct> void fpga_analogin_test(PinName pin)
 {
     tester.reset();
     tester.pin_map_set(pin, MbedTester::LogicalPinGPIO0);
@@ -100,9 +99,6 @@ utest::v1::status_t greentea_test_setup(const size_t number_of_cases)
 
 Specification specification(greentea_test_setup, cases, greentea_test_teardown_handler);
 
-int main()
-{
-    Harness::run(specification);
-}
+int main() { Harness::run(specification); }
 
 #endif /* !DEVICE_ANALOGIN */

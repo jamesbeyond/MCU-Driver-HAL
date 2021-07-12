@@ -24,18 +24,18 @@
 #include "sleep_manager_api_tests.h"
 
 #if !DEVICE_SLEEP
-#error [NOT_SUPPORTED] test not supported
+#error[NOT_SUPPORTED] test not supported
 #else
 
-#define SLEEP_DURATION_US 20000ULL
-#define DEEP_SLEEP_TEST_CHECK_WAIT_US 2000
+#define SLEEP_DURATION_US                   20000ULL
+#define DEEP_SLEEP_TEST_CHECK_WAIT_US       2000
 // As sleep_manager_can_deep_sleep_test_check() is based on wait_ns
 // and wait_ns can be up to 40% slower, use a 50% delta here.
 #define DEEP_SLEEP_TEST_CHECK_WAIT_DELTA_US 1000
 
 using utest::v1::Case;
-using utest::v1::Specification;
 using utest::v1::Harness;
+using utest::v1::Specification;
 
 #if DEVICE_LPTICKER
 /* Make sure there are enough ticks to cope with more than SLEEP_DURATION_US sleep
@@ -43,17 +43,18 @@ using utest::v1::Harness;
  */
 void wraparound_lp_protect(void)
 {
-    const uint32_t ticks_now = get_lp_ticker_data()->interface->read();
+    const uint32_t       ticks_now     = get_lp_ticker_data()->interface->read();
     const ticker_info_t *p_ticker_info = get_lp_ticker_data()->interface->get_info();
 
-    const uint32_t max_count = ((1 << p_ticker_info->bits) - 1);
+    const uint32_t max_count   = ((1 << p_ticker_info->bits) - 1);
     const uint32_t delta_ticks = us_to_ticks(SLEEP_DURATION_US * 1.5, p_ticker_info->frequency);
 
     if (ticks_now < (max_count - delta_ticks)) {
         return;
     }
 
-    while (get_lp_ticker_data()->interface->read() > (max_count - delta_ticks));
+    while (get_lp_ticker_data()->interface->read() > (max_count - delta_ticks))
+        ;
 }
 #endif
 
@@ -107,7 +108,9 @@ utest::v1::status_t testcase_setup(const Case *const source, const size_t index_
     return utest::v1::greentea_case_setup_handler(source, index_of_case);
 }
 
-utest::v1::status_t testcase_teardown(const Case *const source, const size_t passed, const size_t failed,
+utest::v1::status_t testcase_teardown(const Case *const          source,
+                                      const size_t               passed,
+                                      const size_t               failed,
                                       const utest::v1::failure_t failure)
 {
     ticker_resume(get_us_ticker_data());
@@ -134,18 +137,18 @@ utest::v1::status_t testcase_teardown(const Case *const source, const size_t pas
  */
 void test_sleep_auto()
 {
-    const ticker_info_t *us_ticker_info = get_us_ticker_data()->interface->get_info();
-    const unsigned us_ticker_mask = ((1 << us_ticker_info->bits) - 1);
+    const ticker_info_t *         us_ticker_info            = get_us_ticker_data()->interface->get_info();
+    const unsigned                us_ticker_mask            = ((1 << us_ticker_info->bits) - 1);
     const ticker_irq_handler_type us_ticker_irq_handler_org = set_us_ticker_irq_handler(us_ticker_isr);
-    const ticker_info_t *lp_ticker_info = get_lp_ticker_data()->interface->get_info();
-    const unsigned lp_ticker_mask = ((1 << lp_ticker_info->bits) - 1);
+    const ticker_info_t *         lp_ticker_info            = get_lp_ticker_data()->interface->get_info();
+    const unsigned                lp_ticker_mask            = ((1 << lp_ticker_info->bits) - 1);
     const ticker_irq_handler_type lp_ticker_irq_handler_org = set_lp_ticker_irq_handler(lp_ticker_isr);
-    uint32_t us_ts1, us_ts2, lp_ts1, lp_ts2, us_diff1, us_diff2, lp_diff1, lp_diff2;
+    uint32_t                      us_ts1, us_ts2, lp_ts1, lp_ts2, us_diff1, us_diff2, lp_diff1, lp_diff2;
 
     /*  Let's avoid the Lp ticker wrap-around case */
     wraparound_lp_protect();
-    uint32_t lp_wakeup_ts_raw = lp_ticker_read() + us_to_ticks(SLEEP_DURATION_US, lp_ticker_info->frequency);
-    timestamp_t lp_wakeup_ts = overflow_protect(lp_wakeup_ts_raw, lp_ticker_info->bits);
+    uint32_t    lp_wakeup_ts_raw = lp_ticker_read() + us_to_ticks(SLEEP_DURATION_US, lp_ticker_info->frequency);
+    timestamp_t lp_wakeup_ts     = overflow_protect(lp_wakeup_ts_raw, lp_ticker_info->bits);
     lp_ticker_set_interrupt(lp_wakeup_ts);
 
     /* Some targets may need an interrupt short time after LPTIM interrupt is
@@ -162,8 +165,10 @@ void test_sleep_auto()
     us_ts2 = us_ticker_read();
     lp_ts2 = lp_ticker_read();
 
-    us_diff1 = ticks_to_us((us_ts1 <= us_ts2) ? (us_ts2 - us_ts1) : (us_ticker_mask - us_ts1 + us_ts2 + 1), us_ticker_info->frequency);
-    lp_diff1 = ticks_to_us((lp_ts1 <= lp_ts2) ? (lp_ts2 - lp_ts1) : (lp_ticker_mask - lp_ts1 + lp_ts2 + 1), lp_ticker_info->frequency);
+    us_diff1 = ticks_to_us((us_ts1 <= us_ts2) ? (us_ts2 - us_ts1) : (us_ticker_mask - us_ts1 + us_ts2 + 1),
+                           us_ticker_info->frequency);
+    lp_diff1 = ticks_to_us((lp_ts1 <= lp_ts2) ? (lp_ts2 - lp_ts1) : (lp_ticker_mask - lp_ts1 + lp_ts2 + 1),
+                           lp_ticker_info->frequency);
 
     // Deep sleep locked -- ordinary sleep mode used:
     // * us_ticker powered ON,
@@ -172,8 +177,7 @@ void test_sleep_auto()
 
     // Verify us and lp tickers incremented equally, with 10% tolerance.
     TEST_ASSERT_UINT64_WITHIN_MESSAGE(
-        SLEEP_DURATION_US / 10ULL, lp_diff1, us_diff1,
-        "Deep sleep mode locked, but still used");
+        SLEEP_DURATION_US / 10ULL, lp_diff1, us_diff1, "Deep sleep mode locked, but still used");
 
     sleep_manager_unlock_deep_sleep();
     TEST_ASSERT_TRUE(sleep_manager_can_deep_sleep());
@@ -184,7 +188,7 @@ void test_sleep_auto()
     /*  Let's avoid the Lp ticker wrap-around case */
     wraparound_lp_protect();
     lp_wakeup_ts_raw = lp_ticker_read() + us_to_ticks(SLEEP_DURATION_US, lp_ticker_info->frequency);
-    lp_wakeup_ts = overflow_protect(lp_wakeup_ts_raw, lp_ticker_info->bits);
+    lp_wakeup_ts     = overflow_protect(lp_wakeup_ts_raw, lp_ticker_info->bits);
     lp_ticker_set_interrupt(lp_wakeup_ts);
 
     /* Some targets may need an interrupt short time after LPTIM interrupt is
@@ -199,8 +203,10 @@ void test_sleep_auto()
     us_ts2 = us_ticker_read();
     lp_ts2 = lp_ticker_read();
 
-    us_diff2 = ticks_to_us((us_ts1 <= us_ts2) ? (us_ts2 - us_ts1) : (us_ticker_mask - us_ts1 + us_ts2 + 1), us_ticker_info->frequency);
-    lp_diff2 = ticks_to_us((lp_ts1 <= lp_ts2) ? (lp_ts2 - lp_ts1) : (lp_ticker_mask - lp_ts1 + lp_ts2 + 1), lp_ticker_info->frequency);
+    us_diff2 = ticks_to_us((us_ts1 <= us_ts2) ? (us_ts2 - us_ts1) : (us_ticker_mask - us_ts1 + us_ts2 + 1),
+                           us_ticker_info->frequency);
+    lp_diff2 = ticks_to_us((lp_ts1 <= lp_ts2) ? (lp_ts2 - lp_ts1) : (lp_ticker_mask - lp_ts1 + lp_ts2 + 1),
+                           lp_ticker_info->frequency);
 
     // Deep sleep unlocked -- deep sleep mode used:
     // * us_ticker powered OFF,
@@ -229,7 +235,7 @@ uint32_t diff_us(uint32_t start_ticks, uint32_t stop_ticks, const ticker_info_t 
 
     uint32_t diff_ticks = ((stop_ticks - start_ticks) & counter_mask);
 
-    return (uint32_t)((uint64_t) diff_ticks * US_PER_S / info->frequency);
+    return (uint32_t)((uint64_t)diff_ticks * US_PER_S / info->frequency);
 }
 
 volatile bool unlock_deep_sleep = false;
@@ -257,7 +263,7 @@ void test_lock_unlock_test_check()
 
         // Use LowPowerTimer instead of Timer to prevent deep sleep lock.
         us_timestamp_t exec_time_unlocked, exec_time_locked;
-        uint32_t start, stop;
+        uint32_t       start, stop;
 
         // Deep sleep unlocked:
         // * sleep_manager_can_deep_sleep() returns true,
@@ -265,7 +271,7 @@ void test_lock_unlock_test_check()
         TEST_ASSERT_TRUE(sleep_manager_can_deep_sleep());
         start = lp_ticker_read();
         TEST_ASSERT_TRUE(sleep_manager_can_deep_sleep_test_check());
-        stop = lp_ticker_read();
+        stop               = lp_ticker_read();
         exec_time_unlocked = diff_us(start, stop, p_ticker_info);
 
         // Deep sleep locked:
@@ -275,10 +281,10 @@ void test_lock_unlock_test_check()
         TEST_ASSERT_FALSE(sleep_manager_can_deep_sleep());
         start = lp_ticker_read();
         TEST_ASSERT_FALSE(sleep_manager_can_deep_sleep_test_check());
-        stop = lp_ticker_read();
+        stop             = lp_ticker_read();
         exec_time_locked = diff_us(start, stop, p_ticker_info);
-        TEST_ASSERT_UINT64_WITHIN(DEEP_SLEEP_TEST_CHECK_WAIT_DELTA_US, DEEP_SLEEP_TEST_CHECK_WAIT_US,
-                                  exec_time_locked - exec_time_unlocked);
+        TEST_ASSERT_UINT64_WITHIN(
+            DEEP_SLEEP_TEST_CHECK_WAIT_DELTA_US, DEEP_SLEEP_TEST_CHECK_WAIT_US, exec_time_locked - exec_time_unlocked);
 
         // Deep sleep unlocked with a 1 ms delay:
         // * sleep_manager_can_deep_sleep() returns false,
@@ -287,9 +293,9 @@ void test_lock_unlock_test_check()
         unlock_deep_sleep = true;
         /*  Let's avoid the Lp ticker wrap-around case */
         wraparound_lp_protect();
-        start = lp_ticker_read();
-        uint32_t lp_wakeup_ts_raw = start + us_to_ticks(DEEP_SLEEP_TEST_CHECK_WAIT_US / 2, p_ticker_info->frequency);
-        timestamp_t lp_wakeup_ts = overflow_protect(lp_wakeup_ts_raw, p_ticker_info->bits);
+        start                        = lp_ticker_read();
+        uint32_t    lp_wakeup_ts_raw = start + us_to_ticks(DEEP_SLEEP_TEST_CHECK_WAIT_US / 2, p_ticker_info->frequency);
+        timestamp_t lp_wakeup_ts     = overflow_protect(lp_wakeup_ts_raw, p_ticker_info->bits);
         lp_ticker_set_interrupt(lp_wakeup_ts);
 
         // Extra wait after setting interrupt to handle CMPOK
@@ -312,34 +318,30 @@ utest::v1::status_t testsuite_setup(const size_t number_of_cases)
     return utest::v1::greentea_test_setup_handler(number_of_cases);
 }
 
-Case cases[] = {
-    Case("deep sleep lock/unlock",
-         (utest::v1::case_setup_handler_t) testcase_setup,
-         test_lock_unlock,
-         (utest::v1::case_teardown_handler_t) testcase_teardown),
-    Case("deep sleep locked USHRT_MAX times",
-         (utest::v1::case_setup_handler_t) testcase_setup,
-         test_lock_eq_ushrt_max,
-         (utest::v1::case_teardown_handler_t) testcase_teardown),
+Case cases[] = {Case("deep sleep lock/unlock",
+                     (utest::v1::case_setup_handler_t)testcase_setup,
+                     test_lock_unlock,
+                     (utest::v1::case_teardown_handler_t)testcase_teardown),
+                Case("deep sleep locked USHRT_MAX times",
+                     (utest::v1::case_setup_handler_t)testcase_setup,
+                     test_lock_eq_ushrt_max,
+                     (utest::v1::case_teardown_handler_t)testcase_teardown),
 #if DEVICE_LPTICKER
 #if DEVICE_USTICKER
-    Case("sleep_auto calls sleep/deep sleep based on lock",
-         (utest::v1::case_setup_handler_t) testcase_setup,
-         test_sleep_auto,
-         (utest::v1::case_teardown_handler_t) testcase_teardown),
+                Case("sleep_auto calls sleep/deep sleep based on lock",
+                     (utest::v1::case_setup_handler_t)testcase_setup,
+                     test_sleep_auto,
+                     (utest::v1::case_teardown_handler_t)testcase_teardown),
 #endif
-    Case("deep sleep lock/unlock test_check",
-         (utest::v1::case_setup_handler_t) testcase_setup,
-         test_lock_unlock_test_check,
-         (utest::v1::case_teardown_handler_t) testcase_teardown)
+                Case("deep sleep lock/unlock test_check",
+                     (utest::v1::case_setup_handler_t)testcase_setup,
+                     test_lock_unlock_test_check,
+                     (utest::v1::case_teardown_handler_t)testcase_teardown)
 #endif
 };
 
 Specification specification(testsuite_setup, cases);
 
-int main()
-{
-    return !Harness::run(specification);
-}
+int main() { return !Harness::run(specification); }
 
 #endif // !DEVICE_SLEEP

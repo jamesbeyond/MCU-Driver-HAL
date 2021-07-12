@@ -81,8 +81,7 @@ void test_update_config();
  *     and @a hal_watchdog_get_reload_value() returns a reload value R
  *     and T <= R < 2 * T.
  */
-template<uint32_t timeout_ms>
-void test_init();
+template <uint32_t timeout_ms> void test_init();
 
 /** Test Watchdog init with a max_timeout
  *
@@ -99,4 +98,3 @@ void test_init_max_timeout();
 #endif
 
 /** @}*/
-

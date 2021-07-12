@@ -83,8 +83,8 @@ void rtc_accuracy_test(void);
 /** Test that ::rtc_write/::rtc_read functions provides availability to set/get RTC time.
  *
  *  Given platform provides Real Time Clock.
- *  When an example RTC time is set by means of rtc_write function and rtc_read is performed immediately after this operation.
- *  Then rtc_read function returns time which has been set.
+ *  When an example RTC time is set by means of rtc_write function and rtc_read is performed immediately after this
+ * operation. Then rtc_read function returns time which has been set.
  *
  */
 void rtc_write_read_test(void);

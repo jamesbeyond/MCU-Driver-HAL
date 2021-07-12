@@ -22,7 +22,6 @@
 
 #include "device.h"
 
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -34,7 +33,6 @@ extern "C" {
  * Then the specified frequency is valid.
  */
 void ticker_frequency_test(void);
-
 
 /**@}*/
 

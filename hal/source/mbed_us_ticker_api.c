@@ -37,9 +37,7 @@ static ticker_irq_handler_type irq_handler = default_us_ticker_irq_handler;
 // always-on, so we block any attempt to free it. We do need
 // to pass through init(), as that needs to reset pending
 // interrupts.
-static void block_us_ticker_free()
-{
-}
+static void block_us_ticker_free() {}
 
 #else // MBED_CONF_TARGET_INIT_US_TICKER_AT_BOOT
 
@@ -68,12 +66,12 @@ static const ticker_interface_t us_interface = {
 #else
     .init = note_us_ticker_init,
 #endif
-    .read = us_ticker_read,
+    .read              = us_ticker_read,
     .disable_interrupt = us_ticker_disable_interrupt,
-    .clear_interrupt = us_ticker_clear_interrupt,
-    .set_interrupt = us_ticker_set_interrupt,
-    .fire_interrupt = us_ticker_fire_interrupt,
-    .get_info = us_ticker_get_info,
+    .clear_interrupt   = us_ticker_clear_interrupt,
+    .set_interrupt     = us_ticker_set_interrupt,
+    .fire_interrupt    = us_ticker_fire_interrupt,
+    .get_info          = us_ticker_get_info,
 #if MBED_CONF_TARGET_INIT_US_TICKER_AT_BOOT
     .free = block_us_ticker_free,
 #else
@@ -86,10 +84,7 @@ static const ticker_data_t us_data = {
     .interface = &us_interface,
 };
 
-const ticker_data_t *get_us_ticker_data(void)
-{
-    return &us_data;
-}
+const ticker_data_t *get_us_ticker_data(void) { return &us_data; }
 
 ticker_irq_handler_type set_us_ticker_irq_handler(ticker_irq_handler_type ticker_irq_handler)
 {
@@ -109,9 +104,6 @@ void us_ticker_irq_handler(void)
 
 #else
 
-const ticker_data_t *get_us_ticker_data(void)
-{
-    return NULL;
-}
+const ticker_data_t *get_us_ticker_data(void) { return NULL; }
 
-#endif  // DEVICE_USTICKER
+#endif // DEVICE_USTICKER

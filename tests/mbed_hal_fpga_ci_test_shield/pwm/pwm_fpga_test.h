@@ -41,8 +41,8 @@ void fpga_pwm_init_free(PinName pin);
  * pwmout_pulsewidth_us functions sets the pulse width correctly.
  *
  * Given board provides PWM support.
- * When PWM period/width is set using pwmout_period, pwmout_period_ms, pwmout_period_us/pwmout_write, pwmout_pulsewidth, pwmout_pulsewidth_ms, pwmout_pulsewidth_us
- * Then the valid PWM puswidth and period is on output.
+ * When PWM period/width is set using pwmout_period, pwmout_period_ms, pwmout_period_us/pwmout_write, pwmout_pulsewidth,
+ * pwmout_pulsewidth_ms, pwmout_pulsewidth_us Then the valid PWM puswidth and period is on output.
  *
  */
 void fpga_pwm_period_fill_test(PinName pin);

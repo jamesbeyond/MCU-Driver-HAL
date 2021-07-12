@@ -22,7 +22,7 @@
 #include "mbed.h"
 #include "cmsis.h"
 #if defined(TARGET_NRF5x) // for all NRF5x targets
-#include "nrf_nvic.h" // for __NRF_NVIC_APP_IRQS_0 / __NRF_NVIC_APP_IRQS_1
+#include "nrf_nvic.h"     // for __NRF_NVIC_APP_IRQS_0 / __NRF_NVIC_APP_IRQS_1
 #endif
 
 using utest::v1::Case;
@@ -34,12 +34,9 @@ bool test_are_interrupts_enabled(void)
 #else
     return ((__get_PRIMASK() & 0x1) == 0);
 #endif
-
 }
 
-
-template<int N>
-void test_critical_section()
+template <int N> void test_critical_section()
 {
     TEST_ASSERT_FALSE(hal_in_critical_section());
     TEST_ASSERT_TRUE(test_are_interrupts_enabled());
@@ -57,10 +54,8 @@ void test_critical_section()
     TEST_ASSERT_TRUE(test_are_interrupts_enabled());
 }
 
-Case cases[] = {
-    Case("Test critical section single lock", test_critical_section<1>),
-    Case("Test critical section nested lock", test_critical_section<10>)
-};
+Case cases[] = {Case("Test critical section single lock", test_critical_section<1>),
+                Case("Test critical section nested lock", test_critical_section<10>)};
 
 utest::v1::status_t greentea_test_setup(const size_t number_of_cases)
 {
@@ -70,7 +65,4 @@ utest::v1::status_t greentea_test_setup(const size_t number_of_cases)
 
 utest::v1::Specification specification(greentea_test_setup, cases);
 
-int main()
-{
-    return !utest::v1::Harness::run(specification);
-}
+int main() { return !utest::v1::Harness::run(specification); }

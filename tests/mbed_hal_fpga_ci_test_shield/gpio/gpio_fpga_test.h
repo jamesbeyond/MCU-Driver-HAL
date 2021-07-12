@@ -64,5 +64,4 @@ void fpga_test_explicit_output(PinName pin);
 
 #endif
 
-
 /**@}*/

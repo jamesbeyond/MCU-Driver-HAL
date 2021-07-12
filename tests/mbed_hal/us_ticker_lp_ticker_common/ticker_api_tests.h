@@ -22,7 +22,6 @@
 
 #include "device.h"
 
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -54,12 +53,12 @@ void ticker_info_test(void);
  *
  * Lowest CPU speed is 16 MHz (1 tick per 1/16 us).
  *
- * For the boards with ticker clock freq less than or equal to 250 KHz we will try to prove that ticker is incremented by one
- * straightforward by reading ticker count value in the loop in order to detect a single ticker value update (hopefully by one).
- * For faster tickers we need to prove this indirectly using additional count_ticks() function which returns number of
- * ticks needed to perform N cycles of the empty while loop. For the same number of cycles function result should be the same with
- * accuracy +/- 1 tick. After the first test we will call count_ticks again with number of cycles equal N, N+1, N+2, ...
- * until we get other ticks result.
+ * For the boards with ticker clock freq less than or equal to 250 KHz we will try to prove that ticker is incremented
+ * by one straightforward by reading ticker count value in the loop in order to detect a single ticker value update
+ * (hopefully by one). For faster tickers we need to prove this indirectly using additional count_ticks() function which
+ * returns number of ticks needed to perform N cycles of the empty while loop. For the same number of cycles function
+ * result should be the same with accuracy +/- 1 tick. After the first test we will call count_ticks again with number
+ * of cycles equal N, N+1, N+2, ... until we get other ticks result.
  *
  * Given ticker is available.
  * When ticker is initialised.
@@ -102,8 +101,8 @@ void ticker_fire_now_test(void);
 /** Test that common ticker functions complete with the required amount of time.
  *
  * Given ticker is available.
- * When ticker_read, ticker_clear_interrupt, ticker_set_interrupt, ticker_fire_interrupt or ticker_disable_interrupt function is called.
- * Then its execution is not longer than 20 us.
+ * When ticker_read, ticker_clear_interrupt, ticker_set_interrupt, ticker_fire_interrupt or ticker_disable_interrupt
+ * function is called. Then its execution is not longer than 20 us.
  */
 void ticker_speed_test(void);
 

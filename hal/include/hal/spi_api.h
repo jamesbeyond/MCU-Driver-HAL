@@ -33,14 +33,14 @@
 
 #define SPI_EVENT_INTERNAL_TRANSFER_COMPLETE (1 << 30) // Internal flag to report that an event occurred
 
-#define SPI_FILL_WORD         (0xFFFF)
-#define SPI_FILL_CHAR         (0xFF)
+#define SPI_FILL_WORD (0xFFFF)
+#define SPI_FILL_CHAR (0xFF)
 
 #if DEVICE_SPI_ASYNCH
 /** Asynch SPI HAL structure
  */
 typedef struct {
-    struct spi_s spi;        /**< Target specific SPI structure */
+    struct spi_s    spi;     /**< Target specific SPI structure */
     struct buffer_s tx_buff; /**< Tx buffer */
     struct buffer_s rx_buff; /**< Rx buffer */
 } spi_t;
@@ -53,15 +53,15 @@ typedef struct spi_s spi_t;
 #endif
 
 typedef struct {
-    int peripheral;
+    int     peripheral;
     PinName mosi_pin;
-    int mosi_function;
+    int     mosi_function;
     PinName miso_pin;
-    int miso_function;
+    int     miso_function;
     PinName sclk_pin;
-    int sclk_function;
+    int     sclk_function;
     PinName ssel_pin;
-    int ssel_function;
+    int     ssel_function;
 } spi_pinmap_t;
 
 /**
@@ -71,19 +71,21 @@ typedef struct {
     /** Minimum frequency supported must be set by target device and it will be assessed during
      *  testing.
      */
-    uint32_t    minimum_frequency;
+    uint32_t minimum_frequency;
     /** Maximum frequency supported must be set by target device and it will be assessed during
      *  testing.
      */
-    uint32_t    maximum_frequency;
+    uint32_t maximum_frequency;
     /** Each bit represents the corresponding word length. lsb => 1bit, msb => 32bit. */
-    uint32_t    word_length;
-    uint16_t    slave_delay_between_symbols_ns; /**< specifies required number of ns between transmission of successive symbols in slave mode. */
-    uint8_t     clk_modes; /**< specifies supported modes from spi_mode_t. Each bit represents the corresponding mode. */
-    bool        support_slave_mode; /**< If true, the device can handle SPI slave mode using hardware management on the specified ssel pin. */
-    bool        hw_cs_handle; /**< If true, in SPI master mode Chip Select can be handled by hardware. */
-    bool        async_mode; /**< If true, in async mode is supported. */
-    bool        tx_rx_buffers_equal_length; /**< If true, rx and tx buffers must have the same length. */
+    uint32_t word_length;
+    uint16_t slave_delay_between_symbols_ns; /**< specifies required number of ns between transmission of successive
+                                                symbols in slave mode. */
+    uint8_t clk_modes; /**< specifies supported modes from spi_mode_t. Each bit represents the corresponding mode. */
+    bool    support_slave_mode;      /**< If true, the device can handle SPI slave mode using hardware management on the
+                                        specified ssel pin. */
+    bool hw_cs_handle;               /**< If true, in SPI master mode Chip Select can be handled by hardware. */
+    bool async_mode;                 /**< If true, in async mode is supported. */
+    bool tx_rx_buffers_equal_length; /**< If true, rx and tx buffers must have the same length. */
 } spi_capabilities_t;
 
 #ifdef __cplusplus
@@ -95,38 +97,62 @@ extern "C" {
  *
  * # Defined behavior
  * * ::spi_init initializes the spi_t control structure
- * * ::spi_init configures the pins used by SPI - Verified by ::fpga_spi_test_init_free, ::fpga_spi_test_common_no_ss and ::fpga_spi_test_common
- * * ::spi_get_capabilities() fills the given `spi_capabilities_t` instance - Verified by ::fpga_spi_test_common_no_ss and ::fpga_spi_test_common
- * * ::spi_get_capabilities() should consider the `ssel` pin when evaluation the `support_slave_mode` and `hw_cs_handle` capability - TBD (basic test)
- * * ::spi_get_capabilities(): if the given `ssel` pin cannot be managed by hardware, `support_slave_mode` and `hw_cs_handle` should be false - TBD (basic test)
- * * At least a symbol width of 8bit must be supported - Verified by ::fpga_spi_test_common_no_ss and ::fpga_spi_test_common
- * * The supported frequency range must include the range [0.2..2] MHz - Verified by ::fpga_spi_test_common_no_ss and ::fpga_spi_test_common
+ * * ::spi_init configures the pins used by SPI - Verified by ::fpga_spi_test_init_free, ::fpga_spi_test_common_no_ss
+ * and ::fpga_spi_test_common
+ * * ::spi_get_capabilities() fills the given `spi_capabilities_t` instance - Verified by ::fpga_spi_test_common_no_ss
+ * and ::fpga_spi_test_common
+ * * ::spi_get_capabilities() should consider the `ssel` pin when evaluation the `support_slave_mode` and `hw_cs_handle`
+ * capability - TBD (basic test)
+ * * ::spi_get_capabilities(): if the given `ssel` pin cannot be managed by hardware, `support_slave_mode` and
+ * `hw_cs_handle` should be false - TBD (basic test)
+ * * At least a symbol width of 8bit must be supported - Verified by ::fpga_spi_test_common_no_ss and
+ * ::fpga_spi_test_common
+ * * The supported frequency range must include the range [0.2..2] MHz - Verified by ::fpga_spi_test_common_no_ss and
+ * ::fpga_spi_test_common
  * * ::spi_free returns the pins owned by the SPI object to their reset state - Verified by ::fpga_spi_test_init_free
- * * ::spi_format sets the number of bits per frame - Verified by ::fpga_spi_test_common_no_ss and ::fpga_spi_test_common
- * * ::spi_format configures clock polarity and phase - Verified by ::fpga_spi_test_common_no_ss and ::fpga_spi_test_common
- * * ::spi_format configures master/slave mode - Verified by ::fpga_spi_test_common_no_ss and ::fpga_spi_test_common; slave mode - TBD
+ * * ::spi_format sets the number of bits per frame - Verified by ::fpga_spi_test_common_no_ss and
+ * ::fpga_spi_test_common
+ * * ::spi_format configures clock polarity and phase - Verified by ::fpga_spi_test_common_no_ss and
+ * ::fpga_spi_test_common
+ * * ::spi_format configures master/slave mode - Verified by ::fpga_spi_test_common_no_ss and ::fpga_spi_test_common;
+ * slave mode - TBD
  * * ::spi_frequency sets the SPI baud rate - Verified by ::fpga_spi_test_common_no_ss and ::fpga_spi_test_common
- * * ::spi_master_write writes a symbol out in master mode and receives a symbol - Verified by ::fpga_spi_test_common_no_ss and ::fpga_spi_test_common
- * * ::spi_master_block_write writes `tx_length` words to the bus - Verified by ::fpga_spi_test_common_no_ss and ::fpga_spi_test_common
- * * ::spi_master_block_write reads `rx_length` words from the bus - Verified by ::fpga_spi_test_common_no_ss and ::fpga_spi_test_common
- * * ::spi_master_block_write returns the maximum of tx_length and rx_length - Verified by ::fpga_spi_test_common_no_ss and ::fpga_spi_test_common
- * * ::spi_master_block_write specifies the write_fill which is default data transmitted while performing a read - Verified by ::fpga_spi_test_common_no_ss and ::fpga_spi_test_common
+ * * ::spi_master_write writes a symbol out in master mode and receives a symbol - Verified by
+ * ::fpga_spi_test_common_no_ss and ::fpga_spi_test_common
+ * * ::spi_master_block_write writes `tx_length` words to the bus - Verified by ::fpga_spi_test_common_no_ss and
+ * ::fpga_spi_test_common
+ * * ::spi_master_block_write reads `rx_length` words from the bus - Verified by ::fpga_spi_test_common_no_ss and
+ * ::fpga_spi_test_common
+ * * ::spi_master_block_write returns the maximum of tx_length and rx_length - Verified by ::fpga_spi_test_common_no_ss
+ * and ::fpga_spi_test_common
+ * * ::spi_master_block_write specifies the write_fill which is default data transmitted while performing a read -
+ * Verified by ::fpga_spi_test_common_no_ss and ::fpga_spi_test_common
  * * ::spi_get_module returns the SPI module number - TBD (basic test)
  * * ::spi_slave_read returns a received value out of the SPI receive buffer in slave mode - TBD (SPI slave test)
  * * ::spi_slave_read blocks until a value is available - TBD (SPI slave test)
  * * ::spi_slave_write writes a value to the SPI peripheral in slave mode - TBD (SPI slave test)
  * * ::spi_slave_write blocks until the SPI peripheral can be written to - TBD (SPI slave test)
  * * ::spi_busy returns non-zero if the peripheral is currently transmitting, 0 otherwise - TBD (basic test)
- * * ::spi_master_transfer starts the SPI asynchronous transfer - Verified by ::fpga_spi_test_common_no_ss and ::fpga_spi_test_common
- * * ::spi_master_transfer writes `tx_len` words to the bus - Verified by ::fpga_spi_test_common_no_ss and ::fpga_spi_test_common
- * * ::spi_master_transfer reads `rx_len` words from the bus - Verified by ::fpga_spi_test_common_no_ss and ::fpga_spi_test_common
- * * ::spi_master_transfer specifies the bit width of buffer words - Verified by ::fpga_spi_test_common_no_ss and ::fpga_spi_test_common
- * * The callback given to ::spi_master_transfer is invoked when the transfer completes (with a success or an error) - Verified by ::fpga_spi_test_common_no_ss and ::fpga_spi_test_common
- * * ::spi_master_transfer specifies the logical OR of events to be registered - Verified by ::fpga_spi_test_common_no_ss and ::fpga_spi_test_common
- * * ::spi_irq_handler_asynch reads the received values out of the RX FIFO - Verified by ::fpga_spi_test_common_no_ss and ::fpga_spi_test_common
- * * ::spi_irq_handler_asynch writes values into the TX FIFO - Verified by ::fpga_spi_test_common_no_ss and ::fpga_spi_test_common
- * * ::spi_irq_handler_asynch checks for transfer termination conditions, such as buffer overflows or transfer complete - Verified by ::fpga_spi_test_common_no_ss and ::fpga_spi_test_common
- * * ::spi_irq_handler_asynch returns event flags if a transfer termination condition was met, otherwise 0 - Verified by ::fpga_spi_test_common_no_ss and ::fpga_spi_test_common
+ * * ::spi_master_transfer starts the SPI asynchronous transfer - Verified by ::fpga_spi_test_common_no_ss and
+ * ::fpga_spi_test_common
+ * * ::spi_master_transfer writes `tx_len` words to the bus - Verified by ::fpga_spi_test_common_no_ss and
+ * ::fpga_spi_test_common
+ * * ::spi_master_transfer reads `rx_len` words from the bus - Verified by ::fpga_spi_test_common_no_ss and
+ * ::fpga_spi_test_common
+ * * ::spi_master_transfer specifies the bit width of buffer words - Verified by ::fpga_spi_test_common_no_ss and
+ * ::fpga_spi_test_common
+ * * The callback given to ::spi_master_transfer is invoked when the transfer completes (with a success or an error) -
+ * Verified by ::fpga_spi_test_common_no_ss and ::fpga_spi_test_common
+ * * ::spi_master_transfer specifies the logical OR of events to be registered - Verified by
+ * ::fpga_spi_test_common_no_ss and ::fpga_spi_test_common
+ * * ::spi_irq_handler_asynch reads the received values out of the RX FIFO - Verified by ::fpga_spi_test_common_no_ss
+ * and ::fpga_spi_test_common
+ * * ::spi_irq_handler_asynch writes values into the TX FIFO - Verified by ::fpga_spi_test_common_no_ss and
+ * ::fpga_spi_test_common
+ * * ::spi_irq_handler_asynch checks for transfer termination conditions, such as buffer overflows or transfer complete
+ * - Verified by ::fpga_spi_test_common_no_ss and ::fpga_spi_test_common
+ * * ::spi_irq_handler_asynch returns event flags if a transfer termination condition was met, otherwise 0 - Verified by
+ * ::fpga_spi_test_common_no_ss and ::fpga_spi_test_common
  * * ::spi_abort_asynch aborts an on-going async transfer - TBD (basic test)
  * * ::spi_active returns non-zero if the SPI port is active or zero if it is not - TBD (basic test)
  *
@@ -140,7 +166,6 @@ extern "C" {
  *
  * @{
  */
-
 
 #ifdef DEVICE_SPI_COUNT
 /**
@@ -221,7 +246,7 @@ void spi_frequency(spi_t *obj, int hz);
  * @param[in] value The value to send
  * @return Returns the value received during send
  */
-int  spi_master_write(spi_t *obj, int value);
+int spi_master_write(spi_t *obj, int value);
 
 /** Write a block out in master mode and receive a value
  *
@@ -239,14 +264,15 @@ int  spi_master_write(spi_t *obj, int value);
  *      The number of bytes written and read from the device. This is
  *      maximum of tx_length and rx_length.
  */
-int spi_master_block_write(spi_t *obj, const char *tx_buffer, int tx_length, char *rx_buffer, int rx_length, char write_fill);
+int spi_master_block_write(
+    spi_t *obj, const char *tx_buffer, int tx_length, char *rx_buffer, int rx_length, char write_fill);
 
 /** Check if a value is available to read
  *
  * @param[in] obj The SPI peripheral to check
  * @return non-zero if a value is available
  */
-int  spi_slave_receive(spi_t *obj);
+int spi_slave_receive(spi_t *obj);
 
 /** Get a received value out of the SPI receive buffer in slave mode
  *
@@ -254,7 +280,7 @@ int  spi_slave_receive(spi_t *obj);
  * @param[in] obj The SPI peripheral to read
  * @return The value received
  */
-int  spi_slave_read(spi_t *obj);
+int spi_slave_read(spi_t *obj);
 
 /** Write a value to the SPI peripheral in slave mode
  *
@@ -269,7 +295,7 @@ void spi_slave_write(spi_t *obj, int value);
  * @param[in] obj The SPI peripheral to check
  * @return non-zero if the peripheral is currently transmitting
  */
-int  spi_busy(spi_t *obj);
+int spi_busy(spi_t *obj);
 
 /** Get the module number
  *
@@ -369,7 +395,14 @@ const PinMap *spi_slave_cs_pinmap(void);
  * @param[in] event     The logical OR of events to be registered
  * @param[in] handler   SPI interrupt handler
  */
-void spi_master_transfer(spi_t *obj, const void *tx, size_t tx_length, void *rx, size_t rx_length, uint8_t bit_width, uint32_t handler, uint32_t event);
+void spi_master_transfer(spi_t *     obj,
+                         const void *tx,
+                         size_t      tx_length,
+                         void *      rx,
+                         size_t      rx_length,
+                         uint8_t     bit_width,
+                         uint32_t    handler,
+                         uint32_t    event);
 
 /** The asynchronous IRQ handler
  *
@@ -398,7 +431,6 @@ uint8_t spi_active(spi_t *obj);
  * @param obj The SPI peripheral to stop
  */
 void spi_abort_asynch(spi_t *obj);
-
 
 #endif
 

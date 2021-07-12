@@ -51,15 +51,15 @@ bool is_leap_year(int year)
 struct tm make_time_info(int year, int month, int day, int hours, int minutes, int seconds)
 {
     struct tm timeinfo = {
-        seconds,    // tm_sec
-        minutes,    // tm_min
-        hours,      // tm_hour
-        day,        // tm_mday
-        month,      // tm_mon
-        year,       // tm_year
-        0,          // tm_wday
-        0,          // tm_yday
-        0,          // tm_isdst
+        seconds, // tm_sec
+        minutes, // tm_min
+        hours,   // tm_hour
+        day,     // tm_mday
+        month,   // tm_mon
+        year,    // tm_year
+        0,       // tm_wday
+        0,       // tm_yday
+        0,       // tm_isdst
     };
     return timeinfo;
 }
@@ -77,18 +77,16 @@ struct tm make_time_info(int year, int month, int day, int hours, int minutes, i
  */
 void test_case_mktime_localtime()
 {
-    char _key[11] =
-        { };
-    char _value[128] =
-        { };
+    char _key[11]    = {};
+    char _value[128] = {};
 
     size_t years[] = {70, 71, 100, 196, 200, 205};
 
     /* Inform host part of the test about tested RTC type. */
-    greentea_send_kv("leap_year_setup",  rtc_leap_year_support);
+    greentea_send_kv("leap_year_setup", rtc_leap_year_support);
 
     /* Check the first and last last day of each month. */
-    for (size_t year_id = 0; year_id < (sizeof(years) / sizeof(size_t)) ; ++year_id) {
+    for (size_t year_id = 0; year_id < (sizeof(years) / sizeof(size_t)); ++year_id) {
         for (size_t month = 0; month < 12; ++month) {
             for (size_t dayid = 0; dayid < 2; ++dayid) {
 
@@ -136,7 +134,7 @@ void test_case_mktime_localtime()
 
                 TEST_ASSERT_TRUE(_rtc_maketime(&time_info, &actual_timestamp, rtc_leap_year_support));
 
-                greentea_send_kv("timestamp", (int) actual_timestamp);
+                greentea_send_kv("timestamp", (int)actual_timestamp);
 
                 greentea_parse_kv(_key, _value, sizeof(_key), sizeof(_value));
 
@@ -147,14 +145,14 @@ void test_case_mktime_localtime()
                  * Use validated timestamp to generate and validate calendar time.
                  */
 
-                unsigned int buf = (unsigned int) strtol(_value, NULL, 10);
+                unsigned int buf = (unsigned int)strtol(_value, NULL, 10);
 
                 time_info.tm_wday = ((buf >> 16) & 0x0000FFFF);
                 time_info.tm_yday = (buf & 0x0000FFFF);
 
                 tm actual_time_info;
 
-                bool result = _rtc_localtime((time_t) actual_timestamp, &actual_time_info, rtc_leap_year_support);
+                bool result = _rtc_localtime((time_t)actual_timestamp, &actual_time_info, rtc_leap_year_support);
 
                 TEST_ASSERT_TRUE(result);
                 TEST_ASSERT_EQUAL_UINT32_MESSAGE(time_info.tm_sec, actual_time_info.tm_sec, "invalid seconds");
@@ -184,16 +182,22 @@ utest::v1::status_t partial_leap_year_case_setup_handler_t(const Case *const sou
     return greentea_case_setup_handler(source, index_of_case);
 }
 
-utest::v1::status_t teardown_handler_t(const Case *const source, const size_t passed, const size_t failed,
-                                       const failure_t reason)
+utest::v1::status_t
+teardown_handler_t(const Case *const source, const size_t passed, const size_t failed, const failure_t reason)
 {
     return greentea_case_teardown_handler(source, passed, failed, reason);
 }
 
 // Test cases
 Case cases[] = {
-    Case("test make time and local time - RTC leap years full support", full_leap_year_case_setup_handler_t, test_case_mktime_localtime, teardown_handler_t),
-    Case("test make time and local time - RTC leap years partial support", partial_leap_year_case_setup_handler_t, test_case_mktime_localtime, teardown_handler_t),
+    Case("test make time and local time - RTC leap years full support",
+         full_leap_year_case_setup_handler_t,
+         test_case_mktime_localtime,
+         teardown_handler_t),
+    Case("test make time and local time - RTC leap years partial support",
+         partial_leap_year_case_setup_handler_t,
+         test_case_mktime_localtime,
+         teardown_handler_t),
 };
 
 utest::v1::status_t greentea_test_setup(const size_t number_of_cases)
@@ -204,7 +208,4 @@ utest::v1::status_t greentea_test_setup(const size_t number_of_cases)
 
 Specification specification(greentea_test_setup, cases, greentea_test_teardown_handler);
 
-int main()
-{
-    Harness::run(specification);
-}
+int main() { Harness::run(specification); }

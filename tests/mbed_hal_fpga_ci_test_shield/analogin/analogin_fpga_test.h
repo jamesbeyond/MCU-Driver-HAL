@@ -45,7 +45,6 @@ void fpga_analogin_init_test(PinName pin);
  */
 void fpga_analogin_test(PinName pin);
 
-
 /**@}*/
 
 #ifdef __cplusplus

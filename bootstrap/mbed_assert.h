@@ -63,12 +63,12 @@ MBED_NORETURN void mbed_assert_internal(const char *expr, const char *file, int 
 #define MBED_ASSERT(expr) ((void)0)
 
 #else
-#define MBED_ASSERT(expr)                                \
-do {                                                     \
-    if (!(expr)) {                                       \
-        mbed_assert_internal(#expr, __FILE__, __LINE__); \
-    }                                                    \
-} while (0)
+#define MBED_ASSERT(expr)                                    \
+    do {                                                     \
+        if (!(expr)) {                                       \
+            mbed_assert_internal(#expr, __FILE__, __LINE__); \
+        }                                                    \
+    } while (0)
 #endif
 
 // ARM Compiler 6 currently fails to define `static_assert` in assert.h; correct for this
@@ -129,4 +129,3 @@ do {                                                     \
 /**@}*/
 
 /**@}*/
-

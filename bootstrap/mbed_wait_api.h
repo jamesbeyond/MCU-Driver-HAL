@@ -106,8 +106,8 @@ void wait_ns(unsigned int ns);
 
 /* Optimize if we know the rate */
 #if DEVICE_USTICKER && defined US_TICKER_PERIOD_NUM
-void _wait_us_ticks(uint32_t ticks);
-void _wait_us_generic(unsigned int us);
+void                           _wait_us_ticks(uint32_t ticks);
+void                           _wait_us_generic(unsigned int us);
 
 /* Further optimization if we know us_ticker is always running */
 #if MBED_CONF_TARGET_INIT_US_TICKER_AT_BOOT

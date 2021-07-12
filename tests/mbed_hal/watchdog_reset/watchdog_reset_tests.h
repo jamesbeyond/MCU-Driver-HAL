@@ -73,4 +73,3 @@ void test_kick_reset();
 #endif
 
 /** @}*/
-

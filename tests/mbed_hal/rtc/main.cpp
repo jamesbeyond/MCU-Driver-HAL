@@ -15,7 +15,7 @@
  */
 
 #if !DEVICE_RTC
-#error [NOT_SUPPORTED] RTC API not supported for this target
+#error[NOT_SUPPORTED] RTC API not supported for this target
 #else
 
 #include "utest/utest.h"
@@ -32,30 +32,27 @@
 using namespace utest::v1;
 using namespace std::chrono;
 
-static constexpr auto WAIT_TIME = 4s;
+static constexpr auto WAIT_TIME      = 4s;
 static constexpr auto WAIT_TOLERANCE = 1s;
 
-#define TEST_ASSERT_DURATION_WITHIN(delta, expected, actual) \
-    do { \
+#define TEST_ASSERT_DURATION_WITHIN(delta, expected, actual)                                  \
+    do {                                                                                      \
         using ct = std::common_type_t<decltype(delta), decltype(expected), decltype(actual)>; \
-        TEST_ASSERT_INT_WITHIN(ct(delta).count(), ct(expected).count(), ct(actual).count()); \
+        TEST_ASSERT_INT_WITHIN(ct(delta).count(), ct(expected).count(), ct(actual).count());  \
     } while (0)
 
 #if DEVICE_LPTICKER
-mstd::atomic_bool expired;
+mstd::atomic_bool     expired;
 
-void set_flag_true(void)
-{
-    expired = true;
-}
+void set_flag_true(void) { expired = true; }
 
 /* Auxiliary function to test if RTC continue counting in
  * sleep and deep-sleep modes. */
 void rtc_sleep_test_support(bool deepsleep_mode)
 {
     LowPowerTimeout timeout;
-    const auto start = RealTimeClock::time_point(100s);
-    expired = false;
+    const auto      start = RealTimeClock::time_point(100s);
+    expired               = false;
 
     /*
      * Since deepsleep() may shut down the UART peripheral, we wait for 10ms
@@ -130,7 +127,7 @@ void rtc_persist_test()
     ThisThread::sleep_for(WAIT_TIME);
 
     RealTimeClock::init();
-    const auto stop = RealTimeClock::now();
+    const auto stop    = RealTimeClock::now();
     const bool enabled = RealTimeClock::isenabled();
     RealTimeClock::free();
 
@@ -200,7 +197,8 @@ void rtc_write_read_test()
     RealTimeClock::init();
 
     /* NB: IAR compilation issue with "auto init_val = RealTimeClock::time_point(100s)" */
-    for (auto init_val = RealTimeClock::time_point(seconds(100)); init_val < RealTimeClock::time_point(400s); init_val += 100s) {
+    for (auto init_val = RealTimeClock::time_point(seconds(100)); init_val < RealTimeClock::time_point(400s);
+         init_val += 100s) {
         core_util_critical_section_enter();
 
         RealTimeClock::write(init_val);
@@ -252,9 +250,6 @@ utest::v1::status_t greentea_test_setup(const size_t number_of_cases)
 
 Specification specification(greentea_test_setup, cases, greentea_test_teardown_handler);
 
-int main()
-{
-    Harness::run(specification);
-}
+int main() { Harness::run(specification); }
 
 #endif // !DEVICE_RTC

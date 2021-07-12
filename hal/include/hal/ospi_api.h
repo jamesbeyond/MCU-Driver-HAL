@@ -40,29 +40,29 @@ extern "C" {
 typedef struct ospi_s ospi_t;
 
 typedef struct {
-    int peripheral;
+    int     peripheral;
     PinName data0_pin;
-    int data0_function;
+    int     data0_function;
     PinName data1_pin;
-    int data1_function;
+    int     data1_function;
     PinName data2_pin;
-    int data2_function;
+    int     data2_function;
     PinName data3_pin;
-    int data3_function;
+    int     data3_function;
     PinName data4_pin;
-    int data4_function;
+    int     data4_function;
     PinName data5_pin;
-    int data5_function;
+    int     data5_function;
     PinName data6_pin;
-    int data6_function;
+    int     data6_function;
     PinName data7_pin;
-    int data7_function;
+    int     data7_function;
     PinName sclk_pin;
-    int sclk_function;
+    int     sclk_function;
     PinName ssel_pin;
-    int ssel_function;
+    int     ssel_function;
     PinName dqs_pin;
-    int dqs_function;
+    int     dqs_function;
 
 } ospi_pinmap_t;
 
@@ -81,8 +81,8 @@ typedef enum ospi_bus_width {
 /** Instruction size in bits
  */
 typedef enum ospi_inst_size {
-    OSPI_CFG_INST_SIZE_8,    /* 1 byte for SPI mode */
-    OSPI_CFG_INST_SIZE_16,   /* 2 byte for OPI mode */
+    OSPI_CFG_INST_SIZE_8,  /* 1 byte for SPI mode */
+    OSPI_CFG_INST_SIZE_16, /* 2 byte for OPI mode */
 } ospi_inst_size_t;
 
 /** Address size in bits
@@ -100,7 +100,7 @@ typedef uint8_t ospi_alt_size_t;
 
 // The following defines are provided for backwards compatibilty. New code should explicitly
 // specify the required number of alt bits.
-#define OSPI_CFG_ALT_SIZE_8 8u
+#define OSPI_CFG_ALT_SIZE_8  8u
 #define OSPI_CFG_ALT_SIZE_16 16u
 #define OSPI_CFG_ALT_SIZE_24 24u
 #define OSPI_CFG_ALT_SIZE_32 32u
@@ -112,21 +112,21 @@ typedef uint8_t ospi_alt_size_t;
 typedef struct ospi_command {
     struct {
         ospi_bus_width_t bus_width; /**< Bus width for the instruction >*/
-        ospi_inst_size_t size; /**< Inst size >*/
-        uint32_t value;  /**< Instruction value >*/
-        bool disabled; /**< Instruction phase skipped if disabled is set to true >*/
+        ospi_inst_size_t size;      /**< Inst size >*/
+        uint32_t         value;     /**< Instruction value >*/
+        bool             disabled;  /**< Instruction phase skipped if disabled is set to true >*/
     } instruction;
     struct {
-        ospi_bus_width_t bus_width; /**< Bus width for the address >*/
-        ospi_address_size_t size; /**< Address size >*/
-        uint32_t value; /**< Address value >*/
-        bool disabled; /**< Address phase skipped if disabled is set to true >*/
-    }  address;
+        ospi_bus_width_t    bus_width; /**< Bus width for the address >*/
+        ospi_address_size_t size;      /**< Address size >*/
+        uint32_t            value;     /**< Address value >*/
+        bool                disabled;  /**< Address phase skipped if disabled is set to true >*/
+    } address;
     struct {
         ospi_bus_width_t bus_width; /**< Bus width for alternative  >*/
-        ospi_alt_size_t size; /**< Alternative size >*/
-        uint32_t value; /**< Alternative value >*/
-        bool disabled; /**< Alternative phase skipped if disabled is set to true >*/
+        ospi_alt_size_t  size;      /**< Alternative size >*/
+        uint32_t         value;     /**< Alternative value >*/
+        bool             disabled;  /**< Alternative phase skipped if disabled is set to true >*/
     } alt;
     uint8_t dummy_count; /**< Dummy cycles count >*/
     struct {
@@ -137,14 +137,15 @@ typedef struct ospi_command {
 /** OSPI return status
  */
 typedef enum ospi_status {
-    OSPI_STATUS_ERROR = -1, /**< Generic error >*/
+    OSPI_STATUS_ERROR             = -1, /**< Generic error >*/
     OSPI_STATUS_INVALID_PARAMETER = -2, /**< The parameter is invalid >*/
-    OSPI_STATUS_OK    =  0, /**< Function executed sucessfully  >*/
+    OSPI_STATUS_OK                = 0,  /**< Function executed sucessfully  >*/
 } ospi_status_t;
 
 /** Initialize OSPI peripheral.
  *
- * It should initialize OSPI pins (io0-io7, sclk, ssel and dqs), set frequency, clock polarity and phase mode. The clock for the peripheral should be enabled
+ * It should initialize OSPI pins (io0-io7, sclk, ssel and dqs), set frequency, clock polarity and phase mode. The clock
+ for the peripheral should be enabled
  *
  * @param obj OSPI object
  * @param io0 Data pin 0
@@ -164,12 +165,25 @@ typedef enum ospi_status {
            OSPI_STATUS_INVALID_PARAMETER if invalid parameter found
            OSPI_STATUS_ERROR otherwise
  */
-ospi_status_t ospi_init(ospi_t *obj, PinName io0, PinName io1, PinName io2, PinName io3, PinName io4, PinName io5, PinName io6, PinName io7,
-                        PinName sclk, PinName ssel, PinName dqs, uint32_t hz, uint8_t mode);
+ospi_status_t ospi_init(ospi_t * obj,
+                        PinName  io0,
+                        PinName  io1,
+                        PinName  io2,
+                        PinName  io3,
+                        PinName  io4,
+                        PinName  io5,
+                        PinName  io6,
+                        PinName  io7,
+                        PinName  sclk,
+                        PinName  ssel,
+                        PinName  dqs,
+                        uint32_t hz,
+                        uint8_t  mode);
 
 /** Initialize OSPI peripheral.
  *
- * It should initialize OSPI pins (io0-io7, sclk, ssel and dqs), set frequency, clock polarity and phase mode. The clock for the peripheral should be enabled
+ * It should initialize OSPI pins (io0-io7, sclk, ssel and dqs), set frequency, clock polarity and phase mode. The clock
+ for the peripheral should be enabled
  *
  * @param obj OSPI object
  * @param pinmap pointer to structure which holds static pinmap
@@ -183,7 +197,8 @@ ospi_status_t ospi_init_direct(ospi_t *obj, const ospi_pinmap_t *pinmap, uint32_
 
 /** Deinitialize OSPI peripheral
  *
- * It should release pins that are associated with the OSPI object, and disable clocks for OSPI peripheral module that was associated with the object
+ * It should release pins that are associated with the OSPI object, and disable clocks for OSPI peripheral module that
+ was associated with the object
  *
  * @param obj OSPI object
  * @return OSPI_STATUS_OK if deinitialisation successfully executed
@@ -228,7 +243,8 @@ ospi_status_t ospi_write(ospi_t *obj, const ospi_command_t *command, const void 
            OSPI_STATUS_INVALID_PARAMETER if invalid parameter found
            OSPI_STATUS_ERROR otherwise
  */
-ospi_status_t ospi_command_transfer(ospi_t *obj, const ospi_command_t *command, const void *tx_data, size_t tx_size, void *rx_data, size_t rx_size);
+ospi_status_t ospi_command_transfer(
+    ospi_t *obj, const ospi_command_t *command, const void *tx_data, size_t tx_size, void *rx_data, size_t rx_size);
 
 /** Receive a command and block of data
  *

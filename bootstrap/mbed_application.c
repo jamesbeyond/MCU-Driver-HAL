@@ -31,7 +31,7 @@ void mbed_start_application(uintptr_t address)
     __disable_irq();
     powerdown_gic();
     __enable_irq();
-    ((void(*)())address)();
+    ((void (*)())address)();
 }
 
 static void powerdown_gic()
@@ -41,7 +41,7 @@ static void powerdown_gic()
 
     for (i = 0; i < 32; i++) {
         GICDistributor->ICENABLER[i] = 0xFFFFFFFF;
-        GICDistributor->ICPENDR[i] = 0xFFFFFFFF;
+        GICDistributor->ICPENDR[i]   = 0xFFFFFFFF;
         if (i < 4) {
             GICDistributor->CPENDSGIR[i] = 0xFFFFFFFF;
         }
@@ -108,10 +108,10 @@ static void powerdown_scb(uint32_t vtor)
     int i;
 
     // SCB->CPUID   - Read only CPU ID register
-    SCB->ICSR = SCB_ICSR_PENDSVCLR_Msk | SCB_ICSR_PENDSTCLR_Msk;
-    SCB->VTOR = vtor;
+    SCB->ICSR  = SCB_ICSR_PENDSVCLR_Msk | SCB_ICSR_PENDSTCLR_Msk;
+    SCB->VTOR  = vtor;
     SCB->AIRCR = 0x05FA | 0x0000;
-    SCB->SCR = 0x00000000;
+    SCB->SCR   = 0x00000000;
     // SCB->CCR     - Implementation defined value
     int num_pri_reg; // Number of priority registers
 #if defined(__CORTEX_M0PLUS) || defined(__CORTEX_M23)
@@ -131,8 +131,8 @@ static void powerdown_scb(uint32_t vtor)
 #else
     SCB->CFSR = 0xFFFFFFFF;
     SCB->HFSR = SCB_HFSR_DEBUGEVT_Msk | SCB_HFSR_FORCED_Msk | SCB_HFSR_VECTTBL_Msk;
-    SCB->DFSR = SCB_DFSR_EXTERNAL_Msk | SCB_DFSR_VCATCH_Msk |
-                SCB_DFSR_DWTTRAP_Msk | SCB_DFSR_BKPT_Msk | SCB_DFSR_HALTED_Msk;
+    SCB->DFSR =
+        SCB_DFSR_EXTERNAL_Msk | SCB_DFSR_VCATCH_Msk | SCB_DFSR_DWTTRAP_Msk | SCB_DFSR_BKPT_Msk | SCB_DFSR_HALTED_Msk;
 #endif
     // SCB->MMFAR   - Implementation defined value
     // SCB->BFAR    - Implementation defined value
@@ -145,20 +145,18 @@ static void powerdown_scb(uint32_t vtor)
     // SCB->CPACR   - Implementation defined value
 }
 
-#if defined (__GNUC__) || defined (__ICCARM__)
+#if defined(__GNUC__) || defined(__ICCARM__)
 
 void start_new_application(void *sp, void *pc)
 {
-    __asm volatile(
-        "movs   r2, #0      \n"
-        "msr    control, r2 \n" // Switch to main stack
-        "mov    sp, %0      \n"
-        "msr    primask, r2 \n" // Enable interrupts
-        "bx     %1          \n"
-        :
-        : "l"(sp), "l"(pc)
-        : "r2", "cc", "memory"
-    );
+    __asm volatile("movs   r2, #0      \n"
+                   "msr    control, r2 \n" // Switch to main stack
+                   "mov    sp, %0      \n"
+                   "msr    primask, r2 \n" // Enable interrupts
+                   "bx     %1          \n"
+                   :
+                   : "l"(sp), "l"(pc)
+                   : "r2", "cc", "memory");
 }
 
 #else

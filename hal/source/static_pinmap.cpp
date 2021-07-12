@@ -17,7 +17,6 @@
 #include "mbed_error.h"
 #include "static_pinmap.h"
 
-
 /*
  * This file provides default definitions of xxx_direct() functions for peripherals.
  * in all cases standard init function is called, which won't give any ROM memory savings.
@@ -32,24 +31,15 @@ MBED_WEAK void spi_init_direct(spi_t *obj, const spi_pinmap_t *pinmap)
 #endif
 
 #if DEVICE_PWMOUT
-MBED_WEAK void pwmout_init_direct(pwmout_t *obj, const PinMap *pinmap)
-{
-    pwmout_init(obj, pinmap->pin);
-}
+MBED_WEAK void pwmout_init_direct(pwmout_t *obj, const PinMap *pinmap) { pwmout_init(obj, pinmap->pin); }
 #endif
 
 #if DEVICE_ANALOGIN
-MBED_WEAK void analogin_init_direct(analogin_t *obj, const PinMap *pinmap)
-{
-    analogin_init(obj, pinmap->pin);
-}
+MBED_WEAK void analogin_init_direct(analogin_t *obj, const PinMap *pinmap) { analogin_init(obj, pinmap->pin); }
 #endif
 
 #if DEVICE_ANALOGOUT
-MBED_WEAK void analogout_init_direct(dac_t *obj, const PinMap *pinmap)
-{
-    analogout_init(obj, pinmap->pin);
-}
+MBED_WEAK void analogout_init_direct(dac_t *obj, const PinMap *pinmap) { analogout_init(obj, pinmap->pin); }
 #endif
 
 #if DEVICE_I2C
@@ -88,14 +78,35 @@ MBED_WEAK void can_init_direct(can_t *obj, const can_pinmap_t *pinmap)
 #if DEVICE_QSPI
 MBED_WEAK qspi_status_t qspi_init_direct(qspi_t *obj, const qspi_pinmap_t *pinmap, uint32_t hz, uint8_t mode)
 {
-    return qspi_init(obj, pinmap->data0_pin, pinmap->data1_pin, pinmap->data2_pin, pinmap->data3_pin, pinmap->sclk_pin, pinmap->ssel_pin, hz, mode);
+    return qspi_init(obj,
+                     pinmap->data0_pin,
+                     pinmap->data1_pin,
+                     pinmap->data2_pin,
+                     pinmap->data3_pin,
+                     pinmap->sclk_pin,
+                     pinmap->ssel_pin,
+                     hz,
+                     mode);
 }
 #endif
 
 #if DEVICE_OSPI
 MBED_WEAK ospi_status_t ospi_init_direct(ospi_t *obj, const ospi_pinmap_t *pinmap, uint32_t hz, uint8_t mode)
 {
-    return ospi_init(obj, pinmap->data0_pin, pinmap->data1_pin, pinmap->data2_pin, pinmap->data3_pin, pinmap->data4_pin, pinmap->data5_pin, pinmap->data6_pin, pinmap->data7_pin, pinmap->sclk_pin, pinmap->ssel_pin, pinmap->dqs_pin, hz, mode);
+    return ospi_init(obj,
+                     pinmap->data0_pin,
+                     pinmap->data1_pin,
+                     pinmap->data2_pin,
+                     pinmap->data3_pin,
+                     pinmap->data4_pin,
+                     pinmap->data5_pin,
+                     pinmap->data6_pin,
+                     pinmap->data7_pin,
+                     pinmap->sclk_pin,
+                     pinmap->ssel_pin,
+                     pinmap->dqs_pin,
+                     hz,
+                     mode);
 }
 #endif
 

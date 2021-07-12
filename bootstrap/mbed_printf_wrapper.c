@@ -20,11 +20,10 @@
 
 #include <limits.h>
 
-
 #if defined(__ARMCC_VERSION) || defined(__ICCARM__)
-#    define PREFIX(x)    $Sub$$##x
+#define PREFIX(x) $Sub$$##x
 #elif defined(__GNUC__)
-#    define PREFIX(x)    __wrap_##x
+#define PREFIX(x) __wrap_##x
 #else
 #warning "This compiler is not yet supported."
 #endif

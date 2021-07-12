@@ -21,7 +21,7 @@
 #include "sleep_manager_api_racecondition_tests.h"
 
 #if !DEVICE_SLEEP || !DEVICE_USTICKER
-#error [NOT_SUPPORTED] test not supported
+#error[NOT_SUPPORTED] test not supported
 #else
 
 using namespace utest::v1;
@@ -41,8 +41,8 @@ void sleep_manager_multithread_test()
 {
     {
         Callback<void()> cb(sleep_manager_locking_thread_test);
-        Thread t1(osPriorityNormal, TEST_STACK_SIZE);
-        Thread t2(osPriorityNormal, TEST_STACK_SIZE);
+        Thread           t1(osPriorityNormal, TEST_STACK_SIZE);
+        Thread           t2(osPriorityNormal, TEST_STACK_SIZE);
 
         t1.start(callback(cb));
         ThisThread::sleep_for(25);
@@ -68,14 +68,14 @@ void sleep_manager_irq_test()
 {
     {
         Ticker ticker1;
-        Timer timer;
+        Timer  timer;
 
         ticker1.attach_us(&sleep_manager_locking_irq_test, 1000);
 
         // run this for 10 seconds
         timer.start();
         int start = timer.read();
-        int end = start + 10;
+        int end   = start + 10;
         while (timer.read() < end) {
             sleep_manager_locking_irq_test();
         }
@@ -101,9 +101,6 @@ Case cases[] = {
 
 Specification specification(greentea_test_setup, cases, greentea_test_teardown_handler);
 
-int main()
-{
-    Harness::run(specification);
-}
+int main() { Harness::run(specification); }
 
 #endif // !DEVICE_SLEEP || !DEVICE_USTICKER

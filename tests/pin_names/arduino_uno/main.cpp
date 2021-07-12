@@ -23,14 +23,13 @@
 Requirements specified in docs/design-documents/hal/0005-pin-names-Arduino-Uno-standard.md
 */
 
-#if !(defined (TARGET_FF_ARDUINO_UNO))
-#error [NOT_SUPPORTED] Test needs Arduino Uno form factor
+#if !(defined(TARGET_FF_ARDUINO_UNO))
+#error[NOT_SUPPORTED] Test needs Arduino Uno form factor
 #else
 
 using namespace utest::v1;
 
-template <PinName TestedPin>
-void GPIO_test()
+template <PinName TestedPin> void GPIO_test()
 {
     utest_printf("GPIO Pin 0x%x\n", TestedPin);
 
@@ -38,19 +37,19 @@ void GPIO_test()
     TEST_SKIP_UNLESS_MESSAGE(TestedPin != CONSOLE_RX, "ARDUINO_UNO pin shared with CONSOLE_RX");
 
     const PinMap *maps = gpio_pinmap(); // hal/source/mbed_gpio.c
-    while (maps->pin != (PinName)NC) { // check each pin from PinMap table till NC pin
+    while (maps->pin != (PinName)NC) {  // check each pin from PinMap table till NC pin
         if (maps->pin == TestedPin) {
             {
-                DigitalOut   TEST1(maps->pin);
+                DigitalOut TEST1(maps->pin);
                 TEST1 = !TEST1;
             }
             {
-                DigitalIn   TEST1(maps->pin);
+                DigitalIn TEST1(maps->pin);
                 // Basic API call
                 TEST1.read();
             }
             {
-                DigitalInOut   TEST1(maps->pin);
+                DigitalInOut TEST1(maps->pin);
                 // Basic API call
                 TEST1.input();
                 TEST1.output();
@@ -66,9 +65,7 @@ void GPIO_test()
     TEST_ASSERT(false);
 }
 
-
-template <PinName TestedPin>
-void AnalogIn_test()
+template <PinName TestedPin> void AnalogIn_test()
 {
     utest_printf("ADC Pin 0x%x\n", TestedPin);
 
@@ -90,9 +87,7 @@ void AnalogIn_test()
     TEST_ASSERT(false);
 }
 
-
-template <PinName TestedPin>
-void PWM_test()
+template <PinName TestedPin> void PWM_test()
 {
     utest_printf("PWM Pin 0x%x\n", TestedPin);
 
@@ -117,9 +112,7 @@ void PWM_test()
     TEST_SKIP_UNLESS_MESSAGE(false, "ARDUINO_UNO: this pin doesn’t support PWM");
 }
 
-
-template <PinName TX_pin, PinName RX_pin>
-void UART_test()
+template <PinName TX_pin, PinName RX_pin> void UART_test()
 {
     utest_printf("UART TX Pin 0x%x RX Pin 0x%x\n", TX_pin, RX_pin);
 
@@ -155,9 +148,7 @@ void UART_test()
     TEST.set_baud(115200);
 }
 
-
-template <PinName SDA_pin, PinName SCL_pin>
-void I2C_test()
+template <PinName SDA_pin, PinName SCL_pin> void I2C_test()
 {
     utest_printf("I2C SDA Pin 0x%x SCL Pin 0x%x\n", SDA_pin, SCL_pin);
 
@@ -187,9 +178,7 @@ void I2C_test()
     I2C i2c(SDA_pin, SCL_pin);
 }
 
-
-template <PinName MOSI_pin, PinName MISO_pin, PinName CLK_pin, PinName CS_pin>
-void SPI_test()
+template <PinName MOSI_pin, PinName MISO_pin, PinName CLK_pin, PinName CS_pin> void SPI_test()
 {
     utest_printf("SPI MOSI Pin 0x%x MISO Pin 0x%x CLOCK Pin 0x%x CS Pin0x%x\n", MOSI_pin, MISO_pin, CLK_pin, CS_pin);
 
@@ -228,7 +217,7 @@ void SPI_test()
     }
     {
         const PinMap *maps = gpio_pinmap(); // CS pin could be a simple GPIO
-        while (maps->pin != (PinName)NC) { // check each pin from PinMap table till NC pin
+        while (maps->pin != (PinName)NC) {  // check each pin from PinMap table till NC pin
             if (maps->pin == CS_pin) {
                 break;
             }
@@ -238,12 +227,11 @@ void SPI_test()
         TEST_ASSERT_NOT_EQUAL(NC, maps->pin);
     }
 
-    SPI device(MOSI_pin, MISO_pin, CLK_pin);
+    SPI        device(MOSI_pin, MISO_pin, CLK_pin);
     DigitalOut cs(CS_pin);
     // Basic API call
     device.frequency(10000000);
 }
-
 
 Case cases[] = {
     Case("GPIO A0", GPIO_test<ARDUINO_UNO_A0>),
@@ -298,9 +286,6 @@ utest::v1::status_t greentea_test_setup(const size_t number_of_cases)
 
 Specification specification(greentea_test_setup, cases, greentea_test_teardown_handler);
 
-int main()
-{
-    Harness::run(specification);
-}
+int main() { Harness::run(specification); }
 
 #endif

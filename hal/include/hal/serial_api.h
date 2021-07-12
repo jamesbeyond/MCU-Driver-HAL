@@ -54,34 +54,23 @@
 #define SERIAL_EVENT_RX_PARITY_ERROR    (1 << (SERIAL_EVENT_RX_SHIFT + 3))
 #define SERIAL_EVENT_RX_OVERFLOW        (1 << (SERIAL_EVENT_RX_SHIFT + 4))
 #define SERIAL_EVENT_RX_CHARACTER_MATCH (1 << (SERIAL_EVENT_RX_SHIFT + 5))
-#define SERIAL_EVENT_RX_ALL             (SERIAL_EVENT_RX_OVERFLOW | SERIAL_EVENT_RX_PARITY_ERROR | \
-                                         SERIAL_EVENT_RX_FRAMING_ERROR | SERIAL_EVENT_RX_OVERRUN_ERROR | \
-                                         SERIAL_EVENT_RX_COMPLETE | SERIAL_EVENT_RX_CHARACTER_MATCH)
+#define SERIAL_EVENT_RX_ALL                                                                    \
+    (SERIAL_EVENT_RX_OVERFLOW | SERIAL_EVENT_RX_PARITY_ERROR | SERIAL_EVENT_RX_FRAMING_ERROR | \
+     SERIAL_EVENT_RX_OVERRUN_ERROR | SERIAL_EVENT_RX_COMPLETE | SERIAL_EVENT_RX_CHARACTER_MATCH)
 /**@}*/
 
 #define SERIAL_RESERVED_CHAR_MATCH (255)
 
-typedef enum {
-    ParityNone = 0,
-    ParityOdd = 1,
-    ParityEven = 2,
-    ParityForced1 = 3,
-    ParityForced0 = 4
-} SerialParity;
+typedef enum { ParityNone = 0, ParityOdd = 1, ParityEven = 2, ParityForced1 = 3, ParityForced0 = 4 } SerialParity;
 
 /** Serial interrupt sources
  */
 typedef enum {
-    RxIrq,      /**< Receive Data Register Full */
-    TxIrq       /**< Transmit Data Register Empty */
+    RxIrq, /**< Receive Data Register Full */
+    TxIrq  /**< Transmit Data Register Empty */
 } SerialIrq;
 
-typedef enum {
-    FlowControlNone,
-    FlowControlRTS,
-    FlowControlCTS,
-    FlowControlRTSCTS
-} FlowControl;
+typedef enum { FlowControlNone, FlowControlRTS, FlowControlCTS, FlowControlRTSCTS } FlowControl;
 
 typedef void (*uart_irq_handler)(uint32_t id, SerialIrq event);
 
@@ -89,11 +78,11 @@ typedef void (*uart_irq_handler)(uint32_t id, SerialIrq event);
 /** Asynch serial HAL structure
  */
 typedef struct {
-    struct serial_s serial;  /**< Target specific serial structure */
-    struct buffer_s tx_buff; /**< TX buffer */
-    struct buffer_s rx_buff; /**< RX buffer */
-    uint8_t char_match;      /**< Character to be matched */
-    uint8_t char_found;      /**< State of the matched character */
+    struct serial_s serial;     /**< Target specific serial structure */
+    struct buffer_s tx_buff;    /**< TX buffer */
+    struct buffer_s rx_buff;    /**< RX buffer */
+    uint8_t         char_match; /**< Character to be matched */
+    uint8_t         char_found; /**< State of the matched character */
 } serial_t;
 
 #else
@@ -104,20 +93,20 @@ typedef struct serial_s serial_t;
 #endif
 
 typedef struct {
-    int peripheral;
+    int     peripheral;
     PinName tx_pin;
-    int tx_function;
+    int     tx_function;
     PinName rx_pin;
-    int rx_function;
-    bool stdio_config;
+    int     rx_function;
+    bool    stdio_config;
 } serial_pinmap_t;
 
 typedef struct {
-    int peripheral;
+    int     peripheral;
     PinName tx_flow_pin;
-    int tx_flow_function;
+    int     tx_flow_function;
     PinName rx_flow_pin;
-    int rx_flow_function;
+    int     rx_flow_function;
 } serial_fc_pinmap_t;
 
 #ifdef __cplusplus
@@ -181,8 +170,8 @@ extern "C" {
  * * ::serial_rx_abort_asynch aborts the ongoing RX transaction.
  * * ::serial_rx_abort_asynch disables the enabled interupt for RX.
  * * ::serial_rx_abort_asynch flushes the TX hardware buffer if RX FIFO is used.
- * * Correct operation guaranteed when interrupt latency is shorter than one packet transfer time (packet_bits / baudrate)
- * if the flow control is not used.
+ * * Correct operation guaranteed when interrupt latency is shorter than one packet transfer time (packet_bits /
+ * baudrate) if the flow control is not used.
  * * Correct operation guaranteed regardless of interrupt latency if the flow control is used.
  *
  * # Undefined behavior
@@ -197,7 +186,6 @@ extern "C" {
  * (packet_bits / baudrate) if the flow control is not used.
  * @{
  */
-
 
 /** Initialize the serial peripheral. It sets the default parameters for serial
  *  peripheral, and configures its specifieds pins.
@@ -215,7 +203,6 @@ void serial_init(serial_t *obj, PinName tx, PinName rx);
  * @param pinmap pointer to structure which holds static pinmap
  */
 void serial_init_direct(serial_t *obj, const serial_pinmap_t *pinmap);
-
 
 /** Release the serial peripheral, not currently invoked. It requires further
  *  resource management.
@@ -260,7 +247,7 @@ void serial_irq_set(serial_t *obj, SerialIrq irq, uint32_t enable);
  *
  * @param obj The serial object
  */
-int  serial_getc(serial_t *obj);
+int serial_getc(serial_t *obj);
 
 /** Send a character. This is a blocking call, waiting for a peripheral to be available
  *  for writing
@@ -275,14 +262,14 @@ void serial_putc(serial_t *obj, int c);
  * @param obj The serial object
  * @return Non-zero value if a character can be read, 0 if nothing to read
  */
-int  serial_readable(serial_t *obj);
+int serial_readable(serial_t *obj);
 
 /** Check if the serial peripheral is writable
  *
  * @param obj The serial object
  * @return Non-zero value if a character can be written, 0 otherwise.
  */
-int  serial_writable(serial_t *obj);
+int serial_writable(serial_t *obj);
 
 /** Clear the serial peripheral
  *
@@ -387,7 +374,8 @@ const PinMap *serial_rts_pinmap(void);
  * @param event     The logical OR of events to be registered
  * @return Returns number of data transfered, otherwise returns 0
  */
-int serial_tx_asynch(serial_t *obj, const void *tx, size_t tx_length, uint8_t tx_width, uint32_t handler, uint32_t event);
+int serial_tx_asynch(
+    serial_t *obj, const void *tx, size_t tx_length, uint8_t tx_width, uint32_t handler, uint32_t event);
 
 /** Begin asynchronous RX transfer (enable interrupt for data collecting)
  *  The used buffer is specified in the serial object - rx_buff
@@ -400,7 +388,8 @@ int serial_tx_asynch(serial_t *obj, const void *tx, size_t tx_length, uint8_t tx
  * @param event      The logical OR of events to be registered
  * @param char_match A character in range 0-254 to be matched
  */
-void serial_rx_asynch(serial_t *obj, void *rx, size_t rx_length, uint8_t rx_width, uint32_t handler, uint32_t event, uint8_t char_match);
+void serial_rx_asynch(
+    serial_t *obj, void *rx, size_t rx_length, uint8_t rx_width, uint32_t handler, uint32_t event, uint8_t char_match);
 
 /** Attempts to determine if the serial peripheral is already in use for TX
  *

@@ -36,8 +36,7 @@
  * when the device receives time measurement T from the host,
  * then X <= T < 2 * X.
  */
-template<uint32_t timeout_ms, uint32_t delta_ms>
-void test_timing();
+template <uint32_t timeout_ms, uint32_t delta_ms> void test_timing();
 
 /** Test Watchdog timeout
  *
@@ -54,4 +53,3 @@ void test_timeout_lower_limit();
 #endif
 
 /** @}*/
-

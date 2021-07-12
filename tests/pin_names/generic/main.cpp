@@ -24,14 +24,13 @@ Requirements specified in docs/design-documents/hal/0004-pin-names-general-guide
 */
 
 #ifndef LED1
-#error [NOT_SUPPORTED] Target is not following mbed-os pin names standard // Test is set as Skipped
+#error[NOT_SUPPORTED] Target is not following mbed-os pin names standard // Test is set as Skipped
 // #error [NOT_SUPPORTED] Target is not following mbed-os pin names standard // Test is set as Error
 #else
 
 using namespace utest::v1;
 
-template <int LedId, PinName LedPin>
-void LED_test()
+template <int LedId, PinName LedPin> void LED_test()
 {
     utest_printf("LED %u Pin 0x%x\n", LedId, LedPin);
     DigitalOut TEST(LedPin);
@@ -40,14 +39,11 @@ void LED_test()
     TEST = 0;
 }
 
-
-template <int ButtonId, PinName ButtonPin>
-void BUTTON_test()
+template <int ButtonId, PinName ButtonPin> void BUTTON_test()
 {
     utest_printf("BUTTON %u Pin 0x%x\n", ButtonId, ButtonPin);
     DigitalIn TEST(ButtonPin);
 }
-
 
 Case cases[] = {
 #ifdef LED1
@@ -91,9 +87,6 @@ utest::v1::status_t greentea_test_setup(const size_t number_of_cases)
 
 Specification specification(greentea_test_setup, cases, greentea_test_teardown_handler);
 
-int main()
-{
-    Harness::run(specification);
-}
+int main() { Harness::run(specification); }
 
 #endif

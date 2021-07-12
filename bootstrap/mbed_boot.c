@@ -45,11 +45,14 @@
  * - Value INITIAL_SP is ignored
  *
  * GCC Memory layout :
- * - Heap explicitly placed in linker script (*.ld file) and heap start (__end___) and heap end (__HeapLimit) should be defined in linker script
- * - Interrupt stack placed in linker script **.ld file) and stack start (__StackTop) and stack end (__StackLimit) should be defined in linker script
+ * - Heap explicitly placed in linker script (*.ld file) and heap start (__end___) and heap end (__HeapLimit) should be
+ * defined in linker script
+ * - Interrupt stack placed in linker script **.ld file) and stack start (__StackTop) and stack end (__StackLimit)
+ * should be defined in linker script
  *
  * ARM Memory layout :
- * - Heap can be explicitly placed by adding ARM_LIB_HEAP section in scatter file and defining both HEAP_START and HEAP_SIZE
+ * - Heap can be explicitly placed by adding ARM_LIB_HEAP section in scatter file and defining both HEAP_START and
+ * HEAP_SIZE
  * - Interrupt stack placed in scatter files (*.sct) by adding ARM_LIB_STACK section
  *
  */
@@ -70,26 +73,22 @@
  */
 
 /* Heap limits - only used if set */
-//extern unsigned char *mbed_heap_start;
-//extern uint32_t mbed_heap_size;
+// extern unsigned char *mbed_heap_start;
+// extern uint32_t mbed_heap_size;
 
 unsigned char *mbed_heap_start = 0;
-uint32_t mbed_heap_size = 0;
+uint32_t       mbed_heap_size  = 0;
 
 /* Stack limits */
 unsigned char *mbed_stack_isr_start = 0;
-uint32_t mbed_stack_isr_size = 0;
-
+uint32_t       mbed_stack_isr_size  = 0;
 
 /* mbed_main is a function that is called before main()
  * mbed_sdk_init() is also a function that is called before main(), but unlike
  * mbed_main(), it is not meant for user code, but for the SDK itself to perform
  * initializations before main() is called.
  */
-MBED_WEAK void mbed_main(void)
-{
-
-}
+MBED_WEAK void mbed_main(void) {}
 
 /* This function can be implemented by the target to perform higher level target initialization
  */
@@ -112,7 +111,7 @@ static void mbed_cpy_nvic(void)
 #if !defined(__CORTEX_M0) && !defined(__CORTEX_A9)
 #ifdef NVIC_RAM_VECTOR_ADDRESS
     uint32_t *old_vectors = (uint32_t *)SCB->VTOR;
-    uint32_t *vectors = (uint32_t *)NVIC_RAM_VECTOR_ADDRESS;
+    uint32_t *vectors     = (uint32_t *)NVIC_RAM_VECTOR_ADDRESS;
     for (int i = 0; i < NVIC_NUM_VECTORS; i++) {
         vectors[i] = old_vectors[i];
     }
@@ -120,7 +119,6 @@ static void mbed_cpy_nvic(void)
 #endif /* NVIC_RAM_VECTOR_ADDRESS */
 #endif /* !defined(__CORTEX_M0) && !defined(__CORTEX_A9) */
 }
-
 
 void mbed_init(void)
 {
@@ -139,30 +137,30 @@ void mbed_init(void)
 #endif
 }
 
-#if defined (__ARMCC_VERSION)
+#if defined(__ARMCC_VERSION)
 
-extern uint32_t               Image$$ARM_LIB_STACK$$ZI$$Base[];
-extern uint32_t               Image$$ARM_LIB_STACK$$ZI$$Length[];
-extern uint32_t               Image$$ARM_LIB_HEAP$$ZI$$Base[];
-extern uint32_t               Image$$ARM_LIB_HEAP$$ZI$$Length[];
+extern uint32_t Image$$ARM_LIB_STACK$$ZI$$Base[];
+extern uint32_t Image$$ARM_LIB_STACK$$ZI$$Length[];
+extern uint32_t Image$$ARM_LIB_HEAP$$ZI$$Base[];
+extern uint32_t Image$$ARM_LIB_HEAP$$ZI$$Length[];
 
 // The original unpacthed main() function that gets called from __main().
 // It refers to the user application's main.
 int $Super$$main(void);
 
 /**
-  * @details Patches the definition of the original main() function called from the C
-  * run time library so this one is called instead of the original main()
-  * unpatched main() function.
-  */
+ * @details Patches the definition of the original main() function called from the C
+ * run time library so this one is called instead of the original main()
+ * unpatched main() function.
+ */
 int $Sub$$main(void)
 {
     // Record the base addresses and sizes of the stack and heap as defined
     // in the scatter file.
-    mbed_stack_isr_start = (unsigned char *) Image$$ARM_LIB_STACK$$ZI$$Base;
-    mbed_stack_isr_size = (uint32_t) Image$$ARM_LIB_STACK$$ZI$$Length;
-    mbed_heap_start = (unsigned char *) Image$$ARM_LIB_HEAP$$ZI$$Base;
-    mbed_heap_size = (uint32_t) Image$$ARM_LIB_HEAP$$ZI$$Length;
+    mbed_stack_isr_start = (unsigned char *)Image$$ARM_LIB_STACK$$ZI$$Base;
+    mbed_stack_isr_size  = (uint32_t)Image$$ARM_LIB_STACK$$ZI$$Length;
+    mbed_heap_start      = (unsigned char *)Image$$ARM_LIB_HEAP$$ZI$$Base;
+    mbed_heap_size       = (uint32_t)Image$$ARM_LIB_HEAP$$ZI$$Length;
 
     mbed_init();
     mbed_main();
@@ -170,33 +168,30 @@ int $Sub$$main(void)
 }
 
 #if defined(__MICROLIB)
-MBED_WEAK void __aeabi_assert(const char *expr, const char *file, int line)
-{
-    mbed_assert_internal(expr, file, line);
-}
+MBED_WEAK void __aeabi_assert(const char *expr, const char *file, int line) { mbed_assert_internal(expr, file, line); }
 #endif // defined(__MICROLIB)
 
-#elif defined (__GNUC__)
+#elif defined(__GNUC__)
 
-extern uint32_t             __StackLimit;
-extern uint32_t             __StackTop;
-extern uint32_t             __end__;
-extern uint32_t             __HeapLimit;
+extern uint32_t __StackLimit;
+extern uint32_t __StackTop;
+extern uint32_t __end__;
+extern uint32_t __HeapLimit;
 
 extern int __real_main(void);
 
 /**
-  * @details A strongly-linked definition of GCC's software_init_hook() function so
-  * it is called at startup prior to main().
-  */
+ * @details A strongly-linked definition of GCC's software_init_hook() function so
+ * it is called at startup prior to main().
+ */
 void software_init_hook(void)
 {
     // Record the base addresses and sizes of the stack and heap as defined
     // in the linker file.
-    mbed_stack_isr_start = (unsigned char *) &__StackLimit;
-    mbed_stack_isr_size = (uint32_t) &__StackTop - (uint32_t) &__StackLimit;
-    mbed_heap_start = (unsigned char *) &__end__;
-    mbed_heap_size = (uint32_t) &__HeapLimit - (uint32_t) &__end__;
+    mbed_stack_isr_start = (unsigned char *)&__StackLimit;
+    mbed_stack_isr_size  = (uint32_t)&__StackTop - (uint32_t)&__StackLimit;
+    mbed_heap_start      = (unsigned char *)&__end__;
+    mbed_heap_size       = (uint32_t)&__HeapLimit - (uint32_t)&__end__;
 
     mbed_init();
     software_init_hook_rtos();
@@ -209,7 +204,7 @@ void software_init_hook(void)
 int __wrap_main(void)
 {
     mbed_main();
-    //mbed_error_initialize();
+    // mbed_error_initialize();
     return __real_main();
 }
 
@@ -218,19 +213,13 @@ int __wrap_main(void)
  * @details Unlike the standard version, this function doesn't call any function
  * registered with atexit before calling _exit.
  */
-void __wrap_exit(int return_code)
-{
-    _exit(return_code);
-}
+void __wrap_exit(int return_code) { _exit(return_code); }
 
 /**
  * @brief Retarget atexit from GCC.
  * @details This function will always fail and never register any handler to be
  * called at exit.
  */
-int __wrap_atexit(void (*func)())
-{
-    return 1;
-}
+int __wrap_atexit(void (*func)()) { return 1; }
 
 #endif

@@ -36,39 +36,39 @@ extern "C" {
 #endif
 
 #if !DEVICE_USTICKER
-#error [NOT_SUPPORTED] test not supported
+#error[NOT_SUPPORTED] test not supported
 #else
 
 #define US_PER_S 1000000
 
 #define FORCE_OVERFLOW_TEST (false)
-#define TICKER_INT_VAL 500
-#define TICKER_DELTA 10
+#define TICKER_INT_VAL      500
+#define TICKER_DELTA        10
 
-#define LP_TICKER_OVERFLOW_DELTA1   0   // this will allow to detect that ticker counter rollovers to 0
-#define LP_TICKER_OVERFLOW_DELTA2   0
-#define US_TICKER_OVERFLOW_DELTA1   50
-#define US_TICKER_OVERFLOW_DELTA2   60
+#define LP_TICKER_OVERFLOW_DELTA1 0 // this will allow to detect that ticker counter rollovers to 0
+#define LP_TICKER_OVERFLOW_DELTA2 0
+#define US_TICKER_OVERFLOW_DELTA1 50
+#define US_TICKER_OVERFLOW_DELTA2 60
 
 #define TICKER_100_TICKS 100
 #define TICKER_500_TICKS 500
 
-#define MAX_FUNC_EXEC_TIME_US 20
+#define MAX_FUNC_EXEC_TIME_US   20
 #define DELTA_FUNC_EXEC_TIME_US 5
-#define NUM_OF_CALLS 100
+#define NUM_OF_CALLS            100
 
 #define NUM_OF_CYCLES 100000
 
 #define US_TICKER_OV_LIMIT 35000
 #define LP_TICKER_OV_LIMIT 4000
 
-#define TICKS_TO_US(ticks, freq) ((uint32_t) ((uint64_t)ticks * US_PER_S /freq))
+#define TICKS_TO_US(ticks, freq) ((uint32_t)((uint64_t)ticks * US_PER_S / freq))
 
 using namespace utest::v1;
 
-volatile int intFlag = 0;
+volatile int              intFlag = 0;
 const ticker_interface_t *intf;
-ticker_irq_handler_type prev_irq_handler;
+ticker_irq_handler_type   prev_irq_handler;
 /* Some targets might fail overflow test uncertainly due to getting trapped in busy
  * intf->read() loop. In the loop, some ticker values wouldn't get caught in time
  * because of:
@@ -90,13 +90,13 @@ uint32_t count_ticks(uint32_t cycles, uint32_t step)
     register uint32_t reg_cycles = cycles;
 
     const ticker_info_t *p_ticker_info = intf->get_info();
-    const uint32_t max_count = ((1 << p_ticker_info->bits) - 1);
+    const uint32_t       max_count     = ((1 << p_ticker_info->bits) - 1);
 
     core_util_critical_section_enter();
 
     const uint32_t start = intf->read();
 
-    while (reg_cycles  -= step) {
+    while (reg_cycles -= step) {
         /* Just wait. */
     }
 
@@ -127,7 +127,7 @@ void overflow_protect()
         time_window = LP_TICKER_OV_LIMIT;
     }
 
-    const uint32_t ticks_now = intf->read();
+    const uint32_t       ticks_now     = intf->read();
     const ticker_info_t *p_ticker_info = intf->get_info();
 
     const uint32_t max_count = ((1 << p_ticker_info->bits) - 1);
@@ -136,7 +136,8 @@ void overflow_protect()
         return;
     }
 
-    while (intf->read() >= ticks_now);
+    while (intf->read() >= ticks_now)
+        ;
 }
 
 void ticker_event_handler_stub(const ticker_data_t *const ticker)
@@ -157,7 +158,8 @@ void ticker_event_handler_stub(const ticker_data_t *const ticker)
 
 void wait_cycles(volatile unsigned int cycles)
 {
-    while (cycles--);
+    while (cycles--)
+        ;
 }
 
 /* Auxiliary function to determine how long ticker function are executed.
@@ -170,7 +172,7 @@ uint32_t diff_us(uint32_t start_ticks, uint32_t stop_ticks, const ticker_info_t 
 
     uint32_t diff_ticks = ((stop_ticks - start_ticks) & counter_mask);
 
-    return (uint32_t)((uint64_t) diff_ticks * US_PER_S / info->frequency);
+    return (uint32_t)((uint64_t)diff_ticks * US_PER_S / info->frequency);
 }
 
 /* Test that ticker_init can be called multiple times and
@@ -218,21 +220,22 @@ void ticker_info_test(void)
 /* Test that ticker interrupt fires only when the ticker counter increments to the value set by ticker_set_interrupt. */
 void ticker_interrupt_test(void)
 {
-    uint32_t ticker_timeout[] = { 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200 };
-    uint8_t run_count = 0;
-    const ticker_info_t *p_ticker_info = intf->get_info();
+    uint32_t             ticker_timeout[] = {100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200};
+    uint8_t              run_count        = 0;
+    const ticker_info_t *p_ticker_info    = intf->get_info();
 
     overflow_protect();
 
     for (uint32_t i = 0; i < (sizeof(ticker_timeout) / sizeof(uint32_t)); i++) {
 
         /* Skip timeout if less than max allowed execution time of set_interrupt() - 20 us */
-        if (TICKS_TO_US(ticker_timeout[i], p_ticker_info->frequency) < (MAX_FUNC_EXEC_TIME_US + DELTA_FUNC_EXEC_TIME_US)) {
+        if (TICKS_TO_US(ticker_timeout[i], p_ticker_info->frequency) <
+            (MAX_FUNC_EXEC_TIME_US + DELTA_FUNC_EXEC_TIME_US)) {
             continue;
         }
 
         run_count++;
-        intFlag = 0;
+        intFlag                   = 0;
         const uint32_t tick_count = intf->read();
 
         /* Set interrupt. Interrupt should be fired when tick count is equal to:
@@ -338,7 +341,7 @@ void ticker_overflow_test(void)
     /* We need to check how long it will take to overflow.
      * We will perform this test only if this time is no longer than 30 sec.
      */
-    const uint32_t max_count = (1 << p_ticker_info->bits) - 1;
+    const uint32_t max_count         = (1 << p_ticker_info->bits) - 1;
     const uint32_t required_time_sec = (max_count / p_ticker_info->frequency);
 
     if (required_time_sec > 30 && !FORCE_OVERFLOW_TEST) {
@@ -351,12 +354,13 @@ void ticker_overflow_test(void)
 
     /* Wait for max count. */
     while (intf->read() >= (max_count - ticker_overflow_delta2) &&
-            intf->read() <= (max_count - ticker_overflow_delta1)) {
+           intf->read() <= (max_count - ticker_overflow_delta1)) {
         /* Just wait. */
     }
 
     /* Now we are near/at the overflow point. Detect rollover. */
-    while (intf->read() > ticker_overflow_delta1);
+    while (intf->read() > ticker_overflow_delta1)
+        ;
 
     const uint32_t after_overflow = intf->read();
 
@@ -391,25 +395,25 @@ void ticker_increment_test(void)
     const ticker_info_t *p_ticker_info = intf->get_info();
 
     /* Perform test based on ticker speed. */
-    if (p_ticker_info->frequency <= 250000) {    // low frequency tickers
+    if (p_ticker_info->frequency <= 250000) { // low frequency tickers
         const uint32_t base_tick_count = intf->read();
-        uint32_t next_tick_count = base_tick_count;
+        uint32_t       next_tick_count = base_tick_count;
 
         while (next_tick_count == base_tick_count) {
             next_tick_count = intf->read();
         }
 
         TEST_ASSERT_UINT32_WITHIN(1, next_tick_count, base_tick_count);
-    } else {  // high frequency tickers
+    } else { // high frequency tickers
 
-        uint32_t num_of_cycles = NUM_OF_CYCLES;
-        const uint32_t repeat_count = 20;
-        const uint32_t max_inc_val = 100;
+        uint32_t       num_of_cycles = NUM_OF_CYCLES;
+        const uint32_t repeat_count  = 20;
+        const uint32_t max_inc_val   = 100;
 
         uint32_t base_tick_count = count_ticks(num_of_cycles, 1);
         uint32_t next_tick_count = base_tick_count;
-        uint32_t inc_val = 0;
-        uint32_t repeat_cnt = 0;
+        uint32_t inc_val         = 0;
+        uint32_t repeat_cnt      = 0;
 
         while (inc_val < max_inc_val) {
             next_tick_count = count_ticks(num_of_cycles + inc_val, 1);
@@ -427,8 +431,7 @@ void ticker_increment_test(void)
                 repeat_cnt++;
             } else {
                 /* Check if we got 1 tick diff. */
-                if (next_tick_count - base_tick_count == 1 ||
-                        base_tick_count - next_tick_count == 1) {
+                if (next_tick_count - base_tick_count == 1 || base_tick_count - next_tick_count == 1) {
                     break;
                 }
 
@@ -438,8 +441,8 @@ void ticker_increment_test(void)
                  * In cases if difference is exactly 1 we can exit the loop.
                  */
                 num_of_cycles /= 2;
-                inc_val = 0;
-                repeat_cnt = 0;
+                inc_val         = 0;
+                repeat_cnt      = 0;
                 base_tick_count = count_ticks(num_of_cycles, 1);
             }
         }
@@ -455,7 +458,7 @@ void ticker_increment_test(void)
 /* Test that common ticker functions complete with the required amount of time. */
 void ticker_speed_test(void)
 {
-    int counter = NUM_OF_CALLS;
+    int      counter = NUM_OF_CALLS;
     uint32_t start;
     uint32_t stop;
 
@@ -468,27 +471,30 @@ void ticker_speed_test(void)
     }
     stop = us_ticker_read();
 
-    TEST_ASSERT(diff_us(start, stop, us_ticker_info) < (NUM_OF_CALLS * (MAX_FUNC_EXEC_TIME_US + DELTA_FUNC_EXEC_TIME_US)));
+    TEST_ASSERT(diff_us(start, stop, us_ticker_info) <
+                (NUM_OF_CALLS * (MAX_FUNC_EXEC_TIME_US + DELTA_FUNC_EXEC_TIME_US)));
 
     /* ---- Test ticker_clear_interrupt function. ---- */
     counter = NUM_OF_CALLS;
-    start = us_ticker_read();
+    start   = us_ticker_read();
     while (counter--) {
         intf->clear_interrupt();
     }
     stop = us_ticker_read();
 
-    TEST_ASSERT(diff_us(start, stop, us_ticker_info) < (NUM_OF_CALLS * (MAX_FUNC_EXEC_TIME_US + DELTA_FUNC_EXEC_TIME_US)));
+    TEST_ASSERT(diff_us(start, stop, us_ticker_info) <
+                (NUM_OF_CALLS * (MAX_FUNC_EXEC_TIME_US + DELTA_FUNC_EXEC_TIME_US)));
 
     /* ---- Test ticker_set_interrupt function. ---- */
     counter = NUM_OF_CALLS;
-    start = us_ticker_read();
+    start   = us_ticker_read();
     while (counter--) {
         intf->set_interrupt(0);
     }
     stop = us_ticker_read();
 
-    TEST_ASSERT(diff_us(start, stop, us_ticker_info) < (NUM_OF_CALLS * (MAX_FUNC_EXEC_TIME_US + DELTA_FUNC_EXEC_TIME_US)));
+    TEST_ASSERT(diff_us(start, stop, us_ticker_info) <
+                (NUM_OF_CALLS * (MAX_FUNC_EXEC_TIME_US + DELTA_FUNC_EXEC_TIME_US)));
 
     /* ---- Test fire_interrupt function. ---- */
     counter = NUM_OF_CALLS;
@@ -501,18 +507,19 @@ void ticker_speed_test(void)
     stop = us_ticker_read();
     core_util_critical_section_exit();
 
-    TEST_ASSERT(diff_us(start, stop, us_ticker_info) < (NUM_OF_CALLS * (MAX_FUNC_EXEC_TIME_US + DELTA_FUNC_EXEC_TIME_US)));
+    TEST_ASSERT(diff_us(start, stop, us_ticker_info) <
+                (NUM_OF_CALLS * (MAX_FUNC_EXEC_TIME_US + DELTA_FUNC_EXEC_TIME_US)));
 
     /* ---- Test disable_interrupt function. ---- */
     counter = NUM_OF_CALLS;
-    start = us_ticker_read();
+    start   = us_ticker_read();
     while (counter--) {
         intf->disable_interrupt();
     }
     stop = us_ticker_read();
 
-    TEST_ASSERT(diff_us(start, stop, us_ticker_info) < (NUM_OF_CALLS * (MAX_FUNC_EXEC_TIME_US + DELTA_FUNC_EXEC_TIME_US)));
-
+    TEST_ASSERT(diff_us(start, stop, us_ticker_info) <
+                (NUM_OF_CALLS * (MAX_FUNC_EXEC_TIME_US + DELTA_FUNC_EXEC_TIME_US)));
 }
 
 utest::v1::status_t us_ticker_setup(const Case *const source, const size_t index_of_case)
@@ -535,8 +542,8 @@ utest::v1::status_t us_ticker_setup(const Case *const source, const size_t index
     return greentea_case_setup_handler(source, index_of_case);
 }
 
-utest::v1::status_t us_ticker_teardown(const Case *const source, const size_t passed, const size_t failed,
-                                       const failure_t reason)
+utest::v1::status_t
+us_ticker_teardown(const Case *const source, const size_t passed, const size_t failed, const failure_t reason)
 {
     set_us_ticker_irq_handler(prev_irq_handler);
 
@@ -569,8 +576,8 @@ utest::v1::status_t lp_ticker_setup(const Case *const source, const size_t index
     return greentea_case_setup_handler(source, index_of_case);
 }
 
-utest::v1::status_t lp_ticker_teardown(const Case *const source, const size_t passed, const size_t failed,
-                                       const failure_t reason)
+utest::v1::status_t
+lp_ticker_teardown(const Case *const source, const size_t passed, const size_t failed, const failure_t reason)
 {
     set_lp_ticker_irq_handler(prev_irq_handler);
 

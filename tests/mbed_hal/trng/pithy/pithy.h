@@ -48,14 +48,18 @@ extern "C" {
 #define _PITHY_H_
 
 // compressionLevel >= 0 && compressionLevel <= 9.  Values out side this range will be clamped to this range.
-size_t pithy_Compress  (const char *uncompressed, size_t uncompressedLength, char *compressedOut,
-                        size_t compressedOutLength, int compressionLevel);
-int    pithy_Decompress(const char *compressed,   size_t compressedLength,   char *decompressedOut,
-                        size_t decompressedOutLength);
+size_t pithy_Compress(const char *uncompressed,
+                      size_t      uncompressedLength,
+                      char *      compressedOut,
+                      size_t      compressedOutLength,
+                      int         compressionLevel);
+int    pithy_Decompress(const char *compressed,
+                        size_t      compressedLength,
+                        char *      decompressedOut,
+                        size_t      decompressedOutLength);
 
 size_t pithy_MaxCompressedLength(size_t inputLength);
-int    pithy_GetDecompressedLength(const char *compressed, size_t compressedLength,
-                                   size_t *decompressedOutLengthResult);
+int pithy_GetDecompressedLength(const char *compressed, size_t compressedLength, size_t *decompressedOutLengthResult);
 
 #endif // _PITHY_H_
 

@@ -22,7 +22,6 @@
 
 #include "device.h"
 
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -37,7 +36,6 @@ extern "C" {
  * - the counter is at least 16 bits wide.
  */
 void us_ticker_info_test(void);
-
 
 /**@}*/
 

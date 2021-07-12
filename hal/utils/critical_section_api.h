@@ -64,7 +64,6 @@ extern "C" {
  */
 void hal_critical_section_enter(void);
 
-
 /** Mark the end of a critical section.
  *
  * The purpose of this function is to restore any state that was modified upon
@@ -84,7 +83,6 @@ void hal_critical_section_enter(void);
  */
 void hal_critical_section_exit(void);
 
-
 /** Determine if the application is currently running in a critical section
  *
  * The purpose of this function is to inform the caller whether or not the
@@ -96,7 +94,6 @@ void hal_critical_section_exit(void);
  *  @return  True if running in a critical section, false if not.
  */
 bool hal_in_critical_section(void);
-
 
 /**@}*/
 

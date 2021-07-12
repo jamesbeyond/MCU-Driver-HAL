@@ -64,37 +64,34 @@ typedef enum mbed_memory_order {
 #ifndef MBED_EXCLUSIVE_ACCESS
 #ifndef __EXCLUSIVE_ACCESS
 #if defined __arm__ || defined __ICC_ARM__ || defined __ARM_ARCH
-#if ((__ARM_ARCH_7M__      == 1U) || \
-    (__ARM_ARCH_7EM__     == 1U) || \
-    (__ARM_ARCH_8M_BASE__ == 1U) || \
-    (__ARM_ARCH_8M_MAIN__ == 1U) || \
-    (__ARM_ARCH_8_1M_MAIN__ == 1U)) || \
+#if ((__ARM_ARCH_7M__ == 1U) || (__ARM_ARCH_7EM__ == 1U) || (__ARM_ARCH_8M_BASE__ == 1U) || \
+     (__ARM_ARCH_8M_MAIN__ == 1U) || (__ARM_ARCH_8_1M_MAIN__ == 1U)) ||                     \
     (__ARM_ARCH_7A__ == 1U)
-#define MBED_EXCLUSIVE_ACCESS      1U
+#define MBED_EXCLUSIVE_ACCESS        1U
 #define MBED_EXCLUSIVE_ACCESS_THUMB1 (__ARM_ARCH_8M_BASE__ == 1U)
 #ifdef __ICCARM__
 #if __CPU_MODE__ == 2
-#define MBED_EXCLUSIVE_ACCESS_ARM  1U
+#define MBED_EXCLUSIVE_ACCESS_ARM 1U
 #else
-#define MBED_EXCLUSIVE_ACCESS_ARM  0U
+#define MBED_EXCLUSIVE_ACCESS_ARM 0U
 #endif
 #else
-#if !defined (__thumb__)
-#define MBED_EXCLUSIVE_ACCESS_ARM  1U
+#if !defined(__thumb__)
+#define MBED_EXCLUSIVE_ACCESS_ARM 1U
 #else
-#define MBED_EXCLUSIVE_ACCESS_ARM  0U
+#define MBED_EXCLUSIVE_ACCESS_ARM 0U
 #endif
 #endif
 #elif (__ARM_ARCH_6M__ == 1U)
-#define MBED_EXCLUSIVE_ACCESS      0U
+#define MBED_EXCLUSIVE_ACCESS 0U
 #elif defined __aarch64__ // Apple M1 Mac
-#define MBED_EXCLUSIVE_ACCESS      0U
+#define MBED_EXCLUSIVE_ACCESS 0U
 #else
 #error "Unknown ARM architecture for exclusive access"
 #endif // __ARM_ARCH_xxx
-#else // __arm__ || defined __ICC_ARM__ || defined __ARM_ARCH
+#else  // __arm__ || defined __ICC_ARM__ || defined __ARM_ARCH
 // Seem to be compiling for non-ARM, so stick with critical section implementations
-#define MBED_EXCLUSIVE_ACCESS      0U
+#define MBED_EXCLUSIVE_ACCESS 0U
 #endif
 #else
 #define MBED_EXCLUSIVE_ACCESS __EXCLUSIVE_ACCESS
@@ -125,7 +122,10 @@ typedef struct core_util_atomic_flag {
  *     core_util_atomic_flag in_progress = CORE_UTIL_ATOMIC_FLAG_INIT;
  * ~~~
  */
-#define CORE_UTIL_ATOMIC_FLAG_INIT { 0 }
+#define CORE_UTIL_ATOMIC_FLAG_INIT \
+    {                              \
+        0                          \
+    }
 
 /**
  * Atomic test and set.
@@ -140,7 +140,8 @@ MBED_INLINE_IF_EX bool core_util_atomic_flag_test_and_set(volatile core_util_ato
 /** \ copydoc core_util_atomic_flag_test_and_set
  * @param order memory ordering constraint
  */
-MBED_FORCEINLINE bool core_util_atomic_flag_test_and_set_explicit(volatile core_util_atomic_flag *valuePtr, mbed_memory_order order);
+MBED_FORCEINLINE bool core_util_atomic_flag_test_and_set_explicit(volatile core_util_atomic_flag *valuePtr,
+                                                                  mbed_memory_order               order);
 
 /**
  * Atomic clear.
@@ -152,8 +153,8 @@ MBED_FORCEINLINE void core_util_atomic_flag_clear(volatile core_util_atomic_flag
 /** \ copydoc core_util_atomic_flag_clear
  * @param order memory ordering constraint
  */
-MBED_FORCEINLINE void core_util_atomic_flag_clear_explicit(volatile core_util_atomic_flag *flagPtr, mbed_memory_order order);
-
+MBED_FORCEINLINE void core_util_atomic_flag_clear_explicit(volatile core_util_atomic_flag *flagPtr,
+                                                           mbed_memory_order               order);
 
 /**
  * Atomic compare and set. It compares the contents of a memory location to a
@@ -214,69 +215,113 @@ MBED_FORCEINLINE void core_util_atomic_flag_clear_explicit(volatile core_util_at
  * above; it will not spuriously fail as "atomic_compare_exchange_weak" may.
  * This call would normally be used when a fail return does not retry.
  */
-MBED_INLINE_IF_EX bool core_util_atomic_cas_u8(volatile uint8_t *ptr, uint8_t *expectedCurrentValue, uint8_t desiredValue);
+MBED_INLINE_IF_EX bool
+core_util_atomic_cas_u8(volatile uint8_t *ptr, uint8_t *expectedCurrentValue, uint8_t desiredValue);
 
 /** \copydoc core_util_atomic_cas_u8
  * @param success memory ordering constraint for successful exchange
  * @param failure memory ordering constraint for failure
  */
-MBED_FORCEINLINE bool core_util_atomic_cas_explicit_u8(volatile uint8_t *ptr, uint8_t *expectedCurrentValue, uint8_t desiredValue, mbed_memory_order success, mbed_memory_order failure);
+MBED_FORCEINLINE bool core_util_atomic_cas_explicit_u8(volatile uint8_t *ptr,
+                                                       uint8_t *         expectedCurrentValue,
+                                                       uint8_t           desiredValue,
+                                                       mbed_memory_order success,
+                                                       mbed_memory_order failure);
 
 /** \copydoc core_util_atomic_cas_u8 */
-MBED_INLINE_IF_EX bool core_util_atomic_cas_u16(volatile uint16_t *ptr, uint16_t *expectedCurrentValue, uint16_t desiredValue);
+MBED_INLINE_IF_EX bool
+core_util_atomic_cas_u16(volatile uint16_t *ptr, uint16_t *expectedCurrentValue, uint16_t desiredValue);
 
 /** \copydoc core_util_atomic_cas_explicit_u8 */
-MBED_FORCEINLINE bool core_util_atomic_cas_explicit_u16(volatile uint16_t *ptr, uint16_t *expectedCurrentValue, uint16_t desiredValue, mbed_memory_order success, mbed_memory_order failure);
+MBED_FORCEINLINE bool core_util_atomic_cas_explicit_u16(volatile uint16_t *ptr,
+                                                        uint16_t *         expectedCurrentValue,
+                                                        uint16_t           desiredValue,
+                                                        mbed_memory_order  success,
+                                                        mbed_memory_order  failure);
 
 /** \copydoc core_util_atomic_cas_u8 */
-MBED_INLINE_IF_EX bool core_util_atomic_cas_u32(volatile uint32_t *ptr, uint32_t *expectedCurrentValue, uint32_t desiredValue);
+MBED_INLINE_IF_EX bool
+core_util_atomic_cas_u32(volatile uint32_t *ptr, uint32_t *expectedCurrentValue, uint32_t desiredValue);
 
 /** \copydoc core_util_atomic_cas_explicit_u8 */
-MBED_FORCEINLINE bool core_util_atomic_cas_explicit_u32(volatile uint32_t *ptr, uint32_t *expectedCurrentValue, uint32_t desiredValue, mbed_memory_order success, mbed_memory_order failure);
+MBED_FORCEINLINE bool core_util_atomic_cas_explicit_u32(volatile uint32_t *ptr,
+                                                        uint32_t *         expectedCurrentValue,
+                                                        uint32_t           desiredValue,
+                                                        mbed_memory_order  success,
+                                                        mbed_memory_order  failure);
 
 /** \copydoc core_util_atomic_cas_u8 */
 bool core_util_atomic_cas_u64(volatile uint64_t *ptr, uint64_t *expectedCurrentValue, uint64_t desiredValue);
 
 /** \copydoc core_util_atomic_cas_explicit_u8 */
-MBED_FORCEINLINE bool core_util_atomic_cas_explicit_u64(volatile uint64_t *ptr, uint64_t *expectedCurrentValue, uint64_t desiredValue, mbed_memory_order success, mbed_memory_order failure);
+MBED_FORCEINLINE bool core_util_atomic_cas_explicit_u64(volatile uint64_t *ptr,
+                                                        uint64_t *         expectedCurrentValue,
+                                                        uint64_t           desiredValue,
+                                                        mbed_memory_order  success,
+                                                        mbed_memory_order  failure);
 
 /** \copydoc core_util_atomic_cas_u8 */
 MBED_FORCEINLINE bool core_util_atomic_cas_s8(volatile int8_t *ptr, int8_t *expectedCurrentValue, int8_t desiredValue);
 
 /** \copydoc core_util_atomic_cas_explicit_u8 */
-MBED_FORCEINLINE bool core_util_atomic_cas_explicit_s8(volatile int8_t *ptr, int8_t *expectedCurrentValue, int8_t desiredValue, mbed_memory_order success, mbed_memory_order failure);
+MBED_FORCEINLINE bool core_util_atomic_cas_explicit_s8(volatile int8_t * ptr,
+                                                       int8_t *          expectedCurrentValue,
+                                                       int8_t            desiredValue,
+                                                       mbed_memory_order success,
+                                                       mbed_memory_order failure);
 
 /** \copydoc core_util_atomic_cas_u8 */
-MBED_FORCEINLINE bool core_util_atomic_cas_s16(volatile int16_t *ptr, int16_t *expectedCurrentValue, int16_t desiredValue);
+MBED_FORCEINLINE bool
+core_util_atomic_cas_s16(volatile int16_t *ptr, int16_t *expectedCurrentValue, int16_t desiredValue);
 
 /** \copydoc core_util_atomic_cas_explicit_u8 */
-MBED_FORCEINLINE bool core_util_atomic_cas_explicit_s16(volatile int16_t *ptr, int16_t *expectedCurrentValue, int16_t desiredValue, mbed_memory_order success, mbed_memory_order failure);
+MBED_FORCEINLINE bool core_util_atomic_cas_explicit_s16(volatile int16_t *ptr,
+                                                        int16_t *         expectedCurrentValue,
+                                                        int16_t           desiredValue,
+                                                        mbed_memory_order success,
+                                                        mbed_memory_order failure);
 
 /** \copydoc core_util_atomic_cas_u8 */
-MBED_FORCEINLINE bool core_util_atomic_cas_s32(volatile int32_t *ptr, int32_t *expectedCurrentValue, int32_t desiredValue);
+MBED_FORCEINLINE bool
+core_util_atomic_cas_s32(volatile int32_t *ptr, int32_t *expectedCurrentValue, int32_t desiredValue);
 
 /** \copydoc core_util_atomic_cas_explicit_u8 */
-MBED_FORCEINLINE bool core_util_atomic_cas_explicit_s32(volatile int32_t *ptr, int32_t *expectedCurrentValue, int32_t desiredValue, mbed_memory_order success, mbed_memory_order failure);
+MBED_FORCEINLINE bool core_util_atomic_cas_explicit_s32(volatile int32_t *ptr,
+                                                        int32_t *         expectedCurrentValue,
+                                                        int32_t           desiredValue,
+                                                        mbed_memory_order success,
+                                                        mbed_memory_order failure);
 
 /** \copydoc core_util_atomic_cas_u8 */
-MBED_FORCEINLINE bool core_util_atomic_cas_s64(volatile int64_t *ptr, int64_t *expectedCurrentValue, int64_t desiredValue);
+MBED_FORCEINLINE bool
+core_util_atomic_cas_s64(volatile int64_t *ptr, int64_t *expectedCurrentValue, int64_t desiredValue);
 
 /** \copydoc core_util_atomic_cas_explicit_u8 */
-MBED_FORCEINLINE bool core_util_atomic_cas_explicit_s64(volatile int64_t *ptr, int64_t *expectedCurrentValue, int64_t desiredValue, mbed_memory_order success, mbed_memory_order failure);
+MBED_FORCEINLINE bool core_util_atomic_cas_explicit_s64(volatile int64_t *ptr,
+                                                        int64_t *         expectedCurrentValue,
+                                                        int64_t           desiredValue,
+                                                        mbed_memory_order success,
+                                                        mbed_memory_order failure);
 
 /** \copydoc core_util_atomic_cas_u8 */
 MBED_FORCEINLINE bool core_util_atomic_cas_bool(volatile bool *ptr, bool *expectedCurrentValue, bool desiredValue);
 
 /** \copydoc core_util_atomic_cas_explicit_u8 */
-MBED_FORCEINLINE bool core_util_atomic_cas_explicit_bool(volatile bool *ptr, bool *expectedCurrentValue, bool desiredValue, mbed_memory_order success, mbed_memory_order failure);
+MBED_FORCEINLINE bool core_util_atomic_cas_explicit_bool(volatile bool *   ptr,
+                                                         bool *            expectedCurrentValue,
+                                                         bool              desiredValue,
+                                                         mbed_memory_order success,
+                                                         mbed_memory_order failure);
 
 /** \copydoc core_util_atomic_cas_u8 */
 inline bool core_util_atomic_cas_ptr(void *volatile *ptr, void **expectedCurrentValue, void *desiredValue);
 
 /** \copydoc core_util_atomic_cas_explicit_u8 */
-MBED_FORCEINLINE bool core_util_atomic_cas_explicit_ptr(void *volatile *ptr, void **expectedCurrentValue, void *desiredValue, mbed_memory_order success, mbed_memory_order failure);
-
-
+MBED_FORCEINLINE bool core_util_atomic_cas_explicit_ptr(void *volatile *  ptr,
+                                                        void **           expectedCurrentValue,
+                                                        void *            desiredValue,
+                                                        mbed_memory_order success,
+                                                        mbed_memory_order failure);
 
 /**
  * Atomic compare and set. It compares the contents of a memory location to a
@@ -335,68 +380,120 @@ MBED_FORCEINLINE bool core_util_atomic_cas_explicit_ptr(void *volatile *ptr, voi
  * This call would normally be used when a fail return will cause a retry anyway,
  * saving the need for an extra loop inside the cas operation.
  */
-MBED_INLINE_IF_EX bool core_util_atomic_compare_exchange_weak_u8(volatile uint8_t *ptr, uint8_t *expectedCurrentValue, uint8_t desiredValue);
+MBED_INLINE_IF_EX bool
+core_util_atomic_compare_exchange_weak_u8(volatile uint8_t *ptr, uint8_t *expectedCurrentValue, uint8_t desiredValue);
 
 /** \copydoc core_util_atomic_compare_exchange_weak_u8
  * @param success memory ordering constraint for successful exchange
  * @param failure memory ordering constraint for failure
  */
-MBED_FORCEINLINE bool core_util_atomic_compare_exchange_weak_explicit_u8(volatile uint8_t *ptr, uint8_t *expectedCurrentValue, uint8_t desiredValue, mbed_memory_order success, mbed_memory_order failure);
+MBED_FORCEINLINE bool core_util_atomic_compare_exchange_weak_explicit_u8(volatile uint8_t *ptr,
+                                                                         uint8_t *         expectedCurrentValue,
+                                                                         uint8_t           desiredValue,
+                                                                         mbed_memory_order success,
+                                                                         mbed_memory_order failure);
 
 /** \copydoc core_util_atomic_compare_exchange_weak_u8 */
-MBED_INLINE_IF_EX bool core_util_atomic_compare_exchange_weak_u16(volatile uint16_t *ptr, uint16_t *expectedCurrentValue, uint16_t desiredValue);
+MBED_INLINE_IF_EX bool core_util_atomic_compare_exchange_weak_u16(volatile uint16_t *ptr,
+                                                                  uint16_t *         expectedCurrentValue,
+                                                                  uint16_t           desiredValue);
 
 /** \copydoc core_util_atomic_compare_exchange_weak_explicit_u8 */
-MBED_FORCEINLINE bool core_util_atomic_compare_exchange_weak_explicit_u16(volatile uint16_t *ptr, uint16_t *expectedCurrentValue, uint16_t desiredValue, mbed_memory_order success, mbed_memory_order failure);
+MBED_FORCEINLINE bool core_util_atomic_compare_exchange_weak_explicit_u16(volatile uint16_t *ptr,
+                                                                          uint16_t *         expectedCurrentValue,
+                                                                          uint16_t           desiredValue,
+                                                                          mbed_memory_order  success,
+                                                                          mbed_memory_order  failure);
 
 /** \copydoc core_util_atomic_compare_exchange_weak_u8 */
-MBED_INLINE_IF_EX bool core_util_atomic_compare_exchange_weak_u32(volatile uint32_t *ptr, uint32_t *expectedCurrentValue, uint32_t desiredValue);
+MBED_INLINE_IF_EX bool core_util_atomic_compare_exchange_weak_u32(volatile uint32_t *ptr,
+                                                                  uint32_t *         expectedCurrentValue,
+                                                                  uint32_t           desiredValue);
 
 /** \copydoc core_util_atomic_compare_exchange_weak_explicit_u8 */
-MBED_FORCEINLINE bool core_util_atomic_compare_exchange_weak_explicit_u32(volatile uint32_t *ptr, uint32_t *expectedCurrentValue, uint32_t desiredValue, mbed_memory_order success, mbed_memory_order failure);
+MBED_FORCEINLINE bool core_util_atomic_compare_exchange_weak_explicit_u32(volatile uint32_t *ptr,
+                                                                          uint32_t *         expectedCurrentValue,
+                                                                          uint32_t           desiredValue,
+                                                                          mbed_memory_order  success,
+                                                                          mbed_memory_order  failure);
 
 /** \copydoc core_util_atomic_compare_exchange_weak_u8 */
-bool core_util_atomic_compare_exchange_weak_u64(volatile uint64_t *ptr, uint64_t *expectedCurrentValue, uint64_t desiredValue);
+bool core_util_atomic_compare_exchange_weak_u64(volatile uint64_t *ptr,
+                                                uint64_t *         expectedCurrentValue,
+                                                uint64_t           desiredValue);
 
 /** \copydoc core_util_atomic_compare_exchange_weak_explicit_u8 */
-MBED_FORCEINLINE bool core_util_atomic_compare_exchange_weak_explicit_u64(volatile uint64_t *ptr, uint64_t *expectedCurrentValue, uint64_t desiredValue, mbed_memory_order success, mbed_memory_order failure);
+MBED_FORCEINLINE bool core_util_atomic_compare_exchange_weak_explicit_u64(volatile uint64_t *ptr,
+                                                                          uint64_t *         expectedCurrentValue,
+                                                                          uint64_t           desiredValue,
+                                                                          mbed_memory_order  success,
+                                                                          mbed_memory_order  failure);
 
 /** \copydoc core_util_atomic_compare_exchange_weak_u8 */
-MBED_FORCEINLINE bool core_util_atomic_compare_exchange_weak_s8(volatile int8_t *ptr, int8_t *expectedCurrentValue, int8_t desiredValue);
+MBED_FORCEINLINE bool
+core_util_atomic_compare_exchange_weak_s8(volatile int8_t *ptr, int8_t *expectedCurrentValue, int8_t desiredValue);
 
 /** \copydoc core_util_atomic_compare_exchange_weak_explicit_u8 */
-MBED_FORCEINLINE bool core_util_atomic_compare_exchange_weak_explicit_s8(volatile int8_t *ptr, int8_t *expectedCurrentValue, int8_t desiredValue, mbed_memory_order success, mbed_memory_order failure);
+MBED_FORCEINLINE bool core_util_atomic_compare_exchange_weak_explicit_s8(volatile int8_t * ptr,
+                                                                         int8_t *          expectedCurrentValue,
+                                                                         int8_t            desiredValue,
+                                                                         mbed_memory_order success,
+                                                                         mbed_memory_order failure);
 
 /** \copydoc core_util_atomic_compare_exchange_weak_u8 */
-MBED_FORCEINLINE bool core_util_atomic_compare_exchange_weak_s16(volatile int16_t *ptr, int16_t *expectedCurrentValue, int16_t desiredValue);
+MBED_FORCEINLINE bool
+core_util_atomic_compare_exchange_weak_s16(volatile int16_t *ptr, int16_t *expectedCurrentValue, int16_t desiredValue);
 
 /** \copydoc core_util_atomic_compare_exchange_weak_explicit_u8 */
-MBED_FORCEINLINE bool core_util_atomic_compare_exchange_weak_explicit_s16(volatile int16_t *ptr, int16_t *expectedCurrentValue, int16_t desiredValue, mbed_memory_order success, mbed_memory_order failure);
+MBED_FORCEINLINE bool core_util_atomic_compare_exchange_weak_explicit_s16(volatile int16_t *ptr,
+                                                                          int16_t *         expectedCurrentValue,
+                                                                          int16_t           desiredValue,
+                                                                          mbed_memory_order success,
+                                                                          mbed_memory_order failure);
 
 /** \copydoc core_util_atomic_compare_exchange_weak_u8 */
-MBED_FORCEINLINE bool core_util_atomic_compare_exchange_weak_s32(volatile int32_t *ptr, int32_t *expectedCurrentValue, int32_t desiredValue);
+MBED_FORCEINLINE bool
+core_util_atomic_compare_exchange_weak_s32(volatile int32_t *ptr, int32_t *expectedCurrentValue, int32_t desiredValue);
 
 /** \copydoc core_util_atomic_compare_exchange_weak_explicit_u8 */
-MBED_FORCEINLINE bool core_util_atomic_compare_exchange_weak_explicit_s32(volatile int32_t *ptr, int32_t *expectedCurrentValue, int32_t desiredValue, mbed_memory_order success, mbed_memory_order failure);
+MBED_FORCEINLINE bool core_util_atomic_compare_exchange_weak_explicit_s32(volatile int32_t *ptr,
+                                                                          int32_t *         expectedCurrentValue,
+                                                                          int32_t           desiredValue,
+                                                                          mbed_memory_order success,
+                                                                          mbed_memory_order failure);
 
 /** \copydoc core_util_atomic_compare_exchange_weak_u8 */
-MBED_FORCEINLINE bool core_util_atomic_compare_exchange_weak_s64(volatile int64_t *ptr, int64_t *expectedCurrentValue, int64_t desiredValue);
+MBED_FORCEINLINE bool
+core_util_atomic_compare_exchange_weak_s64(volatile int64_t *ptr, int64_t *expectedCurrentValue, int64_t desiredValue);
 
 /** \copydoc core_util_atomic_compare_exchange_weak_explicit_u8 */
-MBED_FORCEINLINE bool core_util_atomic_compare_exchange_weak_explicit_s64(volatile int64_t *ptr, int64_t *expectedCurrentValue, int64_t desiredValue, mbed_memory_order success, mbed_memory_order failure);
+MBED_FORCEINLINE bool core_util_atomic_compare_exchange_weak_explicit_s64(volatile int64_t *ptr,
+                                                                          int64_t *         expectedCurrentValue,
+                                                                          int64_t           desiredValue,
+                                                                          mbed_memory_order success,
+                                                                          mbed_memory_order failure);
 
 /** \copydoc core_util_atomic_compare_exchange_weak_u8 */
-MBED_FORCEINLINE bool core_util_atomic_compare_exchange_weak_bool(volatile bool *ptr, bool *expectedCurrentValue, bool desiredValue);
+MBED_FORCEINLINE bool
+core_util_atomic_compare_exchange_weak_bool(volatile bool *ptr, bool *expectedCurrentValue, bool desiredValue);
 
 /** \copydoc core_util_atomic_compare_exchange_weak_explicit_u8 */
-MBED_FORCEINLINE bool core_util_atomic_compare_exchange_weak_explicit_bool(volatile bool *ptr, bool *expectedCurrentValue, bool desiredValue, mbed_memory_order success, mbed_memory_order failure);
+MBED_FORCEINLINE bool core_util_atomic_compare_exchange_weak_explicit_bool(volatile bool *   ptr,
+                                                                           bool *            expectedCurrentValue,
+                                                                           bool              desiredValue,
+                                                                           mbed_memory_order success,
+                                                                           mbed_memory_order failure);
 
 /** \copydoc core_util_atomic_compare_exchange_weak_u8 */
-MBED_FORCEINLINE bool core_util_atomic_compare_exchange_weak_ptr(void *volatile *ptr, void **expectedCurrentValue, void *desiredValue);
+MBED_FORCEINLINE bool
+core_util_atomic_compare_exchange_weak_ptr(void *volatile *ptr, void **expectedCurrentValue, void *desiredValue);
 
 /** \copydoc core_util_atomic_compare_exchange_weak_explicit_u8 */
-MBED_FORCEINLINE bool core_util_atomic_compare_exchange_weak_explicit_ptr(void *volatile *ptr, void **expectedCurrentValue, void *desiredValue, mbed_memory_order success, mbed_memory_order failure);
-
+MBED_FORCEINLINE bool core_util_atomic_compare_exchange_weak_explicit_ptr(void *volatile *  ptr,
+                                                                          void **           expectedCurrentValue,
+                                                                          void *            desiredValue,
+                                                                          mbed_memory_order success,
+                                                                          mbed_memory_order failure);
 
 /**
  * Atomic load.
@@ -415,19 +512,22 @@ MBED_FORCEINLINE uint8_t core_util_atomic_load_explicit_u8(const volatile uint8_
 MBED_FORCEINLINE uint16_t core_util_atomic_load_u16(const volatile uint16_t *valuePtr);
 
 /** \copydoc core_util_atomic_load_explicit_u8 */
-MBED_FORCEINLINE uint16_t core_util_atomic_load_explicit_u16(const volatile uint16_t *valuePtr, mbed_memory_order order);
+MBED_FORCEINLINE uint16_t core_util_atomic_load_explicit_u16(const volatile uint16_t *valuePtr,
+                                                             mbed_memory_order        order);
 
 /** \copydoc core_util_atomic_load_u8 */
 MBED_FORCEINLINE uint32_t core_util_atomic_load_u32(const volatile uint32_t *valuePtr);
 
 /** \copydoc core_util_atomic_load_explicit_u8 */
-MBED_FORCEINLINE uint32_t core_util_atomic_load_explicit_u32(const volatile uint32_t *valuePtr, mbed_memory_order order);
+MBED_FORCEINLINE uint32_t core_util_atomic_load_explicit_u32(const volatile uint32_t *valuePtr,
+                                                             mbed_memory_order        order);
 
 /** \copydoc core_util_atomic_load_u8 */
 uint64_t core_util_atomic_load_u64(const volatile uint64_t *valuePtr);
 
 /** \copydoc core_util_atomic_load_explicit_u8 */
-MBED_FORCEINLINE uint64_t core_util_atomic_load_explicit_u64(const volatile uint64_t *valuePtr, mbed_memory_order order);
+MBED_FORCEINLINE uint64_t core_util_atomic_load_explicit_u64(const volatile uint64_t *valuePtr,
+                                                             mbed_memory_order        order);
 
 /** \copydoc core_util_atomic_load_u8 */
 MBED_FORCEINLINE int8_t core_util_atomic_load_s8(const volatile int8_t *valuePtr);
@@ -451,7 +551,8 @@ MBED_FORCEINLINE int32_t core_util_atomic_load_explicit_s32(const volatile int32
 MBED_FORCEINLINE int64_t core_util_atomic_load_s64(const volatile int64_t *valuePtr);
 
 /** \copydoc core_util_atomic_load_u8 */
-MBED_FORCEINLINE int64_t core_util_atomic_load_explicit_s64(const volatile int64_t *valuePtr, MBED_UNUSED mbed_memory_order order);
+MBED_FORCEINLINE int64_t core_util_atomic_load_explicit_s64(const volatile int64_t *      valuePtr,
+                                                            MBED_UNUSED mbed_memory_order order);
 
 /** \copydoc core_util_atomic_load_u8 */
 MBED_FORCEINLINE bool core_util_atomic_load_bool(const volatile bool *valuePtr);
@@ -476,61 +577,71 @@ MBED_FORCEINLINE void core_util_atomic_store_u8(volatile uint8_t *valuePtr, uint
  * \copydoc core_util_atomic_store_u8
  * @param order memory ordering constraint
  */
-MBED_FORCEINLINE void core_util_atomic_store_explicit_u8(volatile uint8_t *valuePtr, uint8_t desiredValue, mbed_memory_order order);
+MBED_FORCEINLINE void
+core_util_atomic_store_explicit_u8(volatile uint8_t *valuePtr, uint8_t desiredValue, mbed_memory_order order);
 
 /** \copydoc core_util_atomic_store_u8 */
 MBED_FORCEINLINE void core_util_atomic_store_u16(volatile uint16_t *valuePtr, uint16_t desiredValue);
 
 /** \copydoc core_util_atomic_store_explicit_u8 */
-MBED_FORCEINLINE void core_util_atomic_store_explicit_u16(volatile uint16_t *valuePtr, uint16_t desiredValue, mbed_memory_order order);
+MBED_FORCEINLINE void
+core_util_atomic_store_explicit_u16(volatile uint16_t *valuePtr, uint16_t desiredValue, mbed_memory_order order);
 
 /** \copydoc core_util_atomic_store_u8 */
 MBED_FORCEINLINE void core_util_atomic_store_u32(volatile uint32_t *valuePtr, uint32_t desiredValue);
 
 /** \copydoc core_util_atomic_store_explicit_u8 */
-MBED_FORCEINLINE void core_util_atomic_store_explicit_u32(volatile uint32_t *valuePtr, uint32_t desiredValue, mbed_memory_order order);
+MBED_FORCEINLINE void
+core_util_atomic_store_explicit_u32(volatile uint32_t *valuePtr, uint32_t desiredValue, mbed_memory_order order);
 
 /** \copydoc core_util_atomic_store_u8 */
 void core_util_atomic_store_u64(volatile uint64_t *valuePtr, uint64_t desiredValue);
 
 /** \copydoc core_util_atomic_store_explicit_u8 */
-MBED_FORCEINLINE void core_util_atomic_store_explicit_u64(volatile uint64_t *valuePtr, uint64_t desiredValue, mbed_memory_order order);
+MBED_FORCEINLINE void
+core_util_atomic_store_explicit_u64(volatile uint64_t *valuePtr, uint64_t desiredValue, mbed_memory_order order);
 
 /** \copydoc core_util_atomic_store_u8 */
 MBED_FORCEINLINE void core_util_atomic_store_s8(volatile int8_t *valuePtr, int8_t desiredValue);
 
 /** \copydoc core_util_atomic_store_explicit_u8 */
-MBED_FORCEINLINE void core_util_atomic_store_explicit_s8(volatile int8_t *valuePtr, int8_t desiredValue, mbed_memory_order order);
+MBED_FORCEINLINE void
+core_util_atomic_store_explicit_s8(volatile int8_t *valuePtr, int8_t desiredValue, mbed_memory_order order);
 
 /** \copydoc core_util_atomic_store_u8 */
 MBED_FORCEINLINE void core_util_atomic_store_s16(volatile int16_t *valuePtr, int16_t desiredValue);
 
 /** \copydoc core_util_atomic_store_explicit_u8 */
-MBED_FORCEINLINE void core_util_atomic_store_explicit_s16(volatile int16_t *valuePtr, int16_t desiredValue, mbed_memory_order order);
+MBED_FORCEINLINE void
+core_util_atomic_store_explicit_s16(volatile int16_t *valuePtr, int16_t desiredValue, mbed_memory_order order);
 
 /** \copydoc core_util_atomic_store_u8 */
 MBED_FORCEINLINE void core_util_atomic_store_s32(volatile int32_t *valuePtr, int32_t desiredValue);
 
 /** \copydoc core_util_atomic_store_explicit_u8 */
-MBED_FORCEINLINE void core_util_atomic_store_explicit_s32(volatile int32_t *valuePtr, int32_t desiredValue, mbed_memory_order order);
+MBED_FORCEINLINE void
+core_util_atomic_store_explicit_s32(volatile int32_t *valuePtr, int32_t desiredValue, mbed_memory_order order);
 
 /** \copydoc core_util_atomic_store_u8 */
 MBED_FORCEINLINE void core_util_atomic_store_s64(volatile int64_t *valuePtr, int64_t desiredValue);
 
 /** \copydoc core_util_atomic_store_explicit_u8 */
-MBED_FORCEINLINE void core_util_atomic_store_explicit_s64(volatile int64_t *valuePtr, int64_t desiredValue, mbed_memory_order order);
+MBED_FORCEINLINE void
+core_util_atomic_store_explicit_s64(volatile int64_t *valuePtr, int64_t desiredValue, mbed_memory_order order);
 
 /** \copydoc core_util_atomic_store_u8 */
 MBED_FORCEINLINE void core_util_atomic_store_bool(volatile bool *valuePtr, bool desiredValue);
 
 /** \copydoc core_util_atomic_store_explicit_u8 */
-MBED_FORCEINLINE void core_util_atomic_store_explicit_bool(volatile bool *valuePtr, bool desiredValue, mbed_memory_order order);
+MBED_FORCEINLINE void
+core_util_atomic_store_explicit_bool(volatile bool *valuePtr, bool desiredValue, mbed_memory_order order);
 
 /** \copydoc core_util_atomic_store_u8 */
 MBED_FORCEINLINE void core_util_atomic_store_ptr(void *volatile *valuePtr, void *desiredValue);
 
 /** \copydoc core_util_atomic_store_explicit_u8 */
-MBED_FORCEINLINE void core_util_atomic_store_explicit_ptr(void *volatile *valuePtr, void *desiredValue, mbed_memory_order order);
+MBED_FORCEINLINE void
+core_util_atomic_store_explicit_ptr(void *volatile *valuePtr, void *desiredValue, mbed_memory_order order);
 
 /**
  * Atomic exchange.
@@ -543,61 +654,79 @@ MBED_INLINE_IF_EX uint8_t core_util_atomic_exchange_u8(volatile uint8_t *valuePt
 /** \copydoc core_util_atomic_exchange_u8
  * @param order memory ordering constraint
  */
-MBED_FORCEINLINE uint8_t core_util_atomic_exchange_explicit_u8(volatile uint8_t *valuePtr, uint8_t desiredValue, mbed_memory_order order);
+MBED_FORCEINLINE uint8_t core_util_atomic_exchange_explicit_u8(volatile uint8_t *valuePtr,
+                                                               uint8_t           desiredValue,
+                                                               mbed_memory_order order);
 
 /** \copydoc core_util_atomic_exchange_u8 */
 MBED_INLINE_IF_EX uint16_t core_util_atomic_exchange_u16(volatile uint16_t *valuePtr, uint16_t desiredValue);
 
 /** \copydoc core_util_atomic_exchange_explicit_u8 */
-MBED_FORCEINLINE uint16_t core_util_atomic_exchange_explicit_u16(volatile uint16_t *valuePtr, uint16_t desiredValue, mbed_memory_order order);
+MBED_FORCEINLINE uint16_t core_util_atomic_exchange_explicit_u16(volatile uint16_t *valuePtr,
+                                                                 uint16_t           desiredValue,
+                                                                 mbed_memory_order  order);
 
 /** \copydoc core_util_atomic_exchange_u8 */
 MBED_INLINE_IF_EX uint32_t core_util_atomic_exchange_u32(volatile uint32_t *valuePtr, uint32_t desiredValue);
 
 /** \copydoc core_util_atomic_exchange_explicit_u8 */
-MBED_FORCEINLINE uint32_t core_util_atomic_exchange_explicit_u32(volatile uint32_t *valuePtr, uint32_t desiredValue, mbed_memory_order order);
+MBED_FORCEINLINE uint32_t core_util_atomic_exchange_explicit_u32(volatile uint32_t *valuePtr,
+                                                                 uint32_t           desiredValue,
+                                                                 mbed_memory_order  order);
 
 /** \copydoc core_util_atomic_exchange_u8 */
 uint64_t core_util_atomic_exchange_u64(volatile uint64_t *valuePtr, uint64_t desiredValue);
 
 /** \copydoc core_util_atomic_exchange_explicit_u8 */
-MBED_FORCEINLINE uint64_t core_util_atomic_exchange_explicit_u64(volatile uint64_t *valuePtr, uint64_t desiredValue, mbed_memory_order order);
+MBED_FORCEINLINE uint64_t core_util_atomic_exchange_explicit_u64(volatile uint64_t *valuePtr,
+                                                                 uint64_t           desiredValue,
+                                                                 mbed_memory_order  order);
 
 /** \copydoc core_util_atomic_exchange_u8 */
 MBED_FORCEINLINE int8_t core_util_atomic_exchange_s8(volatile int8_t *valuePtr, int8_t desiredValue);
 
 /** \copydoc core_util_atomic_exchange_explicit_u8 */
-MBED_FORCEINLINE int8_t core_util_atomic_exchange_explicit_s8(volatile int8_t *valuePtr, int8_t desiredValue, mbed_memory_order order);
+MBED_FORCEINLINE int8_t core_util_atomic_exchange_explicit_s8(volatile int8_t * valuePtr,
+                                                              int8_t            desiredValue,
+                                                              mbed_memory_order order);
 
 /** \copydoc core_util_atomic_exchange_u8 */
 MBED_FORCEINLINE int16_t core_util_atomic_exchange_s16(volatile int16_t *valuePtr, int16_t desiredValue);
 
 /** \copydoc core_util_atomic_exchange_explicit_u8 */
-MBED_FORCEINLINE int16_t core_util_atomic_exchange_explicit_s16(volatile int16_t *valuePtr, int16_t desiredValue, mbed_memory_order order);
+MBED_FORCEINLINE int16_t core_util_atomic_exchange_explicit_s16(volatile int16_t *valuePtr,
+                                                                int16_t           desiredValue,
+                                                                mbed_memory_order order);
 
 /** \copydoc core_util_atomic_exchange_u8 */
 MBED_FORCEINLINE int32_t core_util_atomic_exchange_s32(volatile int32_t *valuePtr, int32_t desiredValue);
 
 /** \copydoc core_util_atomic_exchange_explicit_u8 */
-MBED_FORCEINLINE int32_t core_util_atomic_exchange_explicit_s32(volatile int32_t *valuePtr, int32_t desiredValue, mbed_memory_order order);
+MBED_FORCEINLINE int32_t core_util_atomic_exchange_explicit_s32(volatile int32_t *valuePtr,
+                                                                int32_t           desiredValue,
+                                                                mbed_memory_order order);
 
 /** \copydoc core_util_atomic_exchange_u8 */
 MBED_FORCEINLINE int64_t core_util_atomic_exchange_s64(volatile int64_t *valuePtr, int64_t desiredValue);
 
 /** \copydoc core_util_atomic_exchange_explicit_u8 */
-MBED_FORCEINLINE int64_t core_util_atomic_exchange_explicit_s64(volatile int64_t *valuePtr, int64_t desiredValue, mbed_memory_order order);
+MBED_FORCEINLINE int64_t core_util_atomic_exchange_explicit_s64(volatile int64_t *valuePtr,
+                                                                int64_t           desiredValue,
+                                                                mbed_memory_order order);
 
 /** \copydoc core_util_atomic_exchange_u8 */
 MBED_FORCEINLINE bool core_util_atomic_exchange_bool(volatile bool *valuePtr, bool desiredValue);
 
 /** \copydoc core_util_atomic_exchange_explicit_u8 */
-MBED_FORCEINLINE bool core_util_atomic_exchange_explicit_bool(volatile bool *valuePtr, bool desiredValue, mbed_memory_order order);
+MBED_FORCEINLINE bool
+core_util_atomic_exchange_explicit_bool(volatile bool *valuePtr, bool desiredValue, mbed_memory_order order);
 
 /** \copydoc core_util_atomic_exchange_u8 */
 inline void *core_util_atomic_exchange_ptr(void *volatile *valuePtr, void *desiredValue);
 
 /** \copydoc core_util_atomic_exchange_explicit_u8 */
-MBED_FORCEINLINE void *core_util_atomic_exchange_explicit_ptr(void *volatile *valuePtr, void *desiredValue, mbed_memory_order order);
+MBED_FORCEINLINE void *
+core_util_atomic_exchange_explicit_ptr(void *volatile *valuePtr, void *desiredValue, mbed_memory_order order);
 
 /**
  * Atomic increment.
@@ -674,55 +803,72 @@ MBED_INLINE_IF_EX uint8_t core_util_atomic_fetch_add_u8(volatile uint8_t *valueP
 /** \copydoc core_util_atomic_fetch_add_u8
  * @param order memory ordering constraint
  */
-MBED_FORCEINLINE uint8_t core_util_atomic_fetch_add_explicit_u8(volatile uint8_t *valuePtr, uint8_t arg, mbed_memory_order order);
+MBED_FORCEINLINE uint8_t core_util_atomic_fetch_add_explicit_u8(volatile uint8_t *valuePtr,
+                                                                uint8_t           arg,
+                                                                mbed_memory_order order);
 
 /** \copydoc core_util_atomic_fetch_add_u8 */
 MBED_INLINE_IF_EX uint16_t core_util_atomic_fetch_add_u16(volatile uint16_t *valuePtr, uint16_t arg);
 
 /** \copydoc core_util_atomic_fetch_add_explicit_u8 */
-MBED_FORCEINLINE uint16_t core_util_atomic_fetch_add_explicit_u16(volatile uint16_t *valuePtr, uint16_t arg, mbed_memory_order order);
+MBED_FORCEINLINE uint16_t core_util_atomic_fetch_add_explicit_u16(volatile uint16_t *valuePtr,
+                                                                  uint16_t           arg,
+                                                                  mbed_memory_order  order);
 
 /** \copydoc core_util_atomic_fetch_add_u8 */
 MBED_INLINE_IF_EX uint32_t core_util_atomic_fetch_add_u32(volatile uint32_t *valuePtr, uint32_t arg);
 
 /** \copydoc core_util_atomic_fetch_add_explicit_u8 */
-MBED_FORCEINLINE uint32_t core_util_atomic_fetch_add_explicit_u32(volatile uint32_t *valuePtr, uint32_t arg, mbed_memory_order order);
+MBED_FORCEINLINE uint32_t core_util_atomic_fetch_add_explicit_u32(volatile uint32_t *valuePtr,
+                                                                  uint32_t           arg,
+                                                                  mbed_memory_order  order);
 
 /** \copydoc core_util_atomic_fetch_add_u8 */
 uint64_t core_util_atomic_fetch_add_u64(volatile uint64_t *valuePtr, uint64_t arg);
 
 /** \copydoc core_util_atomic_fetch_add_explicit_u8 */
-MBED_FORCEINLINE uint64_t core_util_atomic_fetch_add_explicit_u64(volatile uint64_t *valuePtr, uint64_t arg, mbed_memory_order order);
+MBED_FORCEINLINE uint64_t core_util_atomic_fetch_add_explicit_u64(volatile uint64_t *valuePtr,
+                                                                  uint64_t           arg,
+                                                                  mbed_memory_order  order);
 
 /** \copydoc core_util_atomic_fetch_add_u8 */
 MBED_FORCEINLINE int8_t core_util_atomic_fetch_add_s8(volatile int8_t *valuePtr, int8_t arg);
 
 /** \copydoc core_util_atomic_fetch_add_explicit_u8 */
-MBED_FORCEINLINE int8_t core_util_atomic_fetch_add_explicit_s8(volatile int8_t *valuePtr, int8_t arg, mbed_memory_order order);
+MBED_FORCEINLINE int8_t core_util_atomic_fetch_add_explicit_s8(volatile int8_t * valuePtr,
+                                                               int8_t            arg,
+                                                               mbed_memory_order order);
 
 /** \copydoc core_util_atomic_fetch_add_u8 */
 MBED_FORCEINLINE int16_t core_util_atomic_fetch_add_s16(volatile int16_t *valuePtr, int16_t arg);
 
 /** \copydoc core_util_atomic_fetch_add_explicit_u8 */
-MBED_FORCEINLINE int16_t core_util_atomic_fetch_add_explicit_s16(volatile int16_t *valuePtr, int16_t arg, mbed_memory_order order);
+MBED_FORCEINLINE int16_t core_util_atomic_fetch_add_explicit_s16(volatile int16_t *valuePtr,
+                                                                 int16_t           arg,
+                                                                 mbed_memory_order order);
 
 /** \copydoc core_util_atomic_fetch_add_u8 */
 MBED_FORCEINLINE int32_t core_util_atomic_fetch_add_s32(volatile int32_t *valuePtr, int32_t arg);
 
 /** \copydoc core_util_atomic_fetch_add_explicit_u8 */
-MBED_FORCEINLINE int32_t core_util_atomic_fetch_add_explicit_s32(volatile int32_t *valuePtr, int32_t arg, mbed_memory_order order);
+MBED_FORCEINLINE int32_t core_util_atomic_fetch_add_explicit_s32(volatile int32_t *valuePtr,
+                                                                 int32_t           arg,
+                                                                 mbed_memory_order order);
 
 /** \copydoc core_util_atomic_fetch_add_u8 */
 MBED_FORCEINLINE int64_t core_util_atomic_fetch_add_s64(volatile int64_t *valuePtr, int64_t arg);
 
 /** \copydoc core_util_atomic_fetch_add_explicit_u8 */
-MBED_FORCEINLINE int64_t core_util_atomic_fetch_add_explicit_s64(volatile int64_t *valuePtr, int64_t arg, mbed_memory_order order);
+MBED_FORCEINLINE int64_t core_util_atomic_fetch_add_explicit_s64(volatile int64_t *valuePtr,
+                                                                 int64_t           arg,
+                                                                 mbed_memory_order order);
 
 /** \copydoc core_util_atomic_fetch_add_u8 */
 MBED_FORCEINLINE void *core_util_atomic_fetch_add_ptr(void *volatile *valuePtr, ptrdiff_t arg);
 
 /** \copydoc core_util_atomic_fetch_add_explicit_u8 */
-MBED_FORCEINLINE void *core_util_atomic_fetch_add_explicit_ptr(void *volatile *valuePtr, ptrdiff_t arg, mbed_memory_order order);
+MBED_FORCEINLINE void *
+core_util_atomic_fetch_add_explicit_ptr(void *volatile *valuePtr, ptrdiff_t arg, mbed_memory_order order);
 
 /**
  * Atomic subtract.
@@ -735,55 +881,72 @@ MBED_INLINE_IF_EX uint8_t core_util_atomic_fetch_sub_u8(volatile uint8_t *valueP
 /** \copydoc core_util_atomic_fetch_sub_u8
  * @param order memory ordering constraint
  */
-MBED_FORCEINLINE uint8_t core_util_atomic_fetch_sub_explicit_u8(volatile uint8_t *valuePtr, uint8_t arg, mbed_memory_order order);
+MBED_FORCEINLINE uint8_t core_util_atomic_fetch_sub_explicit_u8(volatile uint8_t *valuePtr,
+                                                                uint8_t           arg,
+                                                                mbed_memory_order order);
 
 /** \copydoc core_util_atomic_fetch_sub_u8 */
 MBED_INLINE_IF_EX uint16_t core_util_atomic_fetch_sub_u16(volatile uint16_t *valuePtr, uint16_t arg);
 
 /** \copydoc core_util_atomic_fetch_sub_explicit_u8 */
-MBED_FORCEINLINE uint16_t core_util_atomic_fetch_sub_explicit_u16(volatile uint16_t *valuePtr, uint16_t arg, mbed_memory_order order);
+MBED_FORCEINLINE uint16_t core_util_atomic_fetch_sub_explicit_u16(volatile uint16_t *valuePtr,
+                                                                  uint16_t           arg,
+                                                                  mbed_memory_order  order);
 
 /** \copydoc core_util_atomic_fetch_sub_u8 */
 MBED_INLINE_IF_EX uint32_t core_util_atomic_fetch_sub_u32(volatile uint32_t *valuePtr, uint32_t arg);
 
 /** \copydoc core_util_atomic_fetch_sub_explicit_u8 */
-MBED_FORCEINLINE uint32_t core_util_atomic_fetch_sub_explicit_u32(volatile uint32_t *valuePtr, uint32_t arg, mbed_memory_order order);
+MBED_FORCEINLINE uint32_t core_util_atomic_fetch_sub_explicit_u32(volatile uint32_t *valuePtr,
+                                                                  uint32_t           arg,
+                                                                  mbed_memory_order  order);
 
 /** \copydoc core_util_atomic_fetch_sub_u8 */
 uint64_t core_util_atomic_fetch_sub_u64(volatile uint64_t *valuePtr, uint64_t arg);
 
 /** \copydoc core_util_atomic_fetch_sub_explicit_u8 */
-MBED_FORCEINLINE uint64_t core_util_atomic_fetch_sub_explicit_u64(volatile uint64_t *valuePtr, uint64_t arg, mbed_memory_order order);
+MBED_FORCEINLINE uint64_t core_util_atomic_fetch_sub_explicit_u64(volatile uint64_t *valuePtr,
+                                                                  uint64_t           arg,
+                                                                  mbed_memory_order  order);
 
 /** \copydoc core_util_atomic_fetch_sub_u8 */
 MBED_FORCEINLINE int8_t core_util_atomic_fetch_sub_s8(volatile int8_t *valuePtr, int8_t arg);
 
 /** \copydoc core_util_atomic_fetch_sub_explicit_u8 */
-MBED_FORCEINLINE int8_t core_util_atomic_fetch_sub_explicit_s8(volatile int8_t *valuePtr, int8_t arg, mbed_memory_order order);
+MBED_FORCEINLINE int8_t core_util_atomic_fetch_sub_explicit_s8(volatile int8_t * valuePtr,
+                                                               int8_t            arg,
+                                                               mbed_memory_order order);
 
 /** \copydoc core_util_atomic_fetch_sub_u8 */
 MBED_FORCEINLINE int16_t core_util_atomic_fetch_sub_s16(volatile int16_t *valuePtr, int16_t arg);
 
 /** \copydoc core_util_atomic_fetch_sub_explicit_u8 */
-MBED_FORCEINLINE int16_t core_util_atomic_fetch_sub_explicit_s16(volatile int16_t *valuePtr, int16_t arg, mbed_memory_order order);
+MBED_FORCEINLINE int16_t core_util_atomic_fetch_sub_explicit_s16(volatile int16_t *valuePtr,
+                                                                 int16_t           arg,
+                                                                 mbed_memory_order order);
 
 /** \copydoc core_util_atomic_fetch_sub_u8 */
 MBED_FORCEINLINE int32_t core_util_atomic_fetch_sub_s32(volatile int32_t *valuePtr, int32_t arg);
 
 /** \copydoc core_util_atomic_fetch_sub_explicit_u8 */
-MBED_FORCEINLINE int32_t core_util_atomic_fetch_sub_explicit_s32(volatile int32_t *valuePtr, int32_t arg, mbed_memory_order order);
+MBED_FORCEINLINE int32_t core_util_atomic_fetch_sub_explicit_s32(volatile int32_t *valuePtr,
+                                                                 int32_t           arg,
+                                                                 mbed_memory_order order);
 
 /** \copydoc core_util_atomic_fetch_sub_u8 */
 MBED_FORCEINLINE int64_t core_util_atomic_fetch_sub_s64(volatile int64_t *valuePtr, int64_t arg);
 
 /** \copydoc core_util_atomic_fetch_sub_explicit_u8 */
-MBED_FORCEINLINE int64_t core_util_atomic_fetch_sub_explicit_s64(volatile int64_t *valuePtr, int64_t arg, mbed_memory_order order);
+MBED_FORCEINLINE int64_t core_util_atomic_fetch_sub_explicit_s64(volatile int64_t *valuePtr,
+                                                                 int64_t           arg,
+                                                                 mbed_memory_order order);
 
 /** \copydoc core_util_atomic_fetch_sub_u8 */
 MBED_FORCEINLINE void *core_util_atomic_fetch_sub_ptr(void *volatile *valuePtr, ptrdiff_t arg);
 
 /** \copydoc core_util_atomic_fetch_sub_explicit_u8 */
-MBED_FORCEINLINE void *core_util_atomic_fetch_sub_explicit_ptr(void *volatile *valuePtr, ptrdiff_t arg, mbed_memory_order order);
+MBED_FORCEINLINE void *
+core_util_atomic_fetch_sub_explicit_ptr(void *volatile *valuePtr, ptrdiff_t arg, mbed_memory_order order);
 
 /**
  * Atomic bitwise and.
@@ -796,25 +959,33 @@ MBED_INLINE_IF_EX uint8_t core_util_atomic_fetch_and_u8(volatile uint8_t *valueP
 /** \copydoc core_util_atomic_fetch_and_u8
  * @param order memory ordering constraint
  */
-MBED_FORCEINLINE uint8_t core_util_atomic_fetch_and_explicit_u8(volatile uint8_t *valuePtr, uint8_t arg, mbed_memory_order order);
+MBED_FORCEINLINE uint8_t core_util_atomic_fetch_and_explicit_u8(volatile uint8_t *valuePtr,
+                                                                uint8_t           arg,
+                                                                mbed_memory_order order);
 
 /** \copydoc core_util_atomic_fetch_and_u8 */
 MBED_INLINE_IF_EX uint16_t core_util_atomic_fetch_and_u16(volatile uint16_t *valuePtr, uint16_t arg);
 
 /** \copydoc core_util_atomic_fetch_and_explicit_u8 */
-MBED_FORCEINLINE uint16_t core_util_atomic_fetch_and_explicit_u16(volatile uint16_t *valuePtr, uint16_t arg, mbed_memory_order order);
+MBED_FORCEINLINE uint16_t core_util_atomic_fetch_and_explicit_u16(volatile uint16_t *valuePtr,
+                                                                  uint16_t           arg,
+                                                                  mbed_memory_order  order);
 
 /** \copydoc core_util_atomic_fetch_and_u8 */
 MBED_INLINE_IF_EX uint32_t core_util_atomic_fetch_and_u32(volatile uint32_t *valuePtr, uint32_t arg);
 
 /** \copydoc core_util_atomic_fetch_and_explicit_u8 */
-MBED_FORCEINLINE uint32_t core_util_atomic_fetch_and_explicit_u32(volatile uint32_t *valuePtr, uint32_t arg, mbed_memory_order order);
+MBED_FORCEINLINE uint32_t core_util_atomic_fetch_and_explicit_u32(volatile uint32_t *valuePtr,
+                                                                  uint32_t           arg,
+                                                                  mbed_memory_order  order);
 
 /** \copydoc core_util_atomic_fetch_and_u8 */
 uint64_t core_util_atomic_fetch_and_u64(volatile uint64_t *valuePtr, uint64_t arg);
 
 /** \copydoc core_util_atomic_fetch_and_explicit_u8 */
-MBED_FORCEINLINE uint64_t core_util_atomic_fetch_and_explicit_u64(volatile uint64_t *valuePtr, uint64_t arg, mbed_memory_order order);
+MBED_FORCEINLINE uint64_t core_util_atomic_fetch_and_explicit_u64(volatile uint64_t *valuePtr,
+                                                                  uint64_t           arg,
+                                                                  mbed_memory_order  order);
 
 /**
  * Atomic bitwise inclusive or.
@@ -827,25 +998,33 @@ MBED_INLINE_IF_EX uint8_t core_util_atomic_fetch_or_u8(volatile uint8_t *valuePt
 /** \copydoc core_util_atomic_fetch_or_u8
  * @param order memory ordering constraint
  */
-MBED_FORCEINLINE uint8_t core_util_atomic_fetch_or_explicit_u8(volatile uint8_t *valuePtr, uint8_t arg, mbed_memory_order order);
+MBED_FORCEINLINE uint8_t core_util_atomic_fetch_or_explicit_u8(volatile uint8_t *valuePtr,
+                                                               uint8_t           arg,
+                                                               mbed_memory_order order);
 
 /** \copydoc core_util_atomic_fetch_or_u8 */
 MBED_INLINE_IF_EX uint16_t core_util_atomic_fetch_or_u16(volatile uint16_t *valuePtr, uint16_t arg);
 
 /** \copydoc core_util_atomic_fetch_or_explicit_u8 */
-MBED_FORCEINLINE uint16_t core_util_atomic_fetch_or_explicit_u16(volatile uint16_t *valuePtr, uint16_t arg, mbed_memory_order order);
+MBED_FORCEINLINE uint16_t core_util_atomic_fetch_or_explicit_u16(volatile uint16_t *valuePtr,
+                                                                 uint16_t           arg,
+                                                                 mbed_memory_order  order);
 
 /** \copydoc core_util_atomic_fetch_or_u8 */
 MBED_INLINE_IF_EX uint32_t core_util_atomic_fetch_or_u32(volatile uint32_t *valuePtr, uint32_t arg);
 
 /** \copydoc core_util_atomic_fetch_or_explicit_u8 */
-MBED_FORCEINLINE uint32_t core_util_atomic_fetch_or_explicit_u32(volatile uint32_t *valuePtr, uint32_t arg, mbed_memory_order order);
+MBED_FORCEINLINE uint32_t core_util_atomic_fetch_or_explicit_u32(volatile uint32_t *valuePtr,
+                                                                 uint32_t           arg,
+                                                                 mbed_memory_order  order);
 
 /** \copydoc core_util_atomic_fetch_or_u8 */
 uint64_t core_util_atomic_fetch_or_u64(volatile uint64_t *valuePtr, uint64_t arg);
 
 /** \copydoc core_util_atomic_fetch_or_explicit_u8 */
-MBED_FORCEINLINE uint64_t core_util_atomic_fetch_or_explicit_u64(volatile uint64_t *valuePtr, uint64_t arg, mbed_memory_order order);
+MBED_FORCEINLINE uint64_t core_util_atomic_fetch_or_explicit_u64(volatile uint64_t *valuePtr,
+                                                                 uint64_t           arg,
+                                                                 mbed_memory_order  order);
 
 /**
  * Atomic bitwise exclusive or.
@@ -858,25 +1037,33 @@ MBED_INLINE_IF_EX uint8_t core_util_atomic_fetch_xor_u8(volatile uint8_t *valueP
 /** \copydoc core_util_atomic_fetch_xor_u8
  * @param order memory ordering constraint
  */
-MBED_FORCEINLINE uint8_t core_util_atomic_fetch_xor_explicit_u8(volatile uint8_t *valuePtr, uint8_t arg, mbed_memory_order order);
+MBED_FORCEINLINE uint8_t core_util_atomic_fetch_xor_explicit_u8(volatile uint8_t *valuePtr,
+                                                                uint8_t           arg,
+                                                                mbed_memory_order order);
 
 /** \copydoc core_util_atomic_fetch_xor_u8 */
 MBED_INLINE_IF_EX uint16_t core_util_atomic_fetch_xor_u16(volatile uint16_t *valuePtr, uint16_t arg);
 
 /** \copydoc core_util_atomic_fetch_xor_explicit_u8 */
-MBED_FORCEINLINE uint16_t core_util_atomic_fetch_xor_explicit_u16(volatile uint16_t *valuePtr, uint16_t arg, mbed_memory_order order);
+MBED_FORCEINLINE uint16_t core_util_atomic_fetch_xor_explicit_u16(volatile uint16_t *valuePtr,
+                                                                  uint16_t           arg,
+                                                                  mbed_memory_order  order);
 
 /** \copydoc core_util_atomic_fetch_xor_u8 */
 MBED_INLINE_IF_EX uint32_t core_util_atomic_fetch_xor_u32(volatile uint32_t *valuePtr, uint32_t arg);
 
 /** \copydoc core_util_atomic_fetch_xor_explicit_u8 */
-MBED_FORCEINLINE uint32_t core_util_atomic_fetch_xor_explicit_u32(volatile uint32_t *valuePtr, uint32_t arg, mbed_memory_order order);
+MBED_FORCEINLINE uint32_t core_util_atomic_fetch_xor_explicit_u32(volatile uint32_t *valuePtr,
+                                                                  uint32_t           arg,
+                                                                  mbed_memory_order  order);
 
 /** \copydoc core_util_atomic_fetch_xor_u8 */
 uint64_t core_util_atomic_fetch_xor_u64(volatile uint64_t *valuePtr, uint64_t arg);
 
 /** \copydoc core_util_atomic_fetch_xor_explicit_u8 */
-MBED_FORCEINLINE uint64_t core_util_atomic_fetch_xor_explicit_u64(volatile uint64_t *valuePtr, uint64_t arg, mbed_memory_order order);
+MBED_FORCEINLINE uint64_t core_util_atomic_fetch_xor_explicit_u64(volatile uint64_t *valuePtr,
+                                                                  uint64_t           arg,
+                                                                  mbed_memory_order  order);
 
 #ifdef __cplusplus
 } // extern "C"
@@ -897,92 +1084,161 @@ MBED_FORCEINLINE uint64_t core_util_atomic_fetch_xor_explicit_u64(volatile uint6
 // being uint8_t and int.
 
 /** \copydoc core_util_atomic_load_u8 */
-template<typename T> T core_util_atomic_load(const volatile T *valuePtr) noexcept;
+template <typename T> T core_util_atomic_load(const volatile T *valuePtr) noexcept;
 /** \copydoc core_util_atomic_load_u8 */
-template<typename T> T core_util_atomic_load(const T *valuePtr) noexcept;
+template <typename T> T core_util_atomic_load(const T *valuePtr) noexcept;
 /** \copydoc core_util_atomic_store_u8 */
-template<typename T> void core_util_atomic_store(volatile T *valuePtr, mstd::type_identity_t<T> desiredValue) noexcept;
+template <typename T> void core_util_atomic_store(volatile T *valuePtr, mstd::type_identity_t<T> desiredValue) noexcept;
 /** \copydoc core_util_atomic_store_u8 */
-template<typename T> void core_util_atomic_store(T *valuePtr, mstd::type_identity_t<T> desiredValue) noexcept;
+template <typename T> void core_util_atomic_store(T *valuePtr, mstd::type_identity_t<T> desiredValue) noexcept;
 /** \copydoc core_util_atomic_exchange_u8 */
-template<typename T> T core_util_atomic_exchange(volatile T *ptr, mstd::type_identity_t<T> desiredValue) noexcept;
+template <typename T> T core_util_atomic_exchange(volatile T *ptr, mstd::type_identity_t<T> desiredValue) noexcept;
 /** \copydoc core_util_atomic_cas_u8 */
-template<typename T> bool core_util_atomic_compare_exchange_strong(volatile T *ptr, mstd::type_identity_t<T> *expectedCurrentValue, mstd::type_identity_t<T> desiredValue) noexcept;
+template <typename T>
+bool core_util_atomic_compare_exchange_strong(volatile T *              ptr,
+                                              mstd::type_identity_t<T> *expectedCurrentValue,
+                                              mstd::type_identity_t<T>  desiredValue) noexcept;
 /** \copydoc core_util_atomic_compare_exchange_weak_u8 */
-template<typename T> bool core_util_atomic_compare_exchange_weak(volatile T *ptr, mstd::type_identity_t<T> *expectedCurrentValue, mstd::type_identity_t<T> desiredValue) noexcept;
+template <typename T>
+bool core_util_atomic_compare_exchange_weak(volatile T *              ptr,
+                                            mstd::type_identity_t<T> *expectedCurrentValue,
+                                            mstd::type_identity_t<T>  desiredValue) noexcept;
 /** \copydoc core_util_fetch_add_u8 */
-template<typename T> T core_util_atomic_fetch_add(volatile T *valuePtr, mstd::type_identity_t<T> arg) noexcept;
+template <typename T> T core_util_atomic_fetch_add(volatile T *valuePtr, mstd::type_identity_t<T> arg) noexcept;
 /** \copydoc core_util_fetch_sub_u8 */
-template<typename T> T core_util_atomic_fetch_sub(volatile T *valuePtr, mstd::type_identity_t<T> arg) noexcept;
+template <typename T> T core_util_atomic_fetch_sub(volatile T *valuePtr, mstd::type_identity_t<T> arg) noexcept;
 /** \copydoc core_util_fetch_and_u8 */
-template<typename T> T core_util_atomic_fetch_and(volatile T *valuePtr, mstd::type_identity_t<T> arg) noexcept;
+template <typename T> T core_util_atomic_fetch_and(volatile T *valuePtr, mstd::type_identity_t<T> arg) noexcept;
 /** \copydoc core_util_fetch_or_u8 */
-template<typename T> T core_util_atomic_fetch_or(volatile T *valuePtr, mstd::type_identity_t<T> arg) noexcept;
+template <typename T> T core_util_atomic_fetch_or(volatile T *valuePtr, mstd::type_identity_t<T> arg) noexcept;
 /** \copydoc core_util_fetch_xor_u8 */
-template<typename T> T core_util_atomic_fetch_xor(volatile T *valuePtr, mstd::type_identity_t<T> arg) noexcept;
+template <typename T> T core_util_atomic_fetch_xor(volatile T *valuePtr, mstd::type_identity_t<T> arg) noexcept;
 
 /** \copydoc core_util_atomic_load_explicit_u8 */
-template<typename T> T core_util_atomic_load_explicit(const volatile T *valuePtr, mbed_memory_order order) noexcept;
+template <typename T> T core_util_atomic_load_explicit(const volatile T *valuePtr, mbed_memory_order order) noexcept;
 /** \copydoc core_util_atomic_load_explicit_u8 */
-template<typename T> T core_util_atomic_load_explicit(const T *valuePtr, mbed_memory_order order) noexcept;
+template <typename T> T core_util_atomic_load_explicit(const T *valuePtr, mbed_memory_order order) noexcept;
 /** \copydoc core_util_atomic_store_explicit_u8 */
-template<typename T> void core_util_atomic_store_explicit(volatile T *valuePtr, mstd::type_identity_t<T> desiredValue, mbed_memory_order order) noexcept;
+template <typename T>
+void core_util_atomic_store_explicit(volatile T *             valuePtr,
+                                     mstd::type_identity_t<T> desiredValue,
+                                     mbed_memory_order        order) noexcept;
 /** \copydoc core_util_atomic_store_explicit_u8 */
-template<typename T> void core_util_atomic_store_explicit(T *valuePtr, mstd::type_identity_t<T> desiredValue, mbed_memory_order order) noexcept;
+template <typename T>
+void core_util_atomic_store_explicit(T *                      valuePtr,
+                                     mstd::type_identity_t<T> desiredValue,
+                                     mbed_memory_order        order) noexcept;
 /** \copydoc core_util_atomic_exchange_explicit_u8 */
-template<typename T> T core_util_atomic_exchange_explicit(volatile T *ptr, mstd::type_identity_t<T> desiredValue, mbed_memory_order order) noexcept;
+template <typename T>
+T core_util_atomic_exchange_explicit(volatile T *             ptr,
+                                     mstd::type_identity_t<T> desiredValue,
+                                     mbed_memory_order        order) noexcept;
 /** \copydoc core_util_atomic_cas_explicit_u8 */
-template<typename T> bool core_util_atomic_compare_exchange_strong_explicit(volatile T *ptr, mstd::type_identity_t<T> *expectedCurrentValue, mstd::type_identity_t<T> desiredValue, mbed_memory_order success, mbed_memory_order failure) noexcept;
+template <typename T>
+bool core_util_atomic_compare_exchange_strong_explicit(volatile T *              ptr,
+                                                       mstd::type_identity_t<T> *expectedCurrentValue,
+                                                       mstd::type_identity_t<T>  desiredValue,
+                                                       mbed_memory_order         success,
+                                                       mbed_memory_order         failure) noexcept;
 /** \copydoc core_util_atomic_compare_exchange_weak_explicit_u8 */
-template<typename T> bool core_util_atomic_compare_exchange_weak_explicit(volatile T *ptr, mstd::type_identity_t<T> *expectedCurrentValue, mstd::type_identity_t<T> desiredValue, mbed_memory_order success, mbed_memory_order failure) noexcept;
+template <typename T>
+bool core_util_atomic_compare_exchange_weak_explicit(volatile T *              ptr,
+                                                     mstd::type_identity_t<T> *expectedCurrentValue,
+                                                     mstd::type_identity_t<T>  desiredValue,
+                                                     mbed_memory_order         success,
+                                                     mbed_memory_order         failure) noexcept;
 /** \copydoc core_util_fetch_add_explicit_u8 */
-template<typename T> T core_util_atomic_fetch_add_explicit(volatile T *valuePtr, mstd::type_identity_t<T> arg, mbed_memory_order order) noexcept;
+template <typename T>
+T core_util_atomic_fetch_add_explicit(volatile T *             valuePtr,
+                                      mstd::type_identity_t<T> arg,
+                                      mbed_memory_order        order) noexcept;
 /** \copydoc core_util_fetch_sub_explicit_u8 */
-template<typename T> T core_util_atomic_fetch_sub_explicit(volatile T *valuePtr, mstd::type_identity_t<T> arg, mbed_memory_order order) noexcept;
+template <typename T>
+T core_util_atomic_fetch_sub_explicit(volatile T *             valuePtr,
+                                      mstd::type_identity_t<T> arg,
+                                      mbed_memory_order        order) noexcept;
 /** \copydoc core_util_fetch_and_explicit_u8 */
-template<typename T> T core_util_atomic_fetch_and_explicit(volatile T *valuePtr, mstd::type_identity_t<T> arg, mbed_memory_order order) noexcept;
+template <typename T>
+T core_util_atomic_fetch_and_explicit(volatile T *             valuePtr,
+                                      mstd::type_identity_t<T> arg,
+                                      mbed_memory_order        order) noexcept;
 /** \copydoc core_util_fetch_or_explicit_u8 */
-template<typename T> T core_util_atomic_fetch_or_explicit(volatile T *valuePtr, mstd::type_identity_t<T> arg, mbed_memory_order order) noexcept;
+template <typename T>
+T core_util_atomic_fetch_or_explicit(volatile T *             valuePtr,
+                                     mstd::type_identity_t<T> arg,
+                                     mbed_memory_order        order) noexcept;
 /** \copydoc core_util_fetch_xor_explicit_u8 */
-template<typename T> T core_util_atomic_fetch_xor_explicit(volatile T *valuePtr, mstd::type_identity_t<T> arg, mbed_memory_order order) noexcept;
+template <typename T>
+T core_util_atomic_fetch_xor_explicit(volatile T *             valuePtr,
+                                      mstd::type_identity_t<T> arg,
+                                      mbed_memory_order        order) noexcept;
 
 /** \copydoc core_util_atomic_load_ptr */
-template<typename T> inline T *core_util_atomic_load(T *const volatile *valuePtr) noexcept;
+template <typename T> inline T *core_util_atomic_load(T *const volatile *valuePtr) noexcept;
 /** \copydoc core_util_atomic_load_ptr */
-template<typename T> inline T *core_util_atomic_load(T *const *valuePtr) noexcept;
+template <typename T> inline T *core_util_atomic_load(T *const *valuePtr) noexcept;
 /** \copydoc core_util_atomic_store_ptr */
-template<typename T> inline void core_util_atomic_store(T *volatile *valuePtr, mstd::type_identity_t<T> *desiredValue) noexcept;
+template <typename T>
+inline void core_util_atomic_store(T *volatile *valuePtr, mstd::type_identity_t<T> *desiredValue) noexcept;
 /** \copydoc core_util_atomic_store_ptr */
-template<typename T> inline void core_util_atomic_store(T **valuePtr, mstd::type_identity_t<T> *desiredValue) noexcept;
+template <typename T> inline void core_util_atomic_store(T **valuePtr, mstd::type_identity_t<T> *desiredValue) noexcept;
 /** \copydoc core_util_atomic_exchange_ptr */
-template<typename T> inline T *core_util_atomic_exchange(T *volatile *valuePtr, mstd::type_identity_t<T> *desiredValue) noexcept;
+template <typename T>
+inline T *core_util_atomic_exchange(T *volatile *valuePtr, mstd::type_identity_t<T> *desiredValue) noexcept;
 /** \copydoc core_util_atomic_cas_ptr */
-template<typename T> inline bool core_util_atomic_compare_exchange_strong(T *volatile *ptr, mstd::type_identity_t<T> **expectedCurrentValue, mstd::type_identity_t<T> *desiredValue) noexcept;
+template <typename T>
+inline bool core_util_atomic_compare_exchange_strong(T *volatile *              ptr,
+                                                     mstd::type_identity_t<T> **expectedCurrentValue,
+                                                     mstd::type_identity_t<T> * desiredValue) noexcept;
 /** \copydoc core_util_atomic_compare_exchange_weak_ptr */
-template<typename T> inline bool core_util_atomic_compare_exchange_weak(T *volatile *ptr, mstd::type_identity_t<T> **expectedCurrentValue, mstd::type_identity_t<T> *desiredValue) noexcept;
+template <typename T>
+inline bool core_util_atomic_compare_exchange_weak(T *volatile *              ptr,
+                                                   mstd::type_identity_t<T> **expectedCurrentValue,
+                                                   mstd::type_identity_t<T> * desiredValue) noexcept;
 /** \copydoc core_util_fetch_add_ptr */
-template<typename T> inline T *core_util_atomic_fetch_add(T *volatile *valuePtr, ptrdiff_t arg) noexcept;
+template <typename T> inline T *core_util_atomic_fetch_add(T *volatile *valuePtr, ptrdiff_t arg) noexcept;
 /** \copydoc core_util_fetch_sub_ptr */
-template<typename T> inline T *core_util_atomic_fetch_sub(T *volatile *valuePtr, ptrdiff_t arg) noexcept;
+template <typename T> inline T *core_util_atomic_fetch_sub(T *volatile *valuePtr, ptrdiff_t arg) noexcept;
 
 /** \copydoc core_util_atomic_load_explicit_ptr */
-template<typename T> inline T *core_util_atomic_load_explicit(T *const volatile *valuePtr, mbed_memory_order order) noexcept;
+template <typename T>
+inline T *core_util_atomic_load_explicit(T *const volatile *valuePtr, mbed_memory_order order) noexcept;
 /** \copydoc core_util_atomic_load_explicit_ptr */
-template<typename T> inline T *core_util_atomic_load_explicit(T *const *valuePtr, mbed_memory_order order) noexcept;
+template <typename T> inline T *core_util_atomic_load_explicit(T *const *valuePtr, mbed_memory_order order) noexcept;
 /** \copydoc core_util_atomic_store_explicit_ptr */
-template<typename T> inline void core_util_atomic_store_explicit(T *volatile *valuePtr, mstd::type_identity_t<T> *desiredValue, mbed_memory_order order) noexcept;
+template <typename T>
+inline void core_util_atomic_store_explicit(T *volatile *             valuePtr,
+                                            mstd::type_identity_t<T> *desiredValue,
+                                            mbed_memory_order         order) noexcept;
 /** \copydoc core_util_atomic_store_explicit_ptr */
-template<typename T> inline void core_util_atomic_store_explicit(T **valuePtr, mstd::type_identity_t<T> *desiredValue, mbed_memory_order order) noexcept;
+template <typename T>
+inline void
+core_util_atomic_store_explicit(T **valuePtr, mstd::type_identity_t<T> *desiredValue, mbed_memory_order order) noexcept;
 /** \copydoc core_util_atomic_exchange_explicit_ptr */
-template<typename T> inline T *core_util_atomic_exchange_explicit(T *volatile *valuePtr, mstd::type_identity_t<T> *desiredValue, mbed_memory_order order) noexcept;
+template <typename T>
+inline T *core_util_atomic_exchange_explicit(T *volatile *             valuePtr,
+                                             mstd::type_identity_t<T> *desiredValue,
+                                             mbed_memory_order         order) noexcept;
 /** \copydoc core_util_atomic_cas_explicit_ptr */
-template<typename T> inline bool core_util_atomic_compare_exchange_strong_explicit(T *volatile *ptr, mstd::type_identity_t<T> **expectedCurrentValue, mstd::type_identity_t<T> *desiredValue, mbed_memory_order success, mbed_memory_order failure) noexcept;
+template <typename T>
+inline bool core_util_atomic_compare_exchange_strong_explicit(T *volatile *              ptr,
+                                                              mstd::type_identity_t<T> **expectedCurrentValue,
+                                                              mstd::type_identity_t<T> * desiredValue,
+                                                              mbed_memory_order          success,
+                                                              mbed_memory_order          failure) noexcept;
 /** \copydoc core_util_atomic_compare_exchange_weak_explicit_ptr */
-template<typename T> inline bool core_util_atomic_compare_exchange_weak_explicit(T *volatile *ptr, mstd::type_identity_t<T> **expectedCurrentValue, mstd::type_identity_t<T> *desiredValue, mbed_memory_order success, mbed_memory_order failure) noexcept;
+template <typename T>
+inline bool core_util_atomic_compare_exchange_weak_explicit(T *volatile *              ptr,
+                                                            mstd::type_identity_t<T> **expectedCurrentValue,
+                                                            mstd::type_identity_t<T> * desiredValue,
+                                                            mbed_memory_order          success,
+                                                            mbed_memory_order          failure) noexcept;
 /** \copydoc core_util_fetch_add_explicit_ptr */
-template<typename T> inline T *core_util_atomic_fetch_add_explicit(T *volatile *valuePtr, ptrdiff_t arg, mbed_memory_order order) noexcept;
+template <typename T>
+inline T *core_util_atomic_fetch_add_explicit(T *volatile *valuePtr, ptrdiff_t arg, mbed_memory_order order) noexcept;
 /** \copydoc core_util_fetch_sub_explicit_ptr */
-template<typename T> inline T *core_util_atomic_fetch_sub_explicit(T *volatile *valuePtr, ptrdiff_t arg, mbed_memory_order order) noexcept;
+template <typename T>
+inline T *core_util_atomic_fetch_sub_explicit(T *volatile *valuePtr, ptrdiff_t arg, mbed_memory_order order) noexcept;
 
 #endif // __cplusplus
 
@@ -994,6 +1250,3 @@ template<typename T> inline T *core_util_atomic_fetch_sub_explicit(T *volatile *
 #include "bootstrap/mbed_atomic_impl.h"
 
 #endif // __MBED_UTIL_ATOMICL_H__
-
-
-

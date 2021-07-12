@@ -19,19 +19,14 @@
 
 int main()
 {
-    spi_t spi_object;
+    spi_t   spi_object;
     uint8_t ret;
     uint8_t val = 0xAA;
 
-    spi_init(
-        &spi_object,
-        ARDUINO_UNO_SPI_MOSI,
-        ARDUINO_UNO_SPI_MISO,
-        ARDUINO_UNO_SPI_SCK,
-        ARDUINO_UNO_SPI_CS
-    );
-    
+    spi_init(&spi_object, ARDUINO_UNO_SPI_MOSI, ARDUINO_UNO_SPI_MISO, ARDUINO_UNO_SPI_SCK, ARDUINO_UNO_SPI_CS);
+
     ret = spi_master_write(&spi_object, val);
 
-    while(1);
+    while (1)
+        ;
 }

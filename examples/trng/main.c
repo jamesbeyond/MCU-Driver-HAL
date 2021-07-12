@@ -18,14 +18,15 @@
 
 int main()
 {
-    trng_t trng_object;
+    trng_t  trng_object;
     uint8_t buffer[32] = {0};
-    int res = 0;
-    size_t out_length = 0;
+    int     res        = 0;
+    size_t  out_length = 0;
 
     trng_init(&trng_object);
 
     res = trng_get_bytes(&trng_object, buffer, sizeof(buffer), &out_length);
 
-    while(1);
+    while (1)
+        ;
 }

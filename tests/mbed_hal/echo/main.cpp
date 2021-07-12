@@ -36,16 +36,15 @@ void fill_buffer(char *buffer, unsigned int length, unsigned int index)
 }
 
 // Echo server (echo payload to host)
-template<int N>
-void test_case_echo_server_x()
+template <int N> void test_case_echo_server_x()
 {
-    char _key[11] = {};
-    char _tx_value[PAYLOAD_LENGTH + 1] = {};
-    char _rx_value[PAYLOAD_LENGTH + 1] = {};
-    const int echo_count = N;
-    const char _echo_count_key_const[] = "echo_count";
-    const char _echo_key_const[] = "echo";
-    int expected_key = 1;
+    char       _key[11]                      = {};
+    char       _tx_value[PAYLOAD_LENGTH + 1] = {};
+    char       _rx_value[PAYLOAD_LENGTH + 1] = {};
+    const int  echo_count                    = N;
+    const char _echo_count_key_const[]       = "echo_count";
+    const char _echo_key_const[]             = "echo";
+    int        expected_key                  = 1;
 
     // Send up the echo count
     greentea_send_kv(_echo_count_key_const, echo_count);
@@ -88,7 +87,4 @@ utest::v1::status_t greentea_test_setup(const size_t number_of_cases)
 
 Specification specification(greentea_test_setup, cases, greentea_test_teardown_handler);
 
-int main()
-{
-    Harness::run(specification);
-}
+int main() { Harness::run(specification); }
