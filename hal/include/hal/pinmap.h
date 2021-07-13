@@ -30,17 +30,17 @@ extern "C" {
 
 typedef struct {
     PinName pin;
-    int peripheral;
-    int function;
+    int     peripheral;
+    int     function;
 } PinMap;
 
 typedef struct {
-    uint32_t count;
+    uint32_t       count;
     const PinName *pins;
 } PinList;
 
 typedef struct {
-    uint32_t count;
+    uint32_t   count;
     const int *peripheral;
 } PeripheralList;
 
@@ -118,7 +118,12 @@ uint32_t pinmap_find_function(PinName pin, const PinMap *map);
  * @return true if a suitable combination of pins was found and
  *         written to the pins array, otherwise false
  */
-bool pinmap_find_peripheral_pins(const PinList *whitelist, const PinList *blacklist, int per, const PinMap *const *maps, PinName **pins, uint32_t count);
+bool pinmap_find_peripheral_pins(const PinList *      whitelist,
+                                 const PinList *      blacklist,
+                                 int                  per,
+                                 const PinMap *const *maps,
+                                 PinName **           pins,
+                                 uint32_t             count);
 
 /**
  * Check if the pin is in the list
@@ -195,7 +200,7 @@ const PeripheralList *pinmap_uart_restricted_peripherals(void);
  */
 const PinList *pinmap_gpio_restricted_pins(void);
 
-#if defined (TARGET_FF_ARDUINO) || (TARGET_FF_ARDUINO_UNO)
+#if defined(TARGET_FF_ARDUINO) || (TARGET_FF_ARDUINO_UNO)
 
 /**
  * Get the pin list of the Arduino form factor
@@ -221,12 +226,12 @@ const char *pinmap_ff_arduino_uno_pin_to_string(PinName pin);
 
 #ifdef MBED_CONF_TARGET_DEFAULT_FORM_FACTOR
 
-#define PINMAP_DEFAULT_PINS_(name)              pinmap_ff_ ## name ## _pins
-#define PINMAP_DEFAULT_PIN_TO_STRING_(name)     pinmap_ff_ ## name ## _pin_to_string
-#define PINMAP_DEFAULT_PINS(name)               PINMAP_DEFAULT_PINS_(name)
-#define PINMAP_DEFAULT_PIN_TO_STRING(name)      PINMAP_DEFAULT_PIN_TO_STRING_(name)
-#define pinmap_ff_default_pins                  PINMAP_DEFAULT_PINS(MBED_CONF_TARGET_DEFAULT_FORM_FACTOR)
-#define pinmap_ff_default_pin_to_string         PINMAP_DEFAULT_PIN_TO_STRING(MBED_CONF_TARGET_DEFAULT_FORM_FACTOR)
+#define PINMAP_DEFAULT_PINS_(name)          pinmap_ff_##name##_pins
+#define PINMAP_DEFAULT_PIN_TO_STRING_(name) pinmap_ff_##name##_pin_to_string
+#define PINMAP_DEFAULT_PINS(name)           PINMAP_DEFAULT_PINS_(name)
+#define PINMAP_DEFAULT_PIN_TO_STRING(name)  PINMAP_DEFAULT_PIN_TO_STRING_(name)
+#define pinmap_ff_default_pins              PINMAP_DEFAULT_PINS(MBED_CONF_TARGET_DEFAULT_FORM_FACTOR)
+#define pinmap_ff_default_pin_to_string     PINMAP_DEFAULT_PIN_TO_STRING(MBED_CONF_TARGET_DEFAULT_FORM_FACTOR)
 
 /**
  * Get the pin list of the default form factor

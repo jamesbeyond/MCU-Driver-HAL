@@ -37,32 +37,20 @@ static inline void _gpio_init_out(gpio_t *gpio, PinName pin, PinMode mode, int v
     }
 }
 
-void gpio_init_in(gpio_t *gpio, PinName pin)
-{
-    gpio_init_in_ex(gpio, pin, PullDefault);
-}
+void gpio_init_in(gpio_t *gpio, PinName pin) { gpio_init_in_ex(gpio, pin, PullDefault); }
 
-void gpio_init_in_ex(gpio_t *gpio, PinName pin, PinMode mode)
-{
-    _gpio_init_in(gpio, pin, mode);
-}
+void gpio_init_in_ex(gpio_t *gpio, PinName pin, PinMode mode) { _gpio_init_in(gpio, pin, mode); }
 
-void gpio_init_out(gpio_t *gpio, PinName pin)
-{
-    gpio_init_out_ex(gpio, pin, 0);
-}
+void gpio_init_out(gpio_t *gpio, PinName pin) { gpio_init_out_ex(gpio, pin, 0); }
 
-void gpio_init_out_ex(gpio_t *gpio, PinName pin, int value)
-{
-    _gpio_init_out(gpio, pin, PullNone, value);
-}
+void gpio_init_out_ex(gpio_t *gpio, PinName pin, int value) { _gpio_init_out(gpio, pin, PullNone, value); }
 
 void gpio_init_inout(gpio_t *gpio, PinName pin, PinDirection direction, PinMode mode, int value)
 {
     if (direction == PIN_INPUT) {
         _gpio_init_in(gpio, pin, mode);
         if (pin != NC) {
-            gpio_write(gpio, value);    // we prepare the value in case it is switched later
+            gpio_write(gpio, value); // we prepare the value in case it is switched later
         }
     } else {
         _gpio_init_out(gpio, pin, mode, value);
@@ -75,7 +63,7 @@ MBED_WEAK void gpio_get_capabilities(gpio_t *gpio, gpio_capabilities_t *cap)
     (void)gpio; // By default, every pin supports all basic input pull modes.
     cap->pull_none = 1;
     cap->pull_down = 1;
-    cap->pull_up = 1;
+    cap->pull_up   = 1;
 }
 
 typedef enum {
@@ -86,7 +74,7 @@ MBED_WEAK const PinMap *gpio_pinmap()
 {
     // Targets should override this weak implementation to provide correct data.
     static const PinMap empty_gpio_pinmap[] = {
-#if defined (TARGET_FF_ARDUINO) || (TARGET_FF_ARDUINO_UNO)
+#if defined(TARGET_FF_ARDUINO) || (TARGET_FF_ARDUINO_UNO)
         {ARDUINO_UNO_D0, DEFAULT_GPIO, 0},
         {ARDUINO_UNO_D1, DEFAULT_GPIO, 0},
         {ARDUINO_UNO_D2, DEFAULT_GPIO, 0},

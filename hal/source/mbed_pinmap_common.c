@@ -74,7 +74,9 @@ uint32_t pinmap_peripheral(PinName pin, const PinMap *map)
     }
     peripheral = pinmap_find_peripheral(pin, map);
     if ((uint32_t)NC == peripheral) { // no mapping available
-        MBED_ERROR1(MBED_MAKE_ERROR(MBED_MODULE_PLATFORM, MBED_ERROR_CODE_PINMAP_INVALID), "pinmap not found for peripheral", pin);
+        MBED_ERROR1(MBED_MAKE_ERROR(MBED_MODULE_PLATFORM, MBED_ERROR_CODE_PINMAP_INVALID),
+                    "pinmap not found for peripheral",
+                    pin);
     }
     return peripheral;
 }
@@ -99,12 +101,19 @@ uint32_t pinmap_function(PinName pin, const PinMap *map)
     }
     function = pinmap_find_function(pin, map);
     if ((uint32_t)NC == function) { // no mapping available
-        MBED_ERROR1(MBED_MAKE_ERROR(MBED_MODULE_PLATFORM, MBED_ERROR_CODE_PINMAP_INVALID), "pinmap not found for function", pin);
+        MBED_ERROR1(MBED_MAKE_ERROR(MBED_MODULE_PLATFORM, MBED_ERROR_CODE_PINMAP_INVALID),
+                    "pinmap not found for function",
+                    pin);
     }
     return function;
 }
 
-bool pinmap_find_peripheral_pins(const PinList *whitelist, const PinList *blacklist, int per, const PinMap *const *maps, PinName **pins, uint32_t count)
+bool pinmap_find_peripheral_pins(const PinList *      whitelist,
+                                 const PinList *      blacklist,
+                                 int                  per,
+                                 const PinMap *const *maps,
+                                 PinName **           pins,
+                                 uint32_t             count)
 {
     /*
      * This function uses recursion to find a suitable set of pins which meet the requirements.
@@ -118,16 +127,20 @@ bool pinmap_find_peripheral_pins(const PinList *whitelist, const PinList *blackl
      *      2. Given 4 maps, a peripheral and 1 pin find 3 suitable pins
      *          3. Given 4 maps, a peripheral and 2 pins find 2 suitable pins
      *              4. Given 4 maps, a peripheral and 3 pins find 1 suitable pin
-     *              4. Return success if all pins are found, return failure if there are no suitable pins, otherwise choose the next pin and retry
-     *          3. Return success if all pins are found, return failure if there are no suitable pins, otherwise choose the next pin and retry
-     *      2. Return success if all pins are found, return failure if there are no suitable pins, otherwise choose the next pin and retry
-     *  1. Return success if all pins are found, return failure if there are no suitable pins, otherwise choose the next pin and retry
+     *              4. Return success if all pins are found, return failure if there are no suitable pins, otherwise
+     * choose the next pin and retry
+     *          3. Return success if all pins are found, return failure if there are no suitable pins, otherwise choose
+     * the next pin and retry
+     *      2. Return success if all pins are found, return failure if there are no suitable pins, otherwise choose the
+     * next pin and retry
+     *  1. Return success if all pins are found, return failure if there are no suitable pins, otherwise choose the next
+     * pin and retry
      *
      */
 
     for (uint32_t i = 0; i < count; i++) {
         const PinMap *map = maps[i];
-        PinName *pin = pins[i];
+        PinName *     pin = pins[i];
         if (*pin == NC) {
             for (; map->pin != NC; map++) {
                 if (map->peripheral != per) {

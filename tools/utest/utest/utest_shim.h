@@ -28,18 +28,18 @@
 #include "utest/utest_scheduler.h"
 
 #ifndef __deprecated_message
-#   if defined (__ICCARM__)
-#       define __deprecated_message(msg)
-#   else
-#       define __deprecated_message(msg) __attribute__((deprecated(msg)))
-#   endif
+#if defined(__ICCARM__)
+#define __deprecated_message(msg)
+#else
+#define __deprecated_message(msg) __attribute__((deprecated(msg)))
+#endif
 #endif
 
 #ifndef UTEST_ENTER_CRITICAL_SECTION
-#	define UTEST_ENTER_CRITICAL_SECTION utest_v1_enter_critical_section()
+#define UTEST_ENTER_CRITICAL_SECTION utest_v1_enter_critical_section()
 #endif
 #ifndef UTEST_LEAVE_CRITICAL_SECTION
-#	define UTEST_LEAVE_CRITICAL_SECTION utest_v1_leave_critical_section()
+#define UTEST_LEAVE_CRITICAL_SECTION utest_v1_leave_critical_section()
 #endif
 
 #ifdef __cplusplus

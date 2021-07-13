@@ -27,55 +27,52 @@ using namespace utest::v1;
 static void selftest_failure_handler(const failure_t);
 static void test_failure_handler(const failure_t);
 
+const handlers_t utest::v1::greentea_abort_handlers = {default_greentea_test_setup_handler,
+                                                       greentea_test_teardown_handler,
+                                                       test_failure_handler,
+                                                       greentea_case_setup_handler,
+                                                       greentea_case_teardown_handler,
+                                                       greentea_case_failure_abort_handler};
 
-const handlers_t utest::v1::greentea_abort_handlers = {
-    default_greentea_test_setup_handler,
-    greentea_test_teardown_handler,
-    test_failure_handler,
-    greentea_case_setup_handler,
-    greentea_case_teardown_handler,
-    greentea_case_failure_abort_handler
-};
+const handlers_t utest::v1::greentea_continue_handlers = {default_greentea_test_setup_handler,
+                                                          greentea_test_teardown_handler,
+                                                          test_failure_handler,
+                                                          greentea_case_setup_handler,
+                                                          greentea_case_teardown_handler,
+                                                          greentea_case_failure_continue_handler};
 
-const handlers_t utest::v1::greentea_continue_handlers = {
-    default_greentea_test_setup_handler,
-    greentea_test_teardown_handler,
-    test_failure_handler,
-    greentea_case_setup_handler,
-    greentea_case_teardown_handler,
-    greentea_case_failure_continue_handler
-};
-
-const handlers_t utest::v1::selftest_handlers = {
-    default_greentea_test_setup_handler,
-    greentea_test_teardown_handler,
-    selftest_failure_handler,
-    greentea_case_setup_handler,
-    greentea_case_teardown_handler,
-    greentea_case_failure_continue_handler
-};
-
+const handlers_t utest::v1::selftest_handlers = {default_greentea_test_setup_handler,
+                                                 greentea_test_teardown_handler,
+                                                 selftest_failure_handler,
+                                                 greentea_case_setup_handler,
+                                                 greentea_case_teardown_handler,
+                                                 greentea_case_failure_continue_handler};
 
 // --- SPECIAL HANDLERS ---
 
-static void selftest_failure_handler(const failure_t failure) {
+static void selftest_failure_handler(const failure_t failure)
+{
     UTEST_LOG_FUNCTION();
-    if (failure.location == LOCATION_TEST_SETUP || failure.location == LOCATION_TEST_TEARDOWN || failure.reason == REASON_ASSERTION) {
+    if (failure.location == LOCATION_TEST_SETUP || failure.location == LOCATION_TEST_TEARDOWN ||
+        failure.reason == REASON_ASSERTION) {
         verbose_test_failure_handler(failure);
     }
     if (failure.reason == REASON_ASSERTION) {
         UTEST_DUMP_TRACE
         GREENTEA_TESTSUITE_RESULT(false);
-        while(1) ;
+        while (1)
+            ;
     }
 }
 
-static void test_failure_handler(const failure_t failure) {
+static void test_failure_handler(const failure_t failure)
+{
     UTEST_LOG_FUNCTION();
     if (failure.location == LOCATION_TEST_SETUP || failure.location == LOCATION_TEST_TEARDOWN) {
         verbose_test_failure_handler(failure);
         GREENTEA_TESTSUITE_RESULT(false);
-        while(1) ;
+        while (1)
+            ;
     }
 }
 
@@ -93,7 +90,6 @@ utest::v1::status_t utest::v1::default_greentea_test_setup_handler(const size_t 
     GREENTEA_SETUP(UTEST_DEFAULT_GREENTEA_TIMEOUT, UTEST_DEFAULT_HOST_TEST_NAME);
     return greentea_test_setup_handler(number_of_cases);
 }
-
 
 utest::v1::status_t utest::v1::greentea_test_setup_handler(const size_t number_of_cases)
 {
@@ -126,7 +122,10 @@ utest::v1::status_t utest::v1::greentea_case_setup_handler(const Case *const sou
     return status;
 }
 
-utest::v1::status_t utest::v1::greentea_case_teardown_handler(const Case *const source, const size_t passed, const size_t failed, const failure_t failure)
+utest::v1::status_t utest::v1::greentea_case_teardown_handler(const Case *const source,
+                                                              const size_t      passed,
+                                                              const size_t      failed,
+                                                              const failure_t   failure)
 {
     UTEST_LOG_FUNCTION();
     greentea_send_kv(TEST_ENV_TESTCASE_FINISH, source->get_description(), passed, failed);

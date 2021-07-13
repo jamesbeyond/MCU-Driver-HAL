@@ -15,11 +15,11 @@
  */
 
 #if !DEVICE_I2C
-#error [NOT_SUPPORTED] I2C not supported for this target
+#error[NOT_SUPPORTED] I2C not supported for this target
 #elif !COMPONENT_FPGA_CI_TEST_SHIELD
-#error [NOT_SUPPORTED] FPGA CI Test Shield is needed to run this test
+#error[NOT_SUPPORTED] FPGA CI Test Shield is needed to run this test
 #elif !(defined(TARGET_FF_ARDUINO) || defined(TARGET_FF_ARDUINO_UNO)) && !defined(MBED_CONF_TARGET_DEFAULT_FORM_FACTOR)
-#error [NOT_SUPPORTED] Test not supported for this form factor
+#error[NOT_SUPPORTED] Test not supported for this form factor
 #else
 
 #include "utest/utest.h"
@@ -35,10 +35,10 @@
 
 using namespace utest::v1;
 
-#define NACK    0
-#define ACK     1
-#define TIMEOUT 2
-#define I2C_DEV_ADDR 0x98//default i2c slave address on FPGA is 0x98 until modified
+#define NACK         0
+#define ACK          1
+#define TIMEOUT      2
+#define I2C_DEV_ADDR 0x98 // default i2c slave address on FPGA is 0x98 until modified
 const int TRANSFER_COUNT = 300;
 
 I2CTester tester(DefaultFormFactor::pins(), DefaultFormFactor::restricted_pins());
@@ -53,8 +53,7 @@ void fpga_test_i2c_init_free(PinName sda, PinName scl)
     i2c_free(&obj);
 }
 
-template<bool init_direct>
-void fpga_i2c_test_write(PinName sda, PinName scl)
+template <bool init_direct> void fpga_i2c_test_write(PinName sda, PinName scl)
 {
     // Remap pins for test
     tester.reset();
@@ -72,7 +71,7 @@ void fpga_i2c_test_write(PinName sda, PinName scl)
         const i2c_pinmap_t pinmap = get_i2c_pinmap(sda, scl);
         i2c_init_direct(&i2c, &pinmap);
 #else
-        //skip this test case if static pinmap is not supported
+        // skip this test case if static pinmap is not supported
         return;
 #endif
     } else {
@@ -94,15 +93,15 @@ void fpga_i2c_test_write(PinName sda, PinName scl)
         data_in[i] = 0;
     }
 
-    int num_writes;
-    int num_reads;
-    int num_acks;
-    int num_nacks;
-    int num_starts;
-    int num_stops;
+    int      num_writes;
+    int      num_reads;
+    int      num_acks;
+    int      num_nacks;
+    int      num_starts;
+    int      num_stops;
     uint32_t checksum;
-    int num_dev_addr_matches;
-    int ack_nack;//0 if NACK was received, 1 if ACK was received, 2 for timeout
+    int      num_dev_addr_matches;
+    int      ack_nack; // 0 if NACK was received, 1 if ACK was received, 2 for timeout
 
     // Reset tester stats and select I2C
     tester.peripherals_reset();
@@ -111,15 +110,16 @@ void fpga_i2c_test_write(PinName sda, PinName scl)
     // Write data for I2C complete transaction
     // Will write 0-(TRANSFER_COUNT-1) to FPGA, checksum must match checksum calculated in parallel on FPGA
     num_dev_addr_matches = 0;
-    num_writes = 0;
-    num_reads = 0;
-    num_starts = 0;
-    num_stops = 0;
-    num_acks = 0;
-    num_nacks = 0;
-    checksum = 0;
+    num_writes           = 0;
+    num_reads            = 0;
+    num_starts           = 0;
+    num_stops            = 0;
+    num_acks             = 0;
+    num_nacks            = 0;
+    checksum             = 0;
 
-    num_writes = i2c_write(&i2c, I2C_DEV_ADDR, (char *)data_out, TRANSFER_COUNT, true); //transaction ends with a stop condition
+    num_writes =
+        i2c_write(&i2c, I2C_DEV_ADDR, (char *)data_out, TRANSFER_COUNT, true); // transaction ends with a stop condition
     num_acks = num_writes + 1;
     num_starts += 1;
     num_stops += 1;
@@ -152,8 +152,7 @@ void fpga_i2c_test_write(PinName sda, PinName scl)
     i2c_free(&i2c);
 }
 
-template<bool init_direct>
-void fpga_i2c_test_read(PinName sda, PinName scl)
+template <bool init_direct> void fpga_i2c_test_read(PinName sda, PinName scl)
 {
     // Remap pins for test
     tester.reset();
@@ -188,15 +187,15 @@ void fpga_i2c_test_read(PinName sda, PinName scl)
         data_in[i] = 0;
     }
 
-    int num_writes;
-    int num_reads;
-    int num_acks;
-    int num_nacks;
-    int num_starts;
-    int num_stops;
+    int      num_writes;
+    int      num_reads;
+    int      num_acks;
+    int      num_nacks;
+    int      num_starts;
+    int      num_stops;
     uint32_t checksum;
-    int num_dev_addr_matches;
-    int ack_nack;//0 if NACK was received, 1 if ACK was received, 2 for timeout
+    int      num_dev_addr_matches;
+    int      ack_nack; // 0 if NACK was received, 1 if ACK was received, 2 for timeout
 
     // Reset tester stats and select I2C
     tester.peripherals_reset();
@@ -205,15 +204,16 @@ void fpga_i2c_test_read(PinName sda, PinName scl)
     // Read data for I2C complete transaction
     // Will read <TRANSFER_COUNT> bytes, checksum must match checksum calculated in parallel on FPGA
     num_dev_addr_matches = 0;
-    num_writes = 0;
-    num_reads = 0;
-    num_starts = 0;
-    num_stops = 0;
-    num_acks = 0;
-    num_nacks = 0;
-    checksum = 0;
+    num_writes           = 0;
+    num_reads            = 0;
+    num_starts           = 0;
+    num_stops            = 0;
+    num_acks             = 0;
+    num_nacks            = 0;
+    checksum             = 0;
 
-    num_reads = i2c_read(&i2c, (I2C_DEV_ADDR | 1), (char *)data_in, TRANSFER_COUNT, true); //transaction ends with a stop condition
+    num_reads = i2c_read(
+        &i2c, (I2C_DEV_ADDR | 1), (char *)data_in, TRANSFER_COUNT, true); // transaction ends with a stop condition
     num_starts += 1;
     num_stops += 1;
     num_acks += 1;
@@ -275,15 +275,15 @@ void fpga_i2c_test_byte_write(PinName sda, PinName scl)
         data_in[i] = 0;
     }
 
-    int num_writes;
-    int num_reads;
-    int num_acks;
-    int num_nacks;
-    int num_starts;
-    int num_stops;
+    int      num_writes;
+    int      num_reads;
+    int      num_acks;
+    int      num_nacks;
+    int      num_starts;
+    int      num_stops;
     uint32_t checksum;
-    int num_dev_addr_matches;
-    int ack_nack;//0 if NACK was received, 1 if ACK was received, 2 for timeout
+    int      num_dev_addr_matches;
+    int      ack_nack; // 0 if NACK was received, 1 if ACK was received, 2 for timeout
 
     // Reset tester stats and select I2C
     tester.peripherals_reset();
@@ -292,21 +292,21 @@ void fpga_i2c_test_byte_write(PinName sda, PinName scl)
     // Write data for I2C single byte transfers
     // Will write 0-(TRANSFER_COUNT-1) to FPGA, checksum must match checksum calculated in parallel on FPGA
     num_dev_addr_matches = 0;
-    num_writes = 0;
-    num_reads = 0;
-    num_starts = 0;
-    num_stops = 0;
-    num_acks = 0;
-    num_nacks = 0;
-    checksum = 0;
+    num_writes           = 0;
+    num_reads            = 0;
+    num_starts           = 0;
+    num_stops            = 0;
+    num_acks             = 0;
+    num_nacks            = 0;
+    checksum             = 0;
 
-    i2c_start(&i2c);//start condition
+    i2c_start(&i2c); // start condition
     num_starts += 1;
-    i2c_byte_write(&i2c, I2C_DEV_ADDR);//send device address
+    i2c_byte_write(&i2c, I2C_DEV_ADDR); // send device address
     num_dev_addr_matches += 1;
     num_acks += 1;
     for (int i = 0; i < TRANSFER_COUNT; i++) {
-        ack_nack = i2c_byte_write(&i2c, data_out[i]);//send data
+        ack_nack = i2c_byte_write(&i2c, data_out[i]); // send data
         if (ack_nack == ACK) {
             num_acks += 1;
         } else if (ack_nack == NACK) {
@@ -373,15 +373,15 @@ void fpga_i2c_test_byte_read(PinName sda, PinName scl)
         data_in[i] = 0;
     }
 
-    int num_writes;
-    int num_reads;
-    int num_acks;
-    int num_nacks;
-    int num_starts;
-    int num_stops;
+    int      num_writes;
+    int      num_reads;
+    int      num_acks;
+    int      num_nacks;
+    int      num_starts;
+    int      num_stops;
     uint32_t checksum;
-    int num_dev_addr_matches;
-    int ack_nack;//0 if NACK was received, 1 if ACK was received, 2 for timeout
+    int      num_dev_addr_matches;
+    int      ack_nack; // 0 if NACK was received, 1 if ACK was received, 2 for timeout
 
     // Reset tester stats and select I2C
     tester.peripherals_reset();
@@ -394,27 +394,27 @@ void fpga_i2c_test_byte_read(PinName sda, PinName scl)
     // Read data for I2C single byte transfers
     // Will read <TRANSFER_COUNT> bytes, checksum must match checksum calculated in parallel on FPGA
     num_dev_addr_matches = 0;
-    num_writes = 0;
-    num_reads = 0;
-    num_starts = 0;
-    num_stops = 0;
-    num_acks = 0;
-    num_nacks = 0;
-    checksum = 0;
+    num_writes           = 0;
+    num_reads            = 0;
+    num_starts           = 0;
+    num_stops            = 0;
+    num_acks             = 0;
+    num_nacks            = 0;
+    checksum             = 0;
 
-    i2c_start(&i2c);//start condition
+    i2c_start(&i2c); // start condition
     num_starts += 1;
-    i2c_byte_write(&i2c, (I2C_DEV_ADDR | 1));//send device address for reading
+    i2c_byte_write(&i2c, (I2C_DEV_ADDR | 1)); // send device address for reading
     num_dev_addr_matches += 1;
     num_acks += 1;
     for (int i = 0; i < TRANSFER_COUNT; i++) {
         if (num_reads == (TRANSFER_COUNT - 1)) {
-            data_in[i] = i2c_byte_read(&i2c, 1);//send NACK
+            data_in[i] = i2c_byte_read(&i2c, 1); // send NACK
             checksum += data_in[i];
             num_reads += 1;
             num_nacks += 1;
         } else {
-            data_in[i] = i2c_byte_read(&i2c, 0);//send ACK
+            data_in[i] = i2c_byte_read(&i2c, 0); // send ACK
             checksum += data_in[i];
             num_reads += 1;
             num_acks += 1;
@@ -434,7 +434,7 @@ void fpga_i2c_test_byte_read(PinName sda, PinName scl)
     TEST_ASSERT_EQUAL(num_nacks, tester.num_nacks());
     TEST_ASSERT_EQUAL(checksum, tester.get_send_checksum());
     TEST_ASSERT_EQUAL(0, tester.state_num());
-    TEST_ASSERT_EQUAL(((TRANSFER_COUNT) & 0xFF), tester.get_next_from_slave());
+    TEST_ASSERT_EQUAL(((TRANSFER_COUNT)&0xFF), tester.get_next_from_slave());
     TEST_ASSERT_EQUAL(num_writes, tester.num_writes());
     TEST_ASSERT_EQUAL(num_reads, tester.num_reads());
 
@@ -447,12 +447,13 @@ void fpga_i2c_test_byte_read(PinName sda, PinName scl)
 Case cases[] = {
     Case("i2c - init/free test all pins", all_ports<I2CPort, DefaultFormFactor, fpga_test_i2c_init_free>),
     Case("i2c - test write i2c API", all_peripherals<I2CPort, DefaultFormFactor, fpga_i2c_test_write<false>>),
-    Case("i2c (direct init) - test write i2c API", all_peripherals<I2CPort, DefaultFormFactor, fpga_i2c_test_write<true>>),
+    Case("i2c (direct init) - test write i2c API",
+         all_peripherals<I2CPort, DefaultFormFactor, fpga_i2c_test_write<true>>),
     Case("i2c - test read i2c API", all_peripherals<I2CPort, DefaultFormFactor, fpga_i2c_test_read<false>>),
-    Case("i2c (direct init) - test read i2c API", all_peripherals<I2CPort, DefaultFormFactor, fpga_i2c_test_read<true>>),
+    Case("i2c (direct init) - test read i2c API",
+         all_peripherals<I2CPort, DefaultFormFactor, fpga_i2c_test_read<true>>),
     Case("i2c - test single byte write i2c API", all_peripherals<I2CPort, DefaultFormFactor, fpga_i2c_test_byte_write>),
-    Case("i2c - test single byte read i2c API", all_peripherals<I2CPort, DefaultFormFactor, fpga_i2c_test_byte_read>)
-};
+    Case("i2c - test single byte read i2c API", all_peripherals<I2CPort, DefaultFormFactor, fpga_i2c_test_byte_read>)};
 
 utest::v1::status_t greentea_test_setup(const size_t number_of_cases)
 {
@@ -462,9 +463,6 @@ utest::v1::status_t greentea_test_setup(const size_t number_of_cases)
 
 Specification specification(greentea_test_setup, cases, greentea_test_teardown_handler);
 
-int main()
-{
-    Harness::run(specification);
-}
+int main() { Harness::run(specification); }
 
 #endif /* !DEVICE_I2C */

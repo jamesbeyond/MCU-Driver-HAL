@@ -25,7 +25,7 @@
 
 #if DEVICE_FLASH
 
-#define MBED_FLASH_INVALID_SIZE     0xFFFFFFFF
+#define MBED_FLASH_INVALID_SIZE 0xFFFFFFFF
 
 typedef struct flash_s flash_t;
 

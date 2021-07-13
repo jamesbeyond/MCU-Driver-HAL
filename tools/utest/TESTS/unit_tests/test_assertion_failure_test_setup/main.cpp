@@ -19,19 +19,12 @@
 #include "utest/utest.h"
 #include "unity/unity.h"
 
-
 using namespace utest::v1;
 
 static bool failure_is_in_setup = false;
 
-void never_call_case()
-{
-    TEST_FAIL_MESSAGE("Case handler should have never been called!");
-}
-Case cases[] =
-{
-    Case("dummy test", never_call_case)
-};
+void never_call_case() { TEST_FAIL_MESSAGE("Case handler should have never been called!"); }
+Case cases[] = {Case("dummy test", never_call_case)};
 
 // this setup handler fails
 utest::v1::status_t failing_setup_handler(const size_t number_of_cases)
@@ -59,25 +52,20 @@ void test_failure_handler(const failure_t failure)
 
         // pretend to greentea that the test was successful
         greentea_test_teardown_handler(1, 0, REASON_NONE);
-        while(1) ;
-    }
-    else {
+        while (1)
+            ;
+    } else {
         selftest_handlers.test_failure(failure);
     }
 }
 
-const handlers_t custom_handlers = {
-    greentea_abort_handlers.test_setup,
-    greentea_abort_handlers.test_teardown,
-    test_failure_handler,
-    greentea_abort_handlers.case_setup,
-    greentea_abort_handlers.case_teardown,
-    greentea_abort_handlers.case_failure
-};
+const handlers_t custom_handlers = {greentea_abort_handlers.test_setup,
+                                    greentea_abort_handlers.test_teardown,
+                                    test_failure_handler,
+                                    greentea_abort_handlers.case_setup,
+                                    greentea_abort_handlers.case_teardown,
+                                    greentea_abort_handlers.case_failure};
 
 Specification specification(failing_setup_handler, cases, custom_handlers);
 
-int main()
-{
-    Harness::run(specification);
-}
+int main() { Harness::run(specification); }

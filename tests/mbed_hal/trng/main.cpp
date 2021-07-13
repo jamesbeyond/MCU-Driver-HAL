@@ -15,26 +15,26 @@
  */
 
 /*
-* The test is based on the assumption that trng will generate random data, random so
-* there will not be any similar patterns in it, that kind of data will be impossible to
-* compress, if compression will occur the test will result in failure.
-*
-* The test is composed out of three parts:
-* the first, generate a trng buffer and try to compress it, at the end of first part
-* we will reset the device.
-* In second part we will generate a trng buffer with a different buffer size and try to
-* compress it.
-* In the third part we will again generate a trng buffer to see that the same trng output
-* is not generated as the stored trng buffer from part one (before reseting), the new trng data will
-* be concatenated to the trng data from the first part and then try to compress it
-* together, if there are similar patterns the compression will succeed.
-*
-* We need to store and load the first part data before and after reset, the mechanism
-* we will use is the mbed greentea platform for sending and receving the data from the device
-* to the host running the test and back, the problem with this mechanism is that it doesn't
-* handle well certain characters, especially non ASCII ones, so we use the base64 algorithm
-* to ensure all characters will be transmitted correctly.
-*/
+ * The test is based on the assumption that trng will generate random data, random so
+ * there will not be any similar patterns in it, that kind of data will be impossible to
+ * compress, if compression will occur the test will result in failure.
+ *
+ * The test is composed out of three parts:
+ * the first, generate a trng buffer and try to compress it, at the end of first part
+ * we will reset the device.
+ * In second part we will generate a trng buffer with a different buffer size and try to
+ * compress it.
+ * In the third part we will again generate a trng buffer to see that the same trng output
+ * is not generated as the stored trng buffer from part one (before reseting), the new trng data will
+ * be concatenated to the trng data from the first part and then try to compress it
+ * together, if there are similar patterns the compression will succeed.
+ *
+ * We need to store and load the first part data before and after reset, the mechanism
+ * we will use is the mbed greentea platform for sending and receving the data from the device
+ * to the host running the test and back, the problem with this mechanism is that it doesn't
+ * handle well certain characters, especially non ASCII ones, so we use the base64 algorithm
+ * to ensure all characters will be transmitted correctly.
+ */
 
 #include "greentea-client/test_env.h"
 #include "greentea-custom_io/custom_io.h"
@@ -47,31 +47,31 @@
 #include <string.h>
 
 #if !DEVICE_TRNG
-#error [NOT_SUPPORTED] TRNG API not supported for this target
+#error[NOT_SUPPORTED] TRNG API not supported for this target
 #else
 
-#define MSG_VALUE_DUMMY                 "0"
-#define MSG_VALUE_LEN                   64
-#define MSG_KEY_LEN                     32
+#define MSG_VALUE_DUMMY "0"
+#define MSG_VALUE_LEN   64
+#define MSG_KEY_LEN     32
 
-#define BUFFER_LEN                      (MSG_VALUE_LEN/2)
+#define BUFFER_LEN (MSG_VALUE_LEN / 2)
 
-#define MSG_TRNG_READY                  "ready"
-#define MSG_TRNG_BUFFER                 "buffer"
-#define MSG_TRNG_EXIT                   "exit"
+#define MSG_TRNG_READY  "ready"
+#define MSG_TRNG_BUFFER "buffer"
+#define MSG_TRNG_EXIT   "exit"
 
-#define MSG_TRNG_TEST_STEP1             "check_step1"
-#define MSG_TRNG_TEST_STEP2             "check_step2"
-#define MSG_TRNG_TEST_SUITE_ENDED       "Test_suite_ended"
+#define MSG_TRNG_TEST_STEP1       "check_step1"
+#define MSG_TRNG_TEST_STEP2       "check_step2"
+#define MSG_TRNG_TEST_SUITE_ENDED "Test_suite_ended"
 
-#define RESULT_SUCCESS                  0
+#define RESULT_SUCCESS 0
 
 using namespace utest::v1;
 
 static int fill_buffer_trng(uint8_t *buffer, trng_t *trng_obj, size_t trng_len)
 {
-    size_t temp_size = 0, output_length = 0;
-    int trng_res = 0;
+    size_t   temp_size = 0, output_length = 0;
+    int      trng_res    = 0;
     uint8_t *temp_in_buf = buffer;
 
     trng_init(trng_obj);
@@ -102,31 +102,27 @@ void print_array(uint8_t *buffer, size_t size)
 
 static void compress_and_compare(char *key, char *value)
 {
-    trng_t trng_obj;
-    uint8_t *out_comp_buf, *buffer;
-    uint8_t *input_buf, *temp_buf;
-    size_t comp_sz = 0;
-    unsigned int result = 0;
+    trng_t       trng_obj;
+    uint8_t *    out_comp_buf, *buffer;
+    uint8_t *    input_buf, *temp_buf;
+    size_t       comp_sz = 0;
+    unsigned int result  = 0;
 
 #define OUT_COMP_BUF_SIZE ((BUFFER_LEN * 5) + 32)
-#define TEMP_BUF_SIZE (BUFFER_LEN * 2)
+#define TEMP_BUF_SIZE     (BUFFER_LEN * 2)
 
     out_comp_buf = new uint8_t[OUT_COMP_BUF_SIZE];
-    buffer = new uint8_t[BUFFER_LEN];
-    temp_buf = new uint8_t[BUFFER_LEN * 2];
-    input_buf = new uint8_t[BUFFER_LEN * 4];
+    buffer       = new uint8_t[BUFFER_LEN];
+    temp_buf     = new uint8_t[BUFFER_LEN * 2];
+    input_buf    = new uint8_t[BUFFER_LEN * 4];
 
     /*At the begining of step 2 load trng buffer from step 1*/
     if (strcmp(key, MSG_TRNG_TEST_STEP2) == 0) {
         /*Using base64 to decode data sent from host*/
-        uint32_t lengthWritten = 0;
+        uint32_t lengthWritten  = 0;
         uint32_t charsProcessed = 0;
-        result = trng_DecodeNBase64((const char *)value,
-                                    MSG_VALUE_LEN,
-                                    buffer,
-                                    BUFFER_LEN,
-                                    &lengthWritten,
-                                    &charsProcessed);
+        result =
+            trng_DecodeNBase64((const char *)value, MSG_VALUE_LEN, buffer, BUFFER_LEN, &lengthWritten, &charsProcessed);
         TEST_ASSERT_EQUAL(0, result);
         memcpy(input_buf, buffer, BUFFER_LEN);
     }
@@ -140,11 +136,7 @@ static void compress_and_compare(char *key, char *value)
     /*pithy_Compress will try to compress the random data, if it succeeded it means the data is not really random*/
     else if (strcmp(key, MSG_TRNG_TEST_STEP2) == 0) {
 
-        comp_sz = pithy_Compress((char *)buffer,
-                                 BUFFER_LEN,
-                                 (char *)out_comp_buf,
-                                 OUT_COMP_BUF_SIZE,
-                                 9);
+        comp_sz = pithy_Compress((char *)buffer, BUFFER_LEN, (char *)out_comp_buf, OUT_COMP_BUF_SIZE, 9);
         if (comp_sz <= BUFFER_LEN) {
             print_array(buffer, BUFFER_LEN);
         }
@@ -155,11 +147,7 @@ static void compress_and_compare(char *key, char *value)
         result = fill_buffer_trng(temp_buf, &trng_obj, TEMP_BUF_SIZE);
         TEST_ASSERT_EQUAL(0, result);
 
-        comp_sz = pithy_Compress((char *)temp_buf,
-                                 TEMP_BUF_SIZE,
-                                 (char *)out_comp_buf,
-                                 OUT_COMP_BUF_SIZE,
-                                 9);
+        comp_sz = pithy_Compress((char *)temp_buf, TEMP_BUF_SIZE, (char *)out_comp_buf, OUT_COMP_BUF_SIZE, 9);
         if (comp_sz <= TEMP_BUF_SIZE) {
             print_array(temp_buf, TEMP_BUF_SIZE);
         }
@@ -168,11 +156,8 @@ static void compress_and_compare(char *key, char *value)
 
         memcpy(input_buf + BUFFER_LEN, temp_buf, TEMP_BUF_SIZE);
         /*pithy_Compress will try to compress the random data from before reset concatenated with new random data*/
-        comp_sz = pithy_Compress((char *)input_buf,
-                                 TEMP_BUF_SIZE + BUFFER_LEN,
-                                 (char *)out_comp_buf,
-                                 OUT_COMP_BUF_SIZE,
-                                 9);
+        comp_sz =
+            pithy_Compress((char *)input_buf, TEMP_BUF_SIZE + BUFFER_LEN, (char *)out_comp_buf, OUT_COMP_BUF_SIZE, 9);
         if (comp_sz <= TEMP_BUF_SIZE + BUFFER_LEN) {
             print_array(input_buf, TEMP_BUF_SIZE + BUFFER_LEN);
         }
@@ -186,10 +171,7 @@ static void compress_and_compare(char *key, char *value)
     if (strcmp(key, MSG_TRNG_TEST_STEP1) == 0) {
         int result = 0;
         /*Using base64 to encode data sending from host*/
-        result = trng_EncodeBase64(buffer,
-                                   BUFFER_LEN,
-                                   (char *)out_comp_buf,
-                                   OUT_COMP_BUF_SIZE);
+        result = trng_EncodeBase64(buffer, BUFFER_LEN, (char *)out_comp_buf, OUT_COMP_BUF_SIZE);
         TEST_ASSERT_EQUAL(RESULT_SUCCESS, result);
 
         greentea_send_kv(MSG_TRNG_BUFFER, (const char *)out_comp_buf);
@@ -206,8 +188,8 @@ void trng_test()
 {
     greentea_send_kv(MSG_TRNG_READY, MSG_VALUE_DUMMY);
 
-    char key[MSG_KEY_LEN + 1] = { };
-    char *value = new char[MSG_VALUE_LEN + 1];
+    char  key[MSG_KEY_LEN + 1] = {};
+    char *value                = new char[MSG_VALUE_LEN + 1];
     do {
         memset(key, 0, MSG_KEY_LEN + 1);
         memset(value, 0, MSG_VALUE_LEN + 1);
@@ -245,9 +227,8 @@ Specification specification(greentea_test_setup, cases, greentea_test_teardown_h
 int main()
 {
     int ret = 0;
-    ret = !Harness::run(specification);
+    ret     = !Harness::run(specification);
     return ret;
 }
 
 #endif // !DEVICE_TRNG
-

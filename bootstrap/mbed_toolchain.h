@@ -34,9 +34,9 @@
 #endif
 
 // Warning for unsupported compilers
-#if !defined(__GNUC__)   /* GCC        */ \
- && !defined(__clang__)  /* LLVM/Clang */ \
- && !defined(__ICCARM__) /* IAR        */
+#if !defined(__GNUC__)      /* GCC        */ \
+    && !defined(__clang__)  /* LLVM/Clang */ \
+    && !defined(__ICCARM__) /* IAR        */
 #warning "This compiler is not yet supported."
 #endif
 
@@ -88,7 +88,7 @@
 #elif __STDC_VERSION__ >= 201112
 #define MBED_ALIGN(N) _Alignas(N)
 #elif defined(__ICCARM__)
-#define MBED_ALIGN(N) _Pragma(MBED_STRINGIFY(data_alignment=N))
+#define MBED_ALIGN(N) _Pragma(MBED_STRINGIFY(data_alignment = N))
 #else
 #define MBED_ALIGN(N) __attribute__((aligned(N)))
 #endif
@@ -381,7 +381,7 @@
 #else
 #define MBED_FALLTHROUGH
 #endif
-#elif defined (__GNUC__)
+#elif defined(__GNUC__)
 #define MBED_FALLTHROUGH __attribute__((fallthrough))
 #else
 #define MBED_FALLTHROUGH
@@ -447,9 +447,9 @@
 
 #ifndef MBED_SECTION
 #if (defined(__GNUC__) || defined(__clang__))
-#define MBED_SECTION(name) __attribute__ ((section (name)))
+#define MBED_SECTION(name) __attribute__((section(name)))
 #elif defined(__ICCARM__)
-#define MBED_SECTION(name) _Pragma(MBED_STRINGIFY(location=name))
+#define MBED_SECTION(name) _Pragma(MBED_STRINGIFY(location = name))
 #else
 #error "Missing MBED_SECTION directive"
 #endif
@@ -471,7 +471,7 @@
 
 #ifndef MBED_PRINTF
 #if defined(__GNUC__)
-#define MBED_PRINTF(format_idx, first_param_idx) __attribute__ ((__format__(__printf__, format_idx, first_param_idx)))
+#define MBED_PRINTF(format_idx, first_param_idx) __attribute__((__format__(__printf__, format_idx, first_param_idx)))
 #else
 #define MBED_PRINTF(format_idx, first_param_idx)
 #endif
@@ -479,7 +479,8 @@
 
 #ifndef MBED_PRINTF_METHOD
 #if defined(__GNUC__)
-#define MBED_PRINTF_METHOD(format_idx, first_param_idx) __attribute__ ((__format__(__printf__, format_idx+1, first_param_idx == 0 ? 0 : first_param_idx+1)))
+#define MBED_PRINTF_METHOD(format_idx, first_param_idx) \
+    __attribute__((__format__(__printf__, format_idx + 1, first_param_idx == 0 ? 0 : first_param_idx + 1)))
 #else
 #define MBED_PRINTF_METHOD(format_idx, first_param_idx)
 #endif
@@ -487,7 +488,7 @@
 
 #ifndef MBED_SCANF
 #if defined(__GNUC__)
-#define MBED_SCANF(format_idx, first_param_idx) __attribute__ ((__format__(__scanf__, format_idx, first_param_idx)))
+#define MBED_SCANF(format_idx, first_param_idx) __attribute__((__format__(__scanf__, format_idx, first_param_idx)))
 #else
 #define MBED_SCANF(format_idx, first_param_idx)
 #endif
@@ -495,7 +496,8 @@
 
 #ifndef MBED_SCANF_METHOD
 #if defined(__GNUC__)
-#define MBED_SCANF_METHOD(format_idx, first_param_idx) __attribute__ ((__format__(__scanf__, format_idx+1, first_param_idx == 0 ? 0 : first_param_idx+1)))
+#define MBED_SCANF_METHOD(format_idx, first_param_idx) \
+    __attribute__((__format__(__scanf__, format_idx + 1, first_param_idx == 0 ? 0 : first_param_idx + 1)))
 #else
 #define MBED_SCANF_METHOD(format_idx, first_param_idx)
 #endif
@@ -505,9 +507,14 @@
 // string literal.
 #ifndef MBED_FILENAME
 #if defined(__GNUC__)
-#define MBED_FILENAME (__builtin_strrchr(__FILE__, '/') ? __builtin_strrchr(__FILE__, '/') + 1 : __builtin_strrchr(__FILE__, '\\') ? __builtin_strrchr(__FILE__, '\\') + 1 : __FILE__)
+#define MBED_FILENAME                           \
+    (__builtin_strrchr(__FILE__, '/')           \
+         ? __builtin_strrchr(__FILE__, '/') + 1 \
+         : __builtin_strrchr(__FILE__, '\\') ? __builtin_strrchr(__FILE__, '\\') + 1 : __FILE__)
 #elif defined(__ICCARM__)
-#define MBED_FILENAME (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : strrchr(__FILE__, '\\') ? strrchr(__FILE__, '\\') + 1 : __FILE__)
+#define MBED_FILENAME                                    \
+    (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 \
+                            : strrchr(__FILE__, '\\') ? strrchr(__FILE__, '\\') + 1 : __FILE__)
 #else
 #define MBED_FILENAME __FILE__
 #endif
@@ -546,11 +553,11 @@ typedef int FILEHANDLE;
  *  }
  *  @endcode
  */
-#if defined (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3L)
-#if defined (__ICCARM__)
-#define MBED_NONSECURE_ENTRY       __cmse_nonsecure_entry
+#if defined(__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3L)
+#if defined(__ICCARM__)
+#define MBED_NONSECURE_ENTRY __cmse_nonsecure_entry
 #else
-#define MBED_NONSECURE_ENTRY       __attribute__((cmse_nonsecure_entry))
+#define MBED_NONSECURE_ENTRY __attribute__((cmse_nonsecure_entry))
 #endif
 #else
 #define MBED_NONSECURE_ENTRY

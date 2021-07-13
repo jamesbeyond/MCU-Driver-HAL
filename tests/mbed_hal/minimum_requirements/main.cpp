@@ -32,8 +32,8 @@ using namespace utest::v1;
  * then you should turn off Mbed OS support for this device.
  */
 
-#define MIN_HEAP_SIZE   2048
-#define MIN_DATA_SIZE   2048
+#define MIN_HEAP_SIZE 2048
+#define MIN_DATA_SIZE 2048
 
 volatile uint8_t test_buffer[MIN_DATA_SIZE];
 
@@ -52,7 +52,6 @@ static void minimum_data_test()
     }
 }
 
-
 utest::v1::status_t greentea_test_setup(const size_t number_of_cases)
 {
     GREENTEA_SETUP(30, "default_auto");
@@ -66,7 +65,4 @@ Case cases[] = {
 
 Specification specification(greentea_test_setup, cases, greentea_test_teardown_handler);
 
-int main()
-{
-    Harness::run(specification);
-}
+int main() { Harness::run(specification); }

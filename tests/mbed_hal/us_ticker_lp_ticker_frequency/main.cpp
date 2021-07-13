@@ -31,11 +31,11 @@
 #include "utest/utest.h"
 
 #if !DEVICE_USTICKER
-#error [NOT_SUPPORTED] UsTicker need to be enabled for this test
+#error[NOT_SUPPORTED] UsTicker need to be enabled for this test
 #else
 
 #if defined(SKIP_TIME_DRIFT_TESTS)
-#error [NOT_SUPPORTED] timing accuracy tests skipped
+#error[NOT_SUPPORTED] timing accuracy tests skipped
 #endif // defined(SKIP_TIME_DRIFT_TESTS)
 
 #define US_PER_S 1000000
@@ -43,15 +43,12 @@
 using namespace utest::v1;
 
 const ticker_interface_t *intf;
-uint32_t intf_mask;
-uint32_t intf_last_tick;
-uint32_t intf_elapsed_ticks;
-ticker_irq_handler_type prev_handler;
+uint32_t                  intf_mask;
+uint32_t                  intf_last_tick;
+uint32_t                  intf_elapsed_ticks;
+ticker_irq_handler_type   prev_handler;
 
-uint32_t ticks_to_us(uint32_t ticks, uint32_t freq)
-{
-    return (uint32_t)((uint64_t)ticks * US_PER_S / freq);
-}
+uint32_t ticks_to_us(uint32_t ticks, uint32_t freq) { return (uint32_t)((uint64_t)ticks * US_PER_S / freq); }
 
 void elapsed_ticks_reset()
 {
@@ -59,8 +56,8 @@ void elapsed_ticks_reset()
 
     const uint32_t ticker_bits = intf->get_info()->bits;
 
-    intf_mask = (1 << ticker_bits) - 1;
-    intf_last_tick = intf->read();
+    intf_mask          = (1 << ticker_bits) - 1;
+    intf_last_tick     = intf->read();
     intf_elapsed_ticks = 0;
 
     core_util_critical_section_exit();
@@ -93,10 +90,10 @@ void ticker_event_handler_stub(const ticker_data_t *const ticker)
 /* Test that the ticker is operating at the frequency it specifies. */
 void ticker_frequency_test()
 {
-    char _key[11] = { };
-    char _value[128] = { };
-    int expected_key = 1;
-    const uint32_t ticker_freq = intf->get_info()->frequency;
+    char           _key[11]     = {};
+    char           _value[128]  = {};
+    int            expected_key = 1;
+    const uint32_t ticker_freq  = intf->get_info()->frequency;
 
     intf->init();
 
@@ -135,13 +132,15 @@ void ticker_frequency_test()
 
 utest::v1::status_t us_ticker_case_setup_handler_t(const Case *const source, const size_t index_of_case)
 {
-    intf = get_us_ticker_data()->interface;
+    intf         = get_us_ticker_data()->interface;
     prev_handler = set_us_ticker_irq_handler(ticker_event_handler_stub);
     return greentea_case_setup_handler(source, index_of_case);
 }
 
-utest::v1::status_t us_ticker_case_teardown_handler_t(const Case *const source, const size_t passed, const size_t failed,
-                                                      const failure_t reason)
+utest::v1::status_t us_ticker_case_teardown_handler_t(const Case *const source,
+                                                      const size_t      passed,
+                                                      const size_t      failed,
+                                                      const failure_t   reason)
 {
     set_us_ticker_irq_handler(prev_handler);
     return greentea_case_teardown_handler(source, passed, failed, reason);
@@ -150,13 +149,15 @@ utest::v1::status_t us_ticker_case_teardown_handler_t(const Case *const source, 
 #if DEVICE_LPTICKER
 utest::v1::status_t lp_ticker_case_setup_handler_t(const Case *const source, const size_t index_of_case)
 {
-    intf = get_lp_ticker_data()->interface;
+    intf         = get_lp_ticker_data()->interface;
     prev_handler = set_lp_ticker_irq_handler(ticker_event_handler_stub);
     return greentea_case_setup_handler(source, index_of_case);
 }
 
-utest::v1::status_t lp_ticker_case_teardown_handler_t(const Case *const source, const size_t passed, const size_t failed,
-                                                      const failure_t reason)
+utest::v1::status_t lp_ticker_case_teardown_handler_t(const Case *const source,
+                                                      const size_t      passed,
+                                                      const size_t      failed,
+                                                      const failure_t   reason)
 {
     set_lp_ticker_irq_handler(prev_handler);
     return greentea_case_teardown_handler(source, passed, failed, reason);
@@ -165,10 +166,14 @@ utest::v1::status_t lp_ticker_case_teardown_handler_t(const Case *const source, 
 
 // Test cases
 Case cases[] = {
-    Case("Microsecond ticker frequency test", us_ticker_case_setup_handler_t, ticker_frequency_test,
+    Case("Microsecond ticker frequency test",
+         us_ticker_case_setup_handler_t,
+         ticker_frequency_test,
          us_ticker_case_teardown_handler_t),
 #if DEVICE_LPTICKER
-    Case("Low power ticker frequency test", lp_ticker_case_setup_handler_t, ticker_frequency_test,
+    Case("Low power ticker frequency test",
+         lp_ticker_case_setup_handler_t,
+         ticker_frequency_test,
          lp_ticker_case_teardown_handler_t),
 #endif
 };

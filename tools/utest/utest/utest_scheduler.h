@@ -80,9 +80,10 @@ typedef void *(*utest_v1_scheduler_post_callback_t)(const utest_v1_harness_callb
 typedef int32_t (*utest_v1_scheduler_cancel_callback_t)(void *handle);
 
 /**
- * utest calls this function at the end of the `Harness::run()` function, after (!) the first callback has been requested.
- * This function is meant to implement an optional event loop, which may very well be blocking (if your scheduler works with that).
- * This assumes that `Harness::run()` will be called on the main stack (ie. not in an interrupt!).
+ * utest calls this function at the end of the `Harness::run()` function, after (!) the first callback has been
+ * requested. This function is meant to implement an optional event loop, which may very well be blocking (if your
+ * scheduler works with that). This assumes that `Harness::run()` will be called on the main stack (ie. not in an
+ * interrupt!).
  *
  * @retval  `0` if success
  * @retval  non-zero if failure
@@ -94,10 +95,10 @@ typedef int32_t (*utest_v1_scheduler_run_callback_t)(void);
  * which you must implement to use `utest`.
  */
 typedef struct {
-    utest_v1_scheduler_init_callback_t init;
-    utest_v1_scheduler_post_callback_t post;
+    utest_v1_scheduler_init_callback_t   init;
+    utest_v1_scheduler_post_callback_t   post;
     utest_v1_scheduler_cancel_callback_t cancel;
-    utest_v1_scheduler_run_callback_t run;
+    utest_v1_scheduler_run_callback_t    run;
 } utest_v1_scheduler_t;
 
 #ifdef __cplusplus

@@ -48,12 +48,12 @@
 
 unsigned int ticks_to_us(unsigned int ticks, unsigned int freq)
 {
-    return (unsigned int)((unsigned long long) ticks * US_PER_S / freq);
+    return (unsigned int)((unsigned long long)ticks * US_PER_S / freq);
 }
 
 unsigned int us_to_ticks(unsigned int us, unsigned int freq)
 {
-    return (unsigned int)((unsigned long long) us * freq / US_PER_S);
+    return (unsigned int)((unsigned long long)us * freq / US_PER_S);
 }
 
 unsigned int overflow_protect(unsigned int timestamp, unsigned int ticker_width)
@@ -87,9 +87,9 @@ bool compare_timestamps(unsigned int delta_ticks, unsigned int ticker_width, uns
 
 void busy_wait_ms(int ms)
 {
-    const ticker_info_t *info = us_ticker_get_info();
-    uint32_t mask = (1 << info->bits) - 1;
-    int delay = (int)((uint64_t) ms * info->frequency / 1000);
+    const ticker_info_t *info  = us_ticker_get_info();
+    uint32_t             mask  = (1 << info->bits) - 1;
+    int                  delay = (int)((uint64_t)ms * info->frequency / 1000);
 
     uint32_t prev = us_ticker_read();
     while (delay > 0) {
@@ -99,16 +99,10 @@ void busy_wait_ms(int ms)
     }
 }
 
-void us_ticker_isr(const ticker_data_t *const ticker_data)
-{
-    us_ticker_clear_interrupt();
-}
+void us_ticker_isr(const ticker_data_t *const ticker_data) { us_ticker_clear_interrupt(); }
 
 #if DEVICE_LPTICKER
-void lp_ticker_isr(const ticker_data_t *const ticker_data)
-{
-    lp_ticker_clear_interrupt();
-}
+void lp_ticker_isr(const ticker_data_t *const ticker_data) { lp_ticker_clear_interrupt(); }
 #endif
 
 #endif

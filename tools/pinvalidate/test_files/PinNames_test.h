@@ -95,32 +95,32 @@ typedef enum {
     PD_15 = 0x3F,
 
     // valid (except D7, D8) Arduino Uno(Rev3) header pin definitions
-    ARDUINO_UNO_A0   = PC_5,  // ADC / GPIO
-    ARDUINO_UNO_A1   = PC_4,  // ADC / GPIO
-    ARDUINO_UNO_A2   = PC_3,  // ADC / GPIO
-    ARDUINO_UNO_A3   = PC_2,  // ADC / GPIO
-    ARDUINO_UNO_A4   = PC_1,  // ADC / GPIO
-    ARDUINO_UNO_A5   = PC_0,  // ADC / GPIO
-    ARDUINO_UNO_D0   = PA_1,  // UART RX / GPIO
-    ARDUINO_UNO_D1   = PA_0,  // UART RX / GPIO
-    ARDUINO_UNO_D2   = PD_14, // GPIO
-    ARDUINO_UNO_D3   = PB_0,  // PWM / GPIO
-    ARDUINO_UNO_D4   = PA_3,  // GPIO
-    ARDUINO_UNO_D5   = PB_4,  // PWM / GPIO
-    ARDUINO_UNO_D6   = PB_1,  // PWM / GPIO
-    //ARDUINO_UNO_D7   = PA_4,// invalid - missing definition (GPIO)
-    ARDUINO_UNO_D8   = PB_1,  // invalid - duplicate pin (GPIO)
-    ARDUINO_UNO_D9   = PA_15, // PWM / GPIO
-    ARDUINO_UNO_D10  = PA_2,  // SPI CS   / PWM / GPIO
-    ARDUINO_UNO_D11  = NC,    // invalid - NC assignment
-    ARDUINO_UNO_D12  = PA_6,  // SPI MISO / PWM / GPIO
-    ARDUINO_UNO_D13  = PA_5,  // SPI SCK / GPIO
-    ARDUINO_UNO_D14  = PB_9,  // I2C SDA / GPIO
-    ARDUINO_UNO_D15  = PB_8,  // I2C SCL / GPIO
+    ARDUINO_UNO_A0 = PC_5,  // ADC / GPIO
+    ARDUINO_UNO_A1 = PC_4,  // ADC / GPIO
+    ARDUINO_UNO_A2 = PC_3,  // ADC / GPIO
+    ARDUINO_UNO_A3 = PC_2,  // ADC / GPIO
+    ARDUINO_UNO_A4 = PC_1,  // ADC / GPIO
+    ARDUINO_UNO_A5 = PC_0,  // ADC / GPIO
+    ARDUINO_UNO_D0 = PA_1,  // UART RX / GPIO
+    ARDUINO_UNO_D1 = PA_0,  // UART RX / GPIO
+    ARDUINO_UNO_D2 = PD_14, // GPIO
+    ARDUINO_UNO_D3 = PB_0,  // PWM / GPIO
+    ARDUINO_UNO_D4 = PA_3,  // GPIO
+    ARDUINO_UNO_D5 = PB_4,  // PWM / GPIO
+    ARDUINO_UNO_D6 = PB_1,  // PWM / GPIO
+    // ARDUINO_UNO_D7   = PA_4,// invalid - missing definition (GPIO)
+    ARDUINO_UNO_D8  = PB_1,  // invalid - duplicate pin (GPIO)
+    ARDUINO_UNO_D9  = PA_15, // PWM / GPIO
+    ARDUINO_UNO_D10 = PA_2,  // SPI CS   / PWM / GPIO
+    ARDUINO_UNO_D11 = NC,    // invalid - NC assignment
+    ARDUINO_UNO_D12 = PA_6,  // SPI MISO / PWM / GPIO
+    ARDUINO_UNO_D13 = PA_5,  // SPI SCK / GPIO
+    ARDUINO_UNO_D14 = PB_9,  // I2C SDA / GPIO
+    ARDUINO_UNO_D15 = PB_8,  // I2C SCL / GPIO
 
     // valid STDIO definitions for console print
-    CONSOLE_TX   = PB_6,
-    CONSOLE_RX   = PB_7,
+    CONSOLE_TX = PB_6,
+    CONSOLE_RX = PB_7,
 
     // invalid legacy LED/BUTTON definitions
     // these should be a #define, not in an enum
@@ -134,15 +134,15 @@ typedef enum {
 #define BUTTON2 PC_13
 
 // invalid LED definitions
-#define LED4    LED3        // duplicate
-#define LED5    PC_9        // duplicate
-#define LED6    LED6        // identity
-#define LED7    NC          // NC
+#define LED4 LED3 // duplicate
+#define LED5 PC_9 // duplicate
+#define LED6 LED6 // identity
+#define LED7 NC   // NC
 
 // invalid button definitions
-#define BUTTON3 PC_13       // duplicate
-#define BUTTON4 BUTTON1     // duplicate
-#define BUTTON5 NC          // NC
-#define BUTTON6 BUTTON6     // identity
+#define BUTTON3 PC_13   // duplicate
+#define BUTTON4 BUTTON1 // duplicate
+#define BUTTON5 NC      // NC
+#define BUTTON6 BUTTON6 // identity
 
 #endif

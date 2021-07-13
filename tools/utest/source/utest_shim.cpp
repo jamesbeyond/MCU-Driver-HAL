@@ -34,13 +34,13 @@ static void *utest_minimal_post(const utest_v1_harness_callback_t callback, time
     UTEST_LOG_FUNCTION();
     minimal_callback = callback;
     // this scheduler does not support scheduling of asynchronous callbacks
-    return (delay_ms ? NULL : (void*)1);
+    return (delay_ms ? NULL : (void *)1);
 }
 
 static int32_t utest_minimal_cancel(void *handle)
 {
     UTEST_LOG_FUNCTION();
-    (void) handle;
+    (void)handle;
     // this scheduler does not support canceling of asynchronous callbacks
     return -1;
 }
@@ -52,8 +52,7 @@ static int32_t utest_minimal_run(void)
      * This is just a busy loop that calls the callbacks in this context.
      * THIS LOOP IS BLOCKING.
      */
-    while(1)
-    {
+    while (1) {
         // check if a new callback has been set
         if (minimal_callback) {
             // copy the callback
@@ -69,18 +68,12 @@ static int32_t utest_minimal_run(void)
 
 extern "C" {
 
-static const utest_v1_scheduler_t utest_minimal_scheduler =
-{
-    utest_minimal_init,
-    utest_minimal_post,
-    utest_minimal_cancel,
-    utest_minimal_run
-};
+static const utest_v1_scheduler_t utest_minimal_scheduler = {
+    utest_minimal_init, utest_minimal_post, utest_minimal_cancel, utest_minimal_run};
 
 utest_v1_scheduler_t utest_v1_get_scheduler()
 {
     UTEST_LOG_FUNCTION();
     return utest_minimal_scheduler;
 }
-
 }

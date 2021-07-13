@@ -65,13 +65,13 @@
  */
 typedef struct {
     /**
-    * Refresh value for the watchdog in milliseconds. The maximum value of this
-    * setting is platform dependent, to find the maximum value for the current
-    * platform call hal_watchdog_get_features() and check the timeout value
-    * member. The minimum valid value for this setting is 1. Attempting to
-    * initialize the watchdog with a timeout of 0 ms returns
-    * WATCHDOG_STATUS_INVALID_ARGUMENT.
-    */
+     * Refresh value for the watchdog in milliseconds. The maximum value of this
+     * setting is platform dependent, to find the maximum value for the current
+     * platform call hal_watchdog_get_features() and check the timeout value
+     * member. The minimum valid value for this setting is 1. Attempting to
+     * initialize the watchdog with a timeout of 0 ms returns
+     * WATCHDOG_STATUS_INVALID_ARGUMENT.
+     */
     uint32_t timeout_ms;
 } watchdog_config_t;
 
@@ -100,13 +100,12 @@ typedef struct {
     uint32_t clock_max_frequency;
 } watchdog_features_t;
 
-
 /** Status of a watchdog operation.
-*/
+ */
 typedef enum {
-    WATCHDOG_STATUS_OK,                 /**< Operation successful. **/
-    WATCHDOG_STATUS_NOT_SUPPORTED,      /**< Operation not supported. **/
-    WATCHDOG_STATUS_INVALID_ARGUMENT    /**< Invalid argument. **/
+    WATCHDOG_STATUS_OK,              /**< Operation successful. **/
+    WATCHDOG_STATUS_NOT_SUPPORTED,   /**< Operation not supported. **/
+    WATCHDOG_STATUS_INVALID_ARGUMENT /**< Invalid argument. **/
 } watchdog_status_t;
 
 #ifdef __cplusplus

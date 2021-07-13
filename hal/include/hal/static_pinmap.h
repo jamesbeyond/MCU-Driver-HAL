@@ -36,7 +36,6 @@
 #if STATIC_PINMAP_READY
 #include "PeripheralPinMaps.h"
 
-
 #if defined(DEVICE_PWMOUT) && defined(PINMAP_PWM)
 MSTD_CONSTEXPR_FN_14 PinMap get_pwm_pinmap(const PinName pin)
 {
@@ -45,7 +44,7 @@ MSTD_CONSTEXPR_FN_14 PinMap get_pwm_pinmap(const PinName pin)
             return {pin, pinmap.peripheral, pinmap.function};
         }
     }
-    return {NC, (int) NC, (int) NC};
+    return {NC, (int)NC, (int)NC};
 }
 #endif // DEVICE_PWMOUT
 
@@ -66,7 +65,7 @@ MSTD_CONSTEXPR_FN_14 PinMap get_analogin_pinmap(const PinName pin)
     }
 #endif
 
-    return {NC, (int) NC, (int) NC};
+    return {NC, (int)NC, (int)NC};
 }
 #endif // DEVICE_ANALOGIN
 
@@ -78,7 +77,7 @@ MSTD_CONSTEXPR_FN_14 PinMap get_analogout_pinmap(const PinName pin)
             return {pin, pinmap.peripheral, pinmap.function};
         }
     }
-    return {NC, (int) NC, (int) NC};
+    return {NC, (int)NC, (int)NC};
 }
 #endif // DEVICE_ANALOGOUT
 
@@ -102,12 +101,12 @@ MSTD_CONSTEXPR_FN_14 i2c_pinmap_t get_i2c_pinmap(const PinName sda, const PinNam
     }
 
     if (!sda_map || !scl_map || sda_map->peripheral != scl_map->peripheral) {
-        return {(int) NC, NC, (int) NC, NC, (int) NC};
+        return {(int)NC, NC, (int)NC, NC, (int)NC};
     }
 
     return {sda_map->peripheral, sda_map->pin, sda_map->function, scl_map->pin, scl_map->function};
 }
-#endif //DEVICE_I2C
+#endif // DEVICE_I2C
 
 #if defined(DEVICE_SERIAL) && defined(PINMAP_UART_TX) && defined(PINMAP_UART_RX)
 MSTD_CONSTEXPR_FN_14 serial_pinmap_t get_uart_pinmap(const PinName tx, const PinName rx)
@@ -129,7 +128,7 @@ MSTD_CONSTEXPR_FN_14 serial_pinmap_t get_uart_pinmap(const PinName tx, const Pin
     }
 
     if (!tx_map || !rx_map || rx_map->peripheral != tx_map->peripheral) {
-        return {(int) NC, NC, (int) NC, NC, (int) NC, false};
+        return {(int)NC, NC, (int)NC, NC, (int)NC, false};
     }
 
     if (tx_map->pin == CONSOLE_TX && rx_map->pin == CONSOLE_RX) {
@@ -159,7 +158,7 @@ MSTD_CONSTEXPR_FN_14 serial_fc_pinmap_t get_uart_fc_pinmap(const PinName rxflow,
     }
 
     if ((!rts_map || !cts_map) || (rts_map->peripheral != cts_map->peripheral)) {
-        return {(int) NC, NC, (int) NC, NC, (int) NC};
+        return {(int)NC, NC, (int)NC, NC, (int)NC};
     }
 
     return {cts_map->peripheral, cts_map->pin, cts_map->function, rts_map->pin, rts_map->function};
@@ -167,8 +166,12 @@ MSTD_CONSTEXPR_FN_14 serial_fc_pinmap_t get_uart_fc_pinmap(const PinName rxflow,
 #endif // DEVICE_SERIAL_FC
 #endif // DEVICE_SERIAL
 
-#if defined(DEVICE_SPI) && defined(PINMAP_SPI_MOSI) && defined(PINMAP_SPI_MISO) && defined(PINMAP_SPI_SCLK) && defined(PINMAP_SPI_SSEL)
-MSTD_CONSTEXPR_FN_14 spi_pinmap_t get_spi_pinmap(const PinName mosi, const PinName miso, const PinName sclk, const PinName ssel)
+#if defined(DEVICE_SPI) && defined(PINMAP_SPI_MOSI) && defined(PINMAP_SPI_MISO) && defined(PINMAP_SPI_SCLK) && \
+    defined(PINMAP_SPI_SSEL)
+MSTD_CONSTEXPR_FN_14 spi_pinmap_t get_spi_pinmap(const PinName mosi,
+                                                 const PinName miso,
+                                                 const PinName sclk,
+                                                 const PinName ssel)
 {
     const PinMap *mosi_map = nullptr;
     for (const PinMap &pinmap : PINMAP_SPI_MOSI) {
@@ -203,12 +206,20 @@ MSTD_CONSTEXPR_FN_14 spi_pinmap_t get_spi_pinmap(const PinName mosi, const PinNa
     }
 
     if ((!mosi_map || !miso_map || !sclk_map || !ssel_map) ||
-            (mosi_map->peripheral != miso_map->peripheral || mosi_map->peripheral != sclk_map->peripheral) ||
-            (ssel_map->pin != NC && mosi_map->peripheral != ssel_map->peripheral)) {
-        return {(int) NC, NC, (int) NC, NC, (int) NC, NC, (int) NC, NC, (int) NC};
+        (mosi_map->peripheral != miso_map->peripheral || mosi_map->peripheral != sclk_map->peripheral) ||
+        (ssel_map->pin != NC && mosi_map->peripheral != ssel_map->peripheral)) {
+        return {(int)NC, NC, (int)NC, NC, (int)NC, NC, (int)NC, NC, (int)NC};
     }
 
-    return {mosi_map->peripheral, mosi_map->pin, mosi_map->function, miso_map->pin, miso_map->function, sclk_map->pin, sclk_map->function, ssel_map->pin, ssel_map->function};
+    return {mosi_map->peripheral,
+            mosi_map->pin,
+            mosi_map->function,
+            miso_map->pin,
+            miso_map->function,
+            sclk_map->pin,
+            sclk_map->function,
+            ssel_map->pin,
+            ssel_map->function};
 }
 #endif // DEVICE_SPI
 
@@ -232,15 +243,21 @@ MSTD_CONSTEXPR_FN_14 can_pinmap_t get_can_pinmap(const PinName rd, const PinName
     }
 
     if (!rd_map || !td_map || rd_map->peripheral != td_map->peripheral) {
-        return {(int) NC, NC, (int) NC, NC, (int) NC};
+        return {(int)NC, NC, (int)NC, NC, (int)NC};
     }
 
     return {rd_map->peripheral, rd_map->pin, rd_map->function, td_map->pin, td_map->function};
 }
-#endif //DEVICE_CAN
+#endif // DEVICE_CAN
 
-#if defined(DEVICE_QSPI) && defined(PINMAP_QSPI_DATA0) && defined(PINMAP_QSPI_DATA1) && defined(PINMAP_QSPI_DATA2) && defined(PINMAP_QSPI_DATA3) && defined(PINMAP_QSPI_SCLK) && defined(PINMAP_QSPI_SSEL)
-MSTD_CONSTEXPR_FN_14 qspi_pinmap_t get_qspi_pinmap(const PinName data0, const PinName data1, const PinName data2, const PinName data3, const PinName sclk, const PinName ssel)
+#if defined(DEVICE_QSPI) && defined(PINMAP_QSPI_DATA0) && defined(PINMAP_QSPI_DATA1) && defined(PINMAP_QSPI_DATA2) && \
+    defined(PINMAP_QSPI_DATA3) && defined(PINMAP_QSPI_SCLK) && defined(PINMAP_QSPI_SSEL)
+MSTD_CONSTEXPR_FN_14 qspi_pinmap_t get_qspi_pinmap(const PinName data0,
+                                                   const PinName data1,
+                                                   const PinName data2,
+                                                   const PinName data3,
+                                                   const PinName sclk,
+                                                   const PinName ssel)
 {
     const PinMap *data0_map = nullptr;
     for (const PinMap &pinmap : PINMAP_QSPI_DATA0) {
@@ -290,16 +307,44 @@ MSTD_CONSTEXPR_FN_14 qspi_pinmap_t get_qspi_pinmap(const PinName data0, const Pi
         }
     }
 
-    if (!data0_map || !data1_map || !data2_map || !data3_map || !sclk_map || !ssel_map || data0_map->peripheral != data1_map->peripheral || data0_map->peripheral != data2_map->peripheral  || data0_map->peripheral != data3_map->peripheral || data0_map->peripheral != sclk_map->peripheral || data0_map->peripheral != ssel_map->peripheral) {
-        return {(int) NC, NC, (int) NC, NC, (int) NC, NC, (int) NC, NC, (int) NC};
+    if (!data0_map || !data1_map || !data2_map || !data3_map || !sclk_map || !ssel_map ||
+        data0_map->peripheral != data1_map->peripheral || data0_map->peripheral != data2_map->peripheral ||
+        data0_map->peripheral != data3_map->peripheral || data0_map->peripheral != sclk_map->peripheral ||
+        data0_map->peripheral != ssel_map->peripheral) {
+        return {(int)NC, NC, (int)NC, NC, (int)NC, NC, (int)NC, NC, (int)NC};
     }
 
-    return {data0_map->peripheral, data0_map->pin, data0_map->function, data1_map->pin, data1_map->function, data2_map->pin, data2_map->function, data3_map->pin, data3_map->function, sclk_map->pin, sclk_map->function, ssel_map->pin, ssel_map->function};
+    return {data0_map->peripheral,
+            data0_map->pin,
+            data0_map->function,
+            data1_map->pin,
+            data1_map->function,
+            data2_map->pin,
+            data2_map->function,
+            data3_map->pin,
+            data3_map->function,
+            sclk_map->pin,
+            sclk_map->function,
+            ssel_map->pin,
+            ssel_map->function};
 }
-#endif //DEVICE_QSPI
+#endif // DEVICE_QSPI
 
-#if defined(DEVICE_OSPI) && defined(PINMAP_OSPI_DATA0) && defined(PINMAP_OSPI_DATA1) && defined(PINMAP_OSPI_DATA2) && defined(PINMAP_OSPI_DATA3) && defined(PINMAP_OSPI_DATA4) && defined(PINMAP_OSPI_DATA5) && defined(PINMAP_OSPI_DATA6) && defined(PINMAP_OSPI_DATA7) && defined(PINMAP_OSPI_SCLK) && defined(PINMAP_OSPI_SSEL) && defined(PINMAP_OSPI_DQS)
-MSTD_CONSTEXPR_FN_14 ospi_pinmap_t get_ospi_pinmap(const PinName data0, const PinName data1, const PinName data2, const PinName data3, const PinName data4, const PinName data5, const PinName data6, const PinName data7, const PinName sclk, const PinName ssel, const PinName dqs)
+#if defined(DEVICE_OSPI) && defined(PINMAP_OSPI_DATA0) && defined(PINMAP_OSPI_DATA1) && defined(PINMAP_OSPI_DATA2) && \
+    defined(PINMAP_OSPI_DATA3) && defined(PINMAP_OSPI_DATA4) && defined(PINMAP_OSPI_DATA5) &&                         \
+    defined(PINMAP_OSPI_DATA6) && defined(PINMAP_OSPI_DATA7) && defined(PINMAP_OSPI_SCLK) &&                          \
+    defined(PINMAP_OSPI_SSEL) && defined(PINMAP_OSPI_DQS)
+MSTD_CONSTEXPR_FN_14 ospi_pinmap_t get_ospi_pinmap(const PinName data0,
+                                                   const PinName data1,
+                                                   const PinName data2,
+                                                   const PinName data3,
+                                                   const PinName data4,
+                                                   const PinName data5,
+                                                   const PinName data6,
+                                                   const PinName data7,
+                                                   const PinName sclk,
+                                                   const PinName ssel,
+                                                   const PinName dqs)
 {
     const PinMap *data0_map = nullptr;
     for (const PinMap &pinmap : PINMAP_OSPI_DATA0) {
@@ -389,86 +434,121 @@ MSTD_CONSTEXPR_FN_14 ospi_pinmap_t get_ospi_pinmap(const PinName data0, const Pi
         }
     }
 
-
-    if (!data0_map || !data1_map || !data2_map || !data3_map || !data4_map || !data5_map || !data6_map || !data7_map || !sclk_map || !ssel_map || !dqs_map || data0_map->peripheral != data1_map->peripheral || data0_map->peripheral != data2_map->peripheral || data0_map->peripheral != data3_map->peripheral || data0_map->peripheral != data4_map->peripheral || data0_map->peripheral != data5_map->peripheral || data0_map->peripheral != data6_map->peripheral || data0_map->peripheral != data7_map->peripheral || data0_map->peripheral != sclk_map->peripheral || data0_map->peripheral != ssel_map->peripheral || data0_map->peripheral != dqs_map->peripheral) {
-        return {(int) NC, NC, (int) NC, NC, (int) NC, NC, (int) NC, NC, (int) NC, NC, (int) NC, NC, (int) NC, NC, (int) NC, NC, (int) NC};
+    if (!data0_map || !data1_map || !data2_map || !data3_map || !data4_map || !data5_map || !data6_map || !data7_map ||
+        !sclk_map || !ssel_map || !dqs_map || data0_map->peripheral != data1_map->peripheral ||
+        data0_map->peripheral != data2_map->peripheral || data0_map->peripheral != data3_map->peripheral ||
+        data0_map->peripheral != data4_map->peripheral || data0_map->peripheral != data5_map->peripheral ||
+        data0_map->peripheral != data6_map->peripheral || data0_map->peripheral != data7_map->peripheral ||
+        data0_map->peripheral != sclk_map->peripheral || data0_map->peripheral != ssel_map->peripheral ||
+        data0_map->peripheral != dqs_map->peripheral) {
+        return {(int)NC,
+                NC,
+                (int)NC,
+                NC,
+                (int)NC,
+                NC,
+                (int)NC,
+                NC,
+                (int)NC,
+                NC,
+                (int)NC,
+                NC,
+                (int)NC,
+                NC,
+                (int)NC,
+                NC,
+                (int)NC};
     }
 
-    return {data0_map->peripheral, data0_map->pin, data0_map->function, data1_map->pin, data1_map->function, data2_map->pin, data2_map->function, data3_map->pin, data3_map->function, data4_map->pin, data4_map->function, data5_map->pin, data5_map->function, data6_map->pin, data6_map->function, data7_map->pin, data7_map->function, sclk_map->pin, sclk_map->function, ssel_map->pin, ssel_map->function, dqs_map->pin, dqs_map->function};
+    return {data0_map->peripheral, data0_map->pin,      data0_map->function, data1_map->pin,      data1_map->function,
+            data2_map->pin,        data2_map->function, data3_map->pin,      data3_map->function, data4_map->pin,
+            data4_map->function,   data5_map->pin,      data5_map->function, data6_map->pin,      data6_map->function,
+            data7_map->pin,        data7_map->function, sclk_map->pin,       sclk_map->function,  ssel_map->pin,
+            ssel_map->function,    dqs_map->pin,        dqs_map->function};
 }
-#endif //DEVICE_OSPI
+#endif // DEVICE_OSPI
 
 #else // STATIC_PINMAP_READY
 
 #if DEVICE_PWMOUT
-MSTD_CONSTEXPR_FN_14 PinMap get_pwm_pinmap(const PinName pin)
-{
-    return {pin, (int) NC, (int) NC};
-}
+MSTD_CONSTEXPR_FN_14 PinMap       get_pwm_pinmap(const PinName pin) { return {pin, (int)NC, (int)NC}; }
 #endif // DEVICE_PWMOUT
 
 #if DEVICE_ANALOGIN
-MSTD_CONSTEXPR_FN_14 PinMap get_analogin_pinmap(const PinName pin)
-{
-    return {pin, (int) NC, (int) NC};
-}
+MSTD_CONSTEXPR_FN_14 PinMap       get_analogin_pinmap(const PinName pin) { return {pin, (int)NC, (int)NC}; }
 #endif // DEVICE_ANALOGIN
 
 #if DEVICE_ANALOGOUT
-MSTD_CONSTEXPR_FN_14 PinMap get_analogout_pinmap(const PinName pin)
-{
-    return {pin, (int) NC, (int) NC};
-}
+MSTD_CONSTEXPR_FN_14 PinMap       get_analogout_pinmap(const PinName pin) { return {pin, (int)NC, (int)NC}; }
 #endif // DEVICE_ANALOGOUT
 
 #if DEVICE_I2C
 MSTD_CONSTEXPR_FN_14 i2c_pinmap_t get_i2c_pinmap(const PinName sda, const PinName scl)
 {
-    return {(int) NC, sda, (int) NC, scl, (int) NC};
+    return {(int)NC, sda, (int)NC, scl, (int)NC};
 }
-#endif //DEVICE_I2C
+#endif // DEVICE_I2C
 
 #if DEVICE_SERIAL
 MSTD_CONSTEXPR_FN_14 serial_pinmap_t get_uart_pinmap(const PinName tx, const PinName rx)
 {
-    return {(int) NC, tx, (int) NC, rx, (int) NC, false};
+    return {(int)NC, tx, (int)NC, rx, (int)NC, false};
 }
 
 #if DEVICE_SERIAL_FC
 MSTD_CONSTEXPR_FN_14 serial_fc_pinmap_t get_uart_fc_pinmap(const PinName rxflow, const PinName txflow)
 {
-    return {(int) NC, txflow, (int) NC, rxflow, (int) NC};
+    return {(int)NC, txflow, (int)NC, rxflow, (int)NC};
 }
 #endif // DEVICE_SERIAL_FC
 #endif // DEVICE_SERIAL
 
 #if DEVICE_SPI
-MSTD_CONSTEXPR_FN_14 spi_pinmap_t get_spi_pinmap(const PinName mosi, const PinName miso, const PinName sclk, const PinName ssel)
+MSTD_CONSTEXPR_FN_14 spi_pinmap_t get_spi_pinmap(const PinName mosi,
+                                                 const PinName miso,
+                                                 const PinName sclk,
+                                                 const PinName ssel)
 {
-    return {(int) NC, mosi, (int) NC, miso, (int) NC, sclk, (int) NC, ssel, (int) NC};
+    return {(int)NC, mosi, (int)NC, miso, (int)NC, sclk, (int)NC, ssel, (int)NC};
 }
 #endif // DEVICE_SERIAL
 
 #if DEVICE_CAN
 MSTD_CONSTEXPR_FN_14 can_pinmap_t get_can_pinmap(const PinName rd, const PinName td)
 {
-    return {(int) NC, rd, (int) NC, td, (int) NC};
+    return {(int)NC, rd, (int)NC, td, (int)NC};
 }
-#endif //DEVICE_CAN
+#endif // DEVICE_CAN
 
 #if DEVICE_QSPI
-MSTD_CONSTEXPR_FN_14 qspi_pinmap_t get_qspi_pinmap(const PinName data0, const PinName data1, const PinName data2, const PinName data3, const PinName sclk, const PinName ssel)
+MSTD_CONSTEXPR_FN_14 qspi_pinmap_t get_qspi_pinmap(const PinName data0,
+                                                   const PinName data1,
+                                                   const PinName data2,
+                                                   const PinName data3,
+                                                   const PinName sclk,
+                                                   const PinName ssel)
 {
-    return {(int) NC, data0, (int) NC, data1, (int) NC, data2, (int) NC, data3, (int) NC, sclk, (int) NC, ssel, (int) NC};
+    return {(int)NC, data0, (int)NC, data1, (int)NC, data2, (int)NC, data3, (int)NC, sclk, (int)NC, ssel, (int)NC};
 }
-#endif //DEVICE_QSPI
+#endif // DEVICE_QSPI
 
 #if DEVICE_OSPI
-MSTD_CONSTEXPR_FN_14 ospi_pinmap_t get_ospi_pinmap(const PinName data0, const PinName data1, const PinName data2, const PinName data3, const PinName data4, const PinName data5, const PinName data6, const PinName data7, const PinName sclk, const PinName ssel, const PinName dqs)
+MSTD_CONSTEXPR_FN_14 ospi_pinmap_t get_ospi_pinmap(const PinName data0,
+                                                   const PinName data1,
+                                                   const PinName data2,
+                                                   const PinName data3,
+                                                   const PinName data4,
+                                                   const PinName data5,
+                                                   const PinName data6,
+                                                   const PinName data7,
+                                                   const PinName sclk,
+                                                   const PinName ssel,
+                                                   const PinName dqs)
 {
-    return {(int) NC, data0, (int) NC, data1, (int) NC, data2, (int) NC, data3, (int) NC, data4, (int) NC, data5, (int) NC, data6, (int) NC, data7, (int) NC, sclk, (int) NC, ssel, (int) NC, dqs, (int) NC};
+    return {(int)NC, data0, (int)NC, data1, (int)NC, data2, (int)NC, data3, (int)NC, data4, (int)NC, data5,
+            (int)NC, data6, (int)NC, data7, (int)NC, sclk,  (int)NC, ssel,  (int)NC, dqs,   (int)NC};
 }
-#endif //DEVICE_OSPI
+#endif // DEVICE_OSPI
 
 #endif // STATIC_PINMAP_READY
 

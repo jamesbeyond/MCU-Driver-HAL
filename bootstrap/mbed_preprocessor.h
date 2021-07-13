@@ -36,7 +36,7 @@
  *  int MBED_CONCAT(UNIQUE_LABEL_, __LINE__) = 1;
  *  @endcode
  */
-#define MBED_CONCAT(a, b) MBED_CONCAT_(a, b)
+#define MBED_CONCAT(a, b)  MBED_CONCAT_(a, b)
 #define MBED_CONCAT_(a, b) a##b
 
 /** MBED_STRINGIFY
@@ -50,7 +50,7 @@
  *  const char *c = MBED_STRINGIFY(This is a ridiculous way to create a string)
  *  @endcode
  */
-#define MBED_STRINGIFY(a) MBED_STRINGIFY_(a)
+#define MBED_STRINGIFY(a)  MBED_STRINGIFY_(a)
 #define MBED_STRINGIFY_(a) #a
 
 /** MBED_STRLEN
@@ -64,7 +64,7 @@
  *  const int len = MBED_STRLEN("Get the length")
  *  @endcode
  */
-#define MBED_STRLEN(a) MBED_STRLEN_(a)
+#define MBED_STRLEN(a)  MBED_STRLEN_(a)
 #define MBED_STRLEN_(a) (sizeof(a) - 1)
 
 /** MBED_COUNT_VA_ARGS(...)
@@ -78,7 +78,7 @@
  *  const int count = MBED_COUNT_VA_ARGS("Address 0x%x, Data[0] = %d Data[1] = %d", 0x20001234, 10, 20)
  *  @endcode
  */
-#define MBED_COUNT_VA_ARGS(...) GET_NTH_ARG_(__VA_ARGS__, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1)
+#define MBED_COUNT_VA_ARGS(...)                                                                GET_NTH_ARG_(__VA_ARGS__, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1)
 #define GET_NTH_ARG_(_1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, N, ...) N
 
 #endif

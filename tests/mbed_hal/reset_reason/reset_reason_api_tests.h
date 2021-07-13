@@ -45,4 +45,3 @@ void test_reset_reason();
 #endif
 
 /** @}*/
-

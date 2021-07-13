@@ -15,7 +15,7 @@
  */
 
 #if !DEVICE_FLASH
-#error [NOT_SUPPORTED] Flash API not supported for this target
+#error[NOT_SUPPORTED] Flash API not supported for this target
 #else
 
 #include "utest/utest.h"
@@ -28,9 +28,9 @@
 
 using namespace utest::v1;
 
-#define TEST_CYCLES         10000000
+#define TEST_CYCLES 10000000
 
-#define ALLOWED_DRIFT_PPM   (1000000/5000)    //0.5%
+#define ALLOWED_DRIFT_PPM (1000000 / 5000) // 0.5%
 
 /*
     return values to be checked are documented at:
@@ -38,7 +38,7 @@ using namespace utest::v1;
 */
 
 #ifndef ALIGN_DOWN
-#define ALIGN_DOWN(x, a) ((x)& ~((a) - 1))
+#define ALIGN_DOWN(x, a) ((x) & ~((a)-1))
 #endif
 
 static int timer_diff_start;
@@ -54,35 +54,31 @@ static void erase_range(flash_t *flash, uint32_t addr, uint32_t size)
         size = size > sector_size ? size - sector_size : 0;
     }
 }
-#if defined (__ICCARM__)
+#if defined(__ICCARM__)
 MBED_NOINLINE
 static void delay_loop(uint32_t count)
 {
-    __asm volatile(
-        "loop: \n"
-        " SUBS %0, %0, #1 \n"
-        " BCS.n  loop\n"
-        : "+r"(count)
-        :
-        : "cc"
-    );
+    __asm volatile("loop: \n"
+                   " SUBS %0, %0, #1 \n"
+                   " BCS.n  loop\n"
+                   : "+r"(count)
+                   :
+                   : "cc");
 }
-#elif  defined ( __GNUC__ ) ||  defined(__ARMCC_VERSION)
+#elif defined(__GNUC__) || defined(__ARMCC_VERSION)
 MBED_NOINLINE
 static void delay_loop(uint32_t count)
 {
-    __asm__ volatile(
-        "%=:\n\t"
+    __asm__ volatile("%=:\n\t"
 #if defined(__thumb__) && !defined(__thumb2__) && !defined(__ARMCC_VERSION)
-        "SUB  %0, #1\n\t"
+                     "SUB  %0, #1\n\t"
 #else
-        "SUBS %0, %0, #1\n\t"
+                     "SUBS %0, %0, #1\n\t"
 #endif
-        "BCS  %=b\n\t"
-        : "+l"(count)
-        :
-        : "cc"
-    );
+                     "BCS  %=b\n\t"
+                     : "+l"(count)
+                     :
+                     : "cc");
 }
 #endif
 
@@ -121,16 +117,16 @@ void flash_mapping_alignment_test()
     int32_t ret = flash_init(&test_flash);
     TEST_ASSERT_EQUAL_INT32(0, ret);
 
-    const uint32_t page_size = flash_get_page_size(&test_flash);
+    const uint32_t page_size   = flash_get_page_size(&test_flash);
     const uint32_t flash_start = flash_get_start_address(&test_flash);
-    const uint32_t flash_size = flash_get_size(&test_flash);
+    const uint32_t flash_size  = flash_get_size(&test_flash);
     TEST_ASSERT_TRUE(page_size != 0UL);
 
     uint32_t sector_size = flash_get_sector_size(&test_flash, flash_start);
-    for (uint32_t offset = 0; offset < flash_size;  offset += sector_size) {
-        const uint32_t sector_start = flash_start + offset;
-        sector_size = flash_get_sector_size(&test_flash, sector_start);
-        const uint32_t sector_end = sector_start + sector_size - 1;
+    for (uint32_t offset = 0; offset < flash_size; offset += sector_size) {
+        const uint32_t sector_start    = flash_start + offset;
+        sector_size                    = flash_get_sector_size(&test_flash, sector_start);
+        const uint32_t sector_end      = sector_start + sector_size - 1;
         const uint32_t end_sector_size = flash_get_sector_size(&test_flash, sector_end);
 
         // Sector size must be a valid value
@@ -159,9 +155,9 @@ void flash_erase_sector_test()
     int32_t ret = flash_init(&test_flash);
     TEST_ASSERT_EQUAL_INT32(0, ret);
 
-    uint32_t addr_after_last = flash_get_start_address(&test_flash) + flash_get_size(&test_flash);
+    uint32_t addr_after_last  = flash_get_start_address(&test_flash) + flash_get_size(&test_flash);
     uint32_t last_sector_size = flash_get_sector_size(&test_flash, addr_after_last - 1);
-    uint32_t last_sector = addr_after_last - last_sector_size;
+    uint32_t last_sector      = addr_after_last - last_sector_size;
     TEST_ASSERT_EQUAL_INT32(0, last_sector % last_sector_size);
 
     utest_printf("ROM ends at 0x%lx, test starts at 0x%lx\n", FLASHIAP_APP_ROM_END_ADDR, last_sector);
@@ -181,8 +177,8 @@ void flash_program_page_test()
     int32_t ret = flash_init(&test_flash);
     TEST_ASSERT_EQUAL_INT32(0, ret);
 
-    uint32_t test_size = flash_get_page_size(&test_flash);
-    uint8_t *data = new uint8_t[test_size];
+    uint32_t test_size    = flash_get_page_size(&test_flash);
+    uint8_t *data         = new uint8_t[test_size];
     uint8_t *data_flashed = new uint8_t[test_size];
     for (uint32_t i = 0; i < test_size; i++) {
         data[i] = 0xCE;
@@ -194,7 +190,8 @@ void flash_program_page_test()
     // sector size might not be same as page size
     uint32_t erase_sector_boundary = ALIGN_DOWN(address, flash_get_sector_size(&test_flash, address));
     utest_printf("ROM ends at 0x%lx, test starts at 0x%lx\n", FLASHIAP_APP_ROM_END_ADDR, erase_sector_boundary);
-    TEST_SKIP_UNLESS_MESSAGE(erase_sector_boundary >= FLASHIAP_APP_ROM_END_ADDR, "Test skipped. Test region overlaps code.");
+    TEST_SKIP_UNLESS_MESSAGE(erase_sector_boundary >= FLASHIAP_APP_ROM_END_ADDR,
+                             "Test skipped. Test region overlaps code.");
 
     ret = flash_erase_sector(&test_flash, erase_sector_boundary);
     TEST_ASSERT_EQUAL_INT32(0, ret);
@@ -208,7 +205,7 @@ void flash_program_page_test()
 
     // sector size might not be same as page size
     erase_sector_boundary = ALIGN_DOWN(address, flash_get_sector_size(&test_flash, address));
-    ret = flash_erase_sector(&test_flash, erase_sector_boundary);
+    ret                   = flash_erase_sector(&test_flash, erase_sector_boundary);
     TEST_ASSERT_EQUAL_INT32(0, ret);
 
     // write another data to be certain we are re-flashing
@@ -232,7 +229,7 @@ void flash_program_page_test()
 // cache settings weren't changed
 void flash_clock_and_cache_test()
 {
-    const int timer_diff_end = time_cpu_cycles(TEST_CYCLES);
+    const int timer_diff_end   = time_cpu_cycles(TEST_CYCLES);
     const int acceptable_range = timer_diff_start / (ALLOWED_DRIFT_PPM);
     TEST_ASSERT_UINT32_WITHIN(acceptable_range, timer_diff_start, timer_diff_end);
 }
@@ -264,9 +261,6 @@ void greentea_test_teardown(const size_t passed, const size_t failed, const fail
 
 Specification specification(greentea_test_setup, cases, greentea_test_teardown);
 
-int main()
-{
-    Harness::run(specification);
-}
+int main() { Harness::run(specification); }
 
 #endif !DEVICE_FLASH

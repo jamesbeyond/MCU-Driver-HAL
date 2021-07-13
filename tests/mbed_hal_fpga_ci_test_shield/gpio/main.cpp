@@ -15,9 +15,9 @@
  */
 
 #if !COMPONENT_FPGA_CI_TEST_SHIELD
-#error [NOT_SUPPORTED] FPGA CI Test Shield is needed to run this test
+#error[NOT_SUPPORTED] FPGA CI Test Shield is needed to run this test
 #elif !(defined(TARGET_FF_ARDUINO) || defined(TARGET_FF_ARDUINO_UNO)) && !defined(MBED_CONF_TARGET_DEFAULT_FORM_FACTOR)
-#error [NOT_SUPPORTED] Test not supported for this form factor
+#error[NOT_SUPPORTED] Test not supported for this form factor
 #else
 
 #include "utest/utest.h"
@@ -319,9 +319,6 @@ utest::v1::status_t greentea_test_setup(const size_t number_of_cases)
 
 Specification specification(greentea_test_setup, cases, greentea_test_teardown_handler);
 
-int main()
-{
-    Harness::run(specification);
-}
+int main() { Harness::run(specification); }
 
 #endif /* !COMPONENT_FPGA_CI_TEST_SHIELD */

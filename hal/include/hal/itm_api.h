@@ -34,9 +34,7 @@ extern "C" {
  * @{
  */
 
-enum {
-    ITM_PORT_SWO = 0
-};
+enum { ITM_PORT_SWO = 0 };
 
 /**
  * @brief      Target specific initialization function.

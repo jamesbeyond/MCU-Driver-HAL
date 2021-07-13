@@ -26,10 +26,7 @@
 
 #if defined US_TICKER_PERIOD_NUM
 /* Real definition for binary compatibility with binaries not using the new macro */
-void (wait_us)(int us)
-{
-    wait_us(us);
-}
+void(wait_us)(int us) { wait_us(us); }
 
 /* External definition for the inline function */
 extern void _wait_us_inline(unsigned int us);
@@ -37,7 +34,8 @@ extern void _wait_us_inline(unsigned int us);
 void _wait_us_ticks(uint32_t ticks)
 {
     const uint32_t start = us_ticker_read();
-    while (((us_ticker_read() - start) & US_TICKER_MASK) < ticks);
+    while (((us_ticker_read() - start) & US_TICKER_MASK) < ticks)
+        ;
 }
 
 void _wait_us_generic(unsigned int us)
@@ -45,9 +43,9 @@ void _wait_us_generic(unsigned int us)
 void wait_us(int us)
 #endif
 {
-    const ticker_info_t *info = us_ticker_get_info();
-    uint32_t mask = (1 << info->bits) - 1;
-    int remaining_ticks = (int)((uint64_t) us * info->frequency / 1000000);
+    const ticker_info_t *info            = us_ticker_get_info();
+    uint32_t             mask            = (1 << info->bits) - 1;
+    int                  remaining_ticks = (int)((uint64_t)us * info->frequency / 1000000);
 
     uint32_t prev = us_ticker_read();
     while (remaining_ticks > 0) {
@@ -79,8 +77,7 @@ void wait_us(int us)
 #if (__CORTEX_M == 0 && !defined __CM0PLUS_REV) || __CORTEX_M == 1
 // Cortex-M0 and Cortex-M1 take 6 cycles per iteration - SUBS = 1, 2xNOP = 2, BCS = 3
 #define LOOP_SCALER 6000
-#elif (__CORTEX_M == 0 && defined __CM0PLUS_REV) || __CORTEX_M == 3 || __CORTEX_M == 4 || \
-      __CORTEX_M == 23
+#elif (__CORTEX_M == 0 && defined __CM0PLUS_REV) || __CORTEX_M == 3 || __CORTEX_M == 4 || __CORTEX_M == 23
 // Cortex-M0+, M3, M4 and M23 take 5 cycles per iteration - SUBS = 1, 2xNOP = 2, BCS = 2
 #define LOOP_SCALER 5000
 #elif __CORTEX_M == 33
@@ -122,7 +119,7 @@ static const uint16_t delay_loop_code[] = {
 };
 
 /* Take the address of the code, set LSB to indicate Thumb, and cast to void() function pointer */
-#define delay_loop ((void(*)()) ((uintptr_t) delay_loop_code + 1))
+#define delay_loop ((void (*)())((uintptr_t)delay_loop_code + 1))
 
 /* Some targets may not provide zero-wait-state flash performance. Export this function
  * to be overridable for targets to provide more accurate implementation like locating

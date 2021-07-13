@@ -24,7 +24,7 @@
 #include "hal/us_ticker_api.h"
 
 #if !DEVICE_LPTICKER
-#error [NOT_SUPPORTED] Low power timer not supported for this target
+#error[NOT_SUPPORTED] Low power timer not supported for this target
 #else
 
 using namespace utest::v1;
@@ -38,9 +38,9 @@ ticker_irq_handler_type prev_handler;
 #define TICKER_GLITCH_TEST_TICKS 1000
 
 #define TICKER_INT_VAL 500
-#define TICKER_DELTA 10
+#define TICKER_DELTA   10
 
-#define LP_TICKER_OV_LIMIT 4000
+#define LP_TICKER_OV_LIMIT   4000
 
 /* To prevent a loss of Greentea data, the serial buffers have to be flushed
  * before the UART peripheral shutdown. The UART shutdown happens when the
@@ -60,8 +60,9 @@ ticker_irq_handler_type prev_handler;
 void busy_wait_ms(int ms)
 {
     const ticker_data_t *const ticker = get_us_ticker_data();
-    uint32_t start = ticker_read(ticker);
-    while ((ticker_read(ticker) - start) < (uint32_t)(ms * US_PER_MS));
+    uint32_t                   start  = ticker_read(ticker);
+    while ((ticker_read(ticker) - start) < (uint32_t)(ms * US_PER_MS))
+        ;
 }
 
 /* Since according to the ticker requirements min acceptable counter size is
@@ -76,7 +77,7 @@ void overflow_protect()
 
     time_window = LP_TICKER_OV_LIMIT;
 
-    const uint32_t ticks_now = lp_ticker_read();
+    const uint32_t       ticks_now     = lp_ticker_read();
     const ticker_info_t *p_ticker_info = lp_ticker_get_info();
 
     const uint32_t max_count = ((1 << p_ticker_info->bits) - 1);
@@ -85,7 +86,8 @@ void overflow_protect()
         return;
     }
 
-    while (lp_ticker_read() >= ticks_now);
+    while (lp_ticker_read() >= ticks_now)
+        ;
 }
 
 void ticker_event_handler_stub(const ticker_data_t *const ticker)
@@ -110,10 +112,10 @@ void lp_ticker_info_test()
     TEST_ASSERT(p_ticker_info->bits >= 12);
 
 #if defined(LP_TICKER_PERIOD_NUM) || defined(CHECK_TICKER_OPTIM)
-    TEST_ASSERT_UINT32_WITHIN(1, (uint64_t)1000000 * LP_TICKER_PERIOD_DEN / LP_TICKER_PERIOD_NUM, p_ticker_info->frequency);
+    TEST_ASSERT_UINT32_WITHIN(
+        1, (uint64_t)1000000 * LP_TICKER_PERIOD_DEN / LP_TICKER_PERIOD_NUM, p_ticker_info->frequency);
     TEST_ASSERT_EQUAL_UINT32(LP_TICKER_MASK, ((uint64_t)1 << p_ticker_info->bits) - 1);
 #endif
-
 }
 
 #if DEVICE_SLEEP
@@ -154,7 +156,7 @@ void lp_ticker_glitch_test()
 
     overflow_protect();
 
-    uint32_t last = lp_ticker_read();
+    uint32_t       last  = lp_ticker_read();
     const uint32_t start = last;
 
     while (last < (start + TICKER_GLITCH_TEST_TICKS)) {
@@ -179,8 +181,10 @@ utest::v1::status_t lp_ticker_deepsleep_test_setup_handler(const Case *const sou
     return greentea_case_setup_handler(source, index_of_case);
 }
 
-utest::v1::status_t lp_ticker_deepsleep_test_teardown_handler(const Case *const source, const size_t passed, const size_t failed,
-                                                              const failure_t reason)
+utest::v1::status_t lp_ticker_deepsleep_test_teardown_handler(const Case *const source,
+                                                              const size_t      passed,
+                                                              const size_t      failed,
+                                                              const failure_t   reason)
 {
     set_lp_ticker_irq_handler(prev_handler);
 #if DEVICE_LPTICKER && (LPTICKER_DELAY_TICKS > 0)
@@ -200,19 +204,17 @@ utest::v1::status_t test_setup(const size_t number_of_cases)
     return verbose_test_setup_handler(number_of_cases);
 }
 
-Case cases[] = {
-    Case("lp ticker info test", lp_ticker_info_test),
+Case cases[] = {Case("lp ticker info test", lp_ticker_info_test),
 #if DEVICE_SLEEP
-    Case("lp ticker sleep test", lp_ticker_deepsleep_test_setup_handler, lp_ticker_deepsleep_test, lp_ticker_deepsleep_test_teardown_handler),
+                Case("lp ticker sleep test",
+                     lp_ticker_deepsleep_test_setup_handler,
+                     lp_ticker_deepsleep_test,
+                     lp_ticker_deepsleep_test_teardown_handler),
 #endif
-    Case("lp ticker glitch test", lp_ticker_glitch_test)
-};
+                Case("lp ticker glitch test", lp_ticker_glitch_test)};
 
 Specification specification(test_setup, cases);
 
-int main()
-{
-    return !Harness::run(specification);
-}
+int main() { return !Harness::run(specification); }
 
 #endif // !DEVICE_LPTICKER

@@ -34,8 +34,8 @@ typedef uint32_t timestamp_t;
 /** Information about the ticker implementation
  */
 typedef struct {
-    uint32_t frequency;                           /**< Frequency in Hz this ticker runs at */
-    uint32_t bits;                                /**< Number of bits this ticker supports */
+    uint32_t frequency; /**< Frequency in Hz this ticker runs at */
+    uint32_t bits;      /**< Number of bits this ticker supports */
 } ticker_info_t;
 
 /** Ticker's interface structure - required API for a ticker

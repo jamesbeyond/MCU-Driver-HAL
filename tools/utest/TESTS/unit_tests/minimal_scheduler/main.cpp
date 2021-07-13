@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-
 #include "mbed.h"
 #include "greentea-client/test_env.h"
 #include "utest/utest.h"
@@ -36,11 +35,11 @@ static void *utest_minimal_post(const utest_v1_harness_callback_t callback, cons
 {
     minimal_callback = callback;
     // this scheduler does not support scheduling of asynchronous callbacks
-    return (delay_ms ? NULL : (void*)1);
+    return (delay_ms ? NULL : (void *)1);
 }
 static int32_t utest_minimal_cancel(void *handle)
 {
-    (void) handle;
+    (void)handle;
     // this scheduler does not support canceling of asynchronous callbacks
     return -1;
 }
@@ -50,8 +49,7 @@ static int32_t utest_minimal_run()
      * This is just a busy loop that calls the callbacks in this context.
      * THIS LOOP IS BLOCKING.
      */
-    while(1)
-    {
+    while (1) {
         // check if a new callback has been set
         if (minimal_callback) {
             // copy the callback
@@ -64,13 +62,8 @@ static int32_t utest_minimal_run()
     }
     return 0;
 }
-static const utest_v1_scheduler_t utest_minimal_scheduler =
-{
-    utest_minimal_init,
-    utest_minimal_post,
-    utest_minimal_cancel,
-    utest_minimal_run
-};
+static const utest_v1_scheduler_t utest_minimal_scheduler = {
+    utest_minimal_init, utest_minimal_post, utest_minimal_cancel, utest_minimal_run};
 
 // Tests --------------------------------------------------------------------------------------------------------------
 int call_counter(0);
@@ -84,16 +77,14 @@ control_t test_case()
 }
 
 // Cases --------------------------------------------------------------------------------------------------------------
-Case cases[] = {
-    Case("Minimal Scheduler: Case 1", test_case),
-    Case("Minimal Scheduler: Case 2", test_case),
-    Case("Minimal Scheduler: Case 3", test_case),
-    Case("Minimal Scheduler: Case 4", test_case),
-    Case("Minimal Scheduler: Case 5", test_case),
-    Case("Minimal Scheduler: Case 6", test_case),
-    Case("Minimal Scheduler: Case 7", test_case),
-    Case("Minimal Scheduler: Case 8", test_case)
-};
+Case cases[] = {Case("Minimal Scheduler: Case 1", test_case),
+                Case("Minimal Scheduler: Case 2", test_case),
+                Case("Minimal Scheduler: Case 3", test_case),
+                Case("Minimal Scheduler: Case 4", test_case),
+                Case("Minimal Scheduler: Case 5", test_case),
+                Case("Minimal Scheduler: Case 6", test_case),
+                Case("Minimal Scheduler: Case 7", test_case),
+                Case("Minimal Scheduler: Case 8", test_case)};
 
 // Specification: Setup & Teardown ------------------------------------------------------------------------------------
 utest::v1::status_t greentea_setup(const size_t number_of_cases)

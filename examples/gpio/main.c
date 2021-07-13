@@ -23,13 +23,15 @@ int main(void)
 
     gpio_init_out(&my_gpio1, LED1);
     gpio_init_out(&my_gpio2, LED2);
-    
+
     while (1) {
         gpio_write(&my_gpio1, 1);
         gpio_write(&my_gpio2, 0);
-        for (unsigned long i = 0; i < 10000000UL; i++);
+        for (unsigned long i = 0; i < 10000000UL; i++)
+            ;
         gpio_write(&my_gpio1, 0);
         gpio_write(&my_gpio2, 1);
-        for (unsigned long i = 0; i < 10000000UL; i++);
+        for (unsigned long i = 0; i < 10000000UL; i++)
+            ;
     }
 }

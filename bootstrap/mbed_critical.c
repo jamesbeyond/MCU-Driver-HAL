@@ -49,10 +49,7 @@ bool core_util_is_isr_active(void)
 #endif
 }
 
-bool core_util_in_critical_section(void)
-{
-    return hal_in_critical_section();
-}
+bool core_util_in_critical_section(void) { return hal_in_critical_section(); }
 
 void core_util_critical_section_enter(void)
 {

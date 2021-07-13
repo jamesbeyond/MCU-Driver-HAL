@@ -20,7 +20,7 @@
 #include "utest.h"
 
 #ifdef TARGET_RENESAS
-#error [NOT_SUPPORTED] Cortex-A target not supported for this test
+#error[NOT_SUPPORTED] Cortex-A target not supported for this test
 #else
 
 using namespace utest::v1;
@@ -28,18 +28,17 @@ using namespace utest::v1;
 #ifdef MBED_CONF_RTOS_PRESENT
 extern osThreadAttr_t _main_thread_attr;
 #endif
-extern uint32_t mbed_stack_isr_size;
+extern uint32_t       mbed_stack_isr_size;
 
-#define EXPECTED_ISR_STACK_SIZE                  (MBED_CONF_TARGET_BOOT_STACK_SIZE)
+#define EXPECTED_ISR_STACK_SIZE (MBED_CONF_TARGET_BOOT_STACK_SIZE)
 
-#define EXPECTED_MAIN_THREAD_STACK_SIZE          (MBED_CONF_RTOS_MAIN_THREAD_STACK_SIZE)
+#define EXPECTED_MAIN_THREAD_STACK_SIZE (MBED_CONF_RTOS_MAIN_THREAD_STACK_SIZE)
 
-#define EXPECTED_USER_THREAD_DEFAULT_STACK_SIZE  (MBED_CONF_RTOS_THREAD_STACK_SIZE)
+#define EXPECTED_USER_THREAD_DEFAULT_STACK_SIZE (MBED_CONF_RTOS_THREAD_STACK_SIZE)
 
 #if ((MBED_RAM_SIZE - MBED_CONF_TARGET_BOOT_STACK_SIZE) <= (EXPECTED_MAIN_THREAD_STACK_SIZE + EXPECTED_ISR_STACK_SIZE))
-#error [NOT_SUPPORTED] Insufficient stack for staci_size_unification tests
+#error[NOT_SUPPORTED] Insufficient stack for staci_size_unification tests
 #endif
-
 
 /* Test sizes of ISR stack, main thread stack, default user thread stack.
  *
@@ -63,15 +62,10 @@ utest::v1::status_t test_setup(const size_t number_of_cases)
     return verbose_test_setup_handler(number_of_cases);
 }
 
-Case cases[] = {
-    Case("Stack size unification test", stack_size_unification_test)
-};
+Case cases[] = {Case("Stack size unification test", stack_size_unification_test)};
 
 Specification specification(test_setup, cases);
 
-int main()
-{
-    return !Harness::run(specification);
-}
+int main() { return !Harness::run(specification); }
 
 #endif // TARGET_RENESAS

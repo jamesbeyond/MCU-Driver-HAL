@@ -15,7 +15,7 @@
  */
 
 #if !DEVICE_RTC
-#error [NOT_SUPPORTED] RTC API not supported for this target
+#error[NOT_SUPPORTED] RTC API not supported for this target
 #else
 
 #include "utest/utest.h"
@@ -26,13 +26,7 @@
 #include "mbed.h"
 #include "rtc_api.h"
 
-
-typedef enum {
-    CMD_STATUS_PASS,
-    CMD_STATUS_FAIL,
-    CMD_STATUS_CONTINUE,
-    CMD_STATUS_ERROR
-} cmd_status_t;
+typedef enum { CMD_STATUS_PASS, CMD_STATUS_FAIL, CMD_STATUS_CONTINUE, CMD_STATUS_ERROR } cmd_status_t;
 
 static cmd_status_t handle_command(const char *key, const char *value)
 {
@@ -70,7 +64,6 @@ static cmd_status_t handle_command(const char *key, const char *value)
 
     } else {
         return CMD_STATUS_ERROR;
-
     }
 }
 
@@ -79,7 +72,7 @@ void rtc_reset_test()
 {
     GREENTEA_SETUP(100, "rtc_reset");
 
-    static char _key[10 + 1] = {};
+    static char _key[10 + 1]    = {};
     static char _value[128 + 1] = {};
 
     greentea_send_kv("start", 1);
@@ -96,9 +89,6 @@ void rtc_reset_test()
     GREENTEA_TESTSUITE_RESULT(CMD_STATUS_PASS == cmd_status);
 }
 
-int main()
-{
-    rtc_reset_test();
-}
+int main() { rtc_reset_test(); }
 
 #endif // !DEVICE_RTC

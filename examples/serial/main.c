@@ -29,5 +29,6 @@ int main()
         serial_putc(serial, str[i]);
     }
 
-    while(1){}
+    while (1) {
+    }
 }

@@ -19,19 +19,16 @@
 #include "utest/utest.h"
 #include "unity/unity.h"
 
-
 using namespace utest::v1;
 
-static int call_counter(0);
+static int  call_counter(0);
 static bool executed_case_0 = false;
 static bool executed_case_1 = false;
 static bool executed_case_2 = false;
 
-void handler_case_2()
-{
-    executed_case_2 = true;
-}
-utest::v1::status_t teardown_case_2(const Case *const source, const size_t passed, const size_t failed, const failure_t failure)
+void handler_case_2() { executed_case_2 = true; }
+utest::v1::status_t
+teardown_case_2(const Case *const source, const size_t passed, const size_t failed, const failure_t failure)
 {
     TEST_ASSERT_TRUE(executed_case_2);
     TEST_ASSERT_EQUAL(1, passed);
@@ -42,11 +39,9 @@ utest::v1::status_t teardown_case_2(const Case *const source, const size_t passe
     greentea_case_teardown_handler(source, passed, failed, failure);
     return utest::v1::status_t(0);
 }
-void handler_case_0()
-{
-    executed_case_0 = true;
-}
-utest::v1::status_t teardown_case_0(const Case *const source, const size_t passed, const size_t failed, const failure_t failure)
+void handler_case_0() { executed_case_0 = true; }
+utest::v1::status_t
+teardown_case_0(const Case *const source, const size_t passed, const size_t failed, const failure_t failure)
 {
     TEST_ASSERT_TRUE(executed_case_0);
     TEST_ASSERT_EQUAL(1, passed);
@@ -57,11 +52,9 @@ utest::v1::status_t teardown_case_0(const Case *const source, const size_t passe
     greentea_case_teardown_handler(source, passed, failed, failure);
     return utest::v1::status_t(1);
 }
-void handler_case_1()
-{
-    executed_case_1 = true;
-}
-utest::v1::status_t teardown_case_1(const Case *const source, const size_t passed, const size_t failed, const failure_t failure)
+void handler_case_1() { executed_case_1 = true; }
+utest::v1::status_t
+teardown_case_1(const Case *const source, const size_t passed, const size_t failed, const failure_t failure)
 {
     TEST_ASSERT_TRUE(executed_case_1);
     TEST_ASSERT_EQUAL(1, passed);
@@ -73,12 +66,9 @@ utest::v1::status_t teardown_case_1(const Case *const source, const size_t passe
     return utest::v1::status_t(3);
 }
 
-Case cases[] =
-{
-    Case("Case 1", handler_case_0, teardown_case_0),
-    Case("Case 2", handler_case_1, teardown_case_1),
-    Case("Case 3", handler_case_2, teardown_case_2)
-};
+Case cases[] = {Case("Case 1", handler_case_0, teardown_case_0),
+                Case("Case 2", handler_case_1, teardown_case_1),
+                Case("Case 3", handler_case_2, teardown_case_2)};
 
 utest::v1::status_t test_setup_handler(const size_t number_of_cases)
 {

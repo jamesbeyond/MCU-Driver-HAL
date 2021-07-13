@@ -34,27 +34,27 @@ static qspi_status_t dual_disable(Qspi &qspi);
 static qspi_status_t quad_enable(Qspi &qspi);
 static qspi_status_t quad_disable(Qspi &qspi);
 
-void QspiCommand::configure(qspi_bus_width_t inst_width, qspi_bus_width_t addr_width,
-                            qspi_bus_width_t data_width, qspi_bus_width_t alt_width,
-                            qspi_address_size_t addr_size, qspi_alt_size_t alt_size,
-                            int dummy_cycles)
+void QspiCommand::configure(qspi_bus_width_t    inst_width,
+                            qspi_bus_width_t    addr_width,
+                            qspi_bus_width_t    data_width,
+                            qspi_bus_width_t    alt_width,
+                            qspi_address_size_t addr_size,
+                            qspi_alt_size_t     alt_size,
+                            int                 dummy_cycles)
 {
-    memset(&_cmd, 0,  sizeof(qspi_command_t));
+    memset(&_cmd, 0, sizeof(qspi_command_t));
     _cmd.instruction.disabled = _cmd.address.disabled = _cmd.alt.disabled = true;
 
     _cmd.instruction.bus_width = inst_width;
-    _cmd.address.bus_width = addr_width;
-    _cmd.address.size = addr_size;
-    _cmd.alt.bus_width = alt_width;
-    _cmd.alt.size = alt_size;
-    _cmd.data.bus_width = data_width;
-    _cmd.dummy_count = dummy_cycles;
+    _cmd.address.bus_width     = addr_width;
+    _cmd.address.size          = addr_size;
+    _cmd.alt.bus_width         = alt_width;
+    _cmd.alt.size              = alt_size;
+    _cmd.data.bus_width        = data_width;
+    _cmd.dummy_count           = dummy_cycles;
 }
 
-void QspiCommand::set_dummy_cycles(int dummy_cycles)
-{
-    _cmd.dummy_count = dummy_cycles;
-}
+void QspiCommand::set_dummy_cycles(int dummy_cycles) { _cmd.dummy_count = dummy_cycles; }
 
 void QspiCommand::build(int instruction, int address, int alt)
 {
@@ -74,11 +74,7 @@ void QspiCommand::build(int instruction, int address, int alt)
     }
 }
 
-qspi_command_t *QspiCommand::get()
-{
-    return &_cmd;
-}
-
+qspi_command_t *QspiCommand::get() { return &_cmd; }
 
 qspi_status_t read_register(uint32_t cmd, uint8_t *buf, uint32_t size, Qspi &q)
 {
@@ -92,19 +88,18 @@ qspi_status_t write_register(uint32_t cmd, uint8_t *buf, uint32_t size, Qspi &q)
     return qspi_command_transfer(&q.handle, q.cmd.get(), buf, size, NULL, 0);
 }
 
-
 QspiStatus flash_wait_for(uint32_t time_us, Qspi &qspi)
 {
-    uint8_t reg[QSPI_STATUS_REG_SIZE];
+    uint8_t       reg[QSPI_STATUS_REG_SIZE];
     qspi_status_t ret;
-    uint32_t curr_time;
+    uint32_t      curr_time;
 
     const ticker_data_t *const ticker = get_us_ticker_data();
-    const uint32_t start = ticker_read(ticker);
+    const uint32_t             start  = ticker_read(ticker);
 
     memset(reg, 255, QSPI_STATUS_REG_SIZE);
     do {
-        ret = read_register(STATUS_REG, reg, QSPI_STATUS_REG_SIZE, qspi);
+        ret       = read_register(STATUS_REG, reg, QSPI_STATUS_REG_SIZE, qspi);
         curr_time = ticker_read(ticker);
     } while (((reg[0] & STATUS_BIT_WIP) != 0) && ((curr_time - start) < time_us));
 
@@ -120,7 +115,7 @@ QspiStatus flash_wait_for(uint32_t time_us, Qspi &qspi)
 
 void flash_init(Qspi &qspi)
 {
-    uint8_t status[QSPI_STATUS_REG_SIZE];
+    uint8_t       status[QSPI_STATUS_REG_SIZE];
     qspi_status_t ret;
 
     qspi.cmd.build(QSPI_CMD_RDSR);
@@ -155,7 +150,6 @@ void flash_init(Qspi &qspi)
 
     WAIT_FOR(WRSR_MAX_TIME, qspi);
 }
-
 
 qspi_status_t write_enable(Qspi &qspi)
 {
@@ -195,7 +189,7 @@ qspi_status_t write_disable(Qspi &qspi)
 
 void log_register(uint32_t cmd, uint32_t reg_size, Qspi &qspi, const char *str)
 {
-    qspi_status_t ret;
+    qspi_status_t  ret;
     static uint8_t reg[QSPI_MAX_REG_SIZE];
 
     ret = read_register(cmd, reg, reg_size, qspi);
@@ -216,7 +210,8 @@ qspi_status_t erase(uint32_t erase_cmd, uint32_t flash_addr, Qspi &qspi)
     return qspi_command_transfer(&qspi.handle, qspi.cmd.get(), NULL, 0, NULL, 0);
 }
 
-qspi_status_t mode_enable(Qspi &qspi, qspi_bus_width_t inst_width, qspi_bus_width_t addr_width, qspi_bus_width_t data_width)
+qspi_status_t
+mode_enable(Qspi &qspi, qspi_bus_width_t inst_width, qspi_bus_width_t addr_width, qspi_bus_width_t data_width)
 {
     if (is_extended_mode(inst_width, addr_width, data_width)) {
         return extended_enable(qspi);
@@ -229,7 +224,8 @@ qspi_status_t mode_enable(Qspi &qspi, qspi_bus_width_t inst_width, qspi_bus_widt
     }
 }
 
-qspi_status_t mode_disable(Qspi &qspi, qspi_bus_width_t inst_width, qspi_bus_width_t addr_width, qspi_bus_width_t data_width)
+qspi_status_t
+mode_disable(Qspi &qspi, qspi_bus_width_t inst_width, qspi_bus_width_t addr_width, qspi_bus_width_t data_width)
 {
     if (is_extended_mode(inst_width, addr_width, data_width)) {
         return extended_disable(qspi);
@@ -276,7 +272,6 @@ static qspi_status_t dual_disable(Qspi &qspi)
 #else
     return QSPI_STATUS_OK;
 #endif
-
 }
 
 static qspi_status_t quad_enable(Qspi &qspi)
@@ -317,7 +312,8 @@ qspi_status_t fast_mode_disable(Qspi &qspi)
 
 bool is_extended_mode(qspi_bus_width_t inst_width, qspi_bus_width_t addr_width, qspi_bus_width_t data_width)
 {
-    return (inst_width == QSPI_CFG_BUS_SINGLE) && ((addr_width != QSPI_CFG_BUS_SINGLE) || (data_width != QSPI_CFG_BUS_SINGLE));
+    return (inst_width == QSPI_CFG_BUS_SINGLE) &&
+           ((addr_width != QSPI_CFG_BUS_SINGLE) || (data_width != QSPI_CFG_BUS_SINGLE));
 }
 
 bool is_dual_mode(qspi_bus_width_t inst_width, qspi_bus_width_t addr_width, qspi_bus_width_t data_width)

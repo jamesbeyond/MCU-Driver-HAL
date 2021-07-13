@@ -15,8 +15,8 @@
  */
 
 #define MBED_CONF_MBED_TRACE_ENABLE 1
-#define MBED_TRACE_MAX_LEVEL TRACE_LEVEL_DEBUG
-#define TRACE_GROUP "main"
+#define MBED_TRACE_MAX_LEVEL        TRACE_LEVEL_DEBUG
+#define TRACE_GROUP                 "main"
 
 #include "serial_api.h"
 #include "mbed_trace.h"
@@ -44,5 +44,6 @@ int main()
     tr_warn("This is a warning trace!");
     tr_err("This is an error trace!");
 
-    while (1);
+    while (1)
+        ;
 }

@@ -23,15 +23,14 @@
 #include "greentea-client/test_env.h"
 #include "bootstrap/mbed_retarget.h"
 
-
-#define STRING_STACK_LIMIT    120
+#define STRING_STACK_LIMIT 120
 
 static int utest_vprintf(const char *format, std::va_list arg)
 {
     // ARMCC microlib does not properly handle a size of 0.
     // As a workaround supply a dummy buffer with a size of 1.
     char dummy_buf[1];
-    int len = vsnprintf(dummy_buf, sizeof(dummy_buf), format, arg);
+    int  len = vsnprintf(dummy_buf, sizeof(dummy_buf), format, arg);
     if (len < STRING_STACK_LIMIT) {
         char temp[STRING_STACK_LIMIT];
         vsprintf(temp, format, arg);
@@ -45,7 +44,6 @@ static int utest_vprintf(const char *format, std::va_list arg)
 
     return len;
 }
-
 
 extern "C" int utest_printf(const char *format, ...)
 {

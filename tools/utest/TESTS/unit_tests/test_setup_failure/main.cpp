@@ -19,18 +19,10 @@
 #include "utest/utest.h"
 #include "unity/unity.h"
 
-
 using namespace utest::v1;
 
-void never_call_case()
-{
-    TEST_FAIL_MESSAGE("Case handler should have never been called!");
-}
-Case cases[] =
-{
-    Case("dummy test", never_call_case),
-    Case("dummy test 2", never_call_case)
-};
+void never_call_case() { TEST_FAIL_MESSAGE("Case handler should have never been called!"); }
+Case cases[] = {Case("dummy test", never_call_case), Case("dummy test 2", never_call_case)};
 
 // this setup handler fails
 utest::v1::status_t failing_setup_handler(const size_t number_of_cases)
@@ -39,7 +31,7 @@ utest::v1::status_t failing_setup_handler(const size_t number_of_cases)
 
     TEST_ASSERT_EQUAL(2, number_of_cases);
     greentea_test_setup_handler(number_of_cases);
-    return STATUS_ABORT;    // aborting test
+    return STATUS_ABORT; // aborting test
 };
 
 // the teardown handler will then be called with the reason `REASON_TEST_SETUP`
@@ -64,7 +56,4 @@ void failing_teardown_handler(const size_t passed, const size_t failed, const fa
 
 Specification specification(failing_setup_handler, cases, failing_teardown_handler, selftest_handlers);
 
-int main()
-{
-    Harness::run(specification);
-}
+int main() { Harness::run(specification); }

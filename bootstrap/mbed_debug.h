@@ -51,7 +51,6 @@ static inline void debug(const char *format, ...)
 #endif
 }
 
-
 /** Conditionally output a debug message
  *
  * NOTE: If the condition is constant false (== 0) and the compiler optimization
@@ -72,7 +71,6 @@ static inline void debug_if(int condition, const char *format, ...)
 #endif
 }
 
-
 #ifdef __cplusplus
 }
 #endif
@@ -82,4 +80,3 @@ static inline void debug_if(int condition, const char *format, ...)
 /**@}*/
 
 /**@}*/
-

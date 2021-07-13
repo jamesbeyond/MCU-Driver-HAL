@@ -20,12 +20,6 @@
 
 using namespace utest::v1;
 
-void utest_v1_enter_critical_section(void)
-{
-    core_util_critical_section_enter();
-}
+void utest_v1_enter_critical_section(void) { core_util_critical_section_enter(); }
 
-void utest_v1_leave_critical_section(void)
-{
-    core_util_critical_section_exit();
-}
+void utest_v1_leave_critical_section(void) { core_util_critical_section_exit(); }

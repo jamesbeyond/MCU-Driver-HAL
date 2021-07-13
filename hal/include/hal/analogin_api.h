@@ -40,7 +40,8 @@ typedef struct analogin_s analogin_t;
  * * The function ::analogin_init initializes the analogin_t control structure
  * * The function ::analogin_free returns the pin owned by the Analogin object to its reset state
  * * The function ::analogin_read reads the input voltage, represented as a float in the range [0.0 (GND), 1.0 (VCC)]
- * * The function ::analogin_read_u16 reads the value from analogin pin, represented as an unsigned 16bit value [0.0 (GND), MAX_UINT16 (VCC)]
+ * * The function ::analogin_read_u16 reads the value from analogin pin, represented as an unsigned 16bit value [0.0
+ * (GND), MAX_UINT16 (VCC)]
  * * The accuracy of the ADC is +/- 10%
  * * The ADC operations ::analogin_read, ::analogin_read_u16 take less than 20us to complete
  *
@@ -50,7 +51,6 @@ typedef struct analogin_s analogin_t;
  * * Calling ::analogin_read, ::analogin_read_u16 before ::analogin_init
  * @{
  */
-
 
 /** Initialize the analogin peripheral
  *

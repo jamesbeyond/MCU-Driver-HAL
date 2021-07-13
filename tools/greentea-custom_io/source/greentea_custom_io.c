@@ -15,15 +15,9 @@ void greentea_init_custom_io(void)
     serial_baud(&stdio_uart, MBED_CONF_PLATFORM_STDIO_BAUD_RATE);
 }
 
-int greentea_getc(void)
-{
-    return serial_getc(&stdio_uart);
-}
+int greentea_getc(void) { return serial_getc(&stdio_uart); }
 
-void greentea_putc(int c)
-{
-    serial_putc(&stdio_uart, c);
-}
+void greentea_putc(int c) { serial_putc(&stdio_uart, c); }
 
 void greentea_write_string(const char *str)
 {

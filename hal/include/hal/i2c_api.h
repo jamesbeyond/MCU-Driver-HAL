@@ -35,7 +35,8 @@
 #define I2C_EVENT_ERROR_NO_SLAVE      (1 << 2)
 #define I2C_EVENT_TRANSFER_COMPLETE   (1 << 3)
 #define I2C_EVENT_TRANSFER_EARLY_NACK (1 << 4)
-#define I2C_EVENT_ALL                 (I2C_EVENT_ERROR |  I2C_EVENT_TRANSFER_COMPLETE | I2C_EVENT_ERROR_NO_SLAVE | I2C_EVENT_TRANSFER_EARLY_NACK)
+#define I2C_EVENT_ALL \
+    (I2C_EVENT_ERROR | I2C_EVENT_TRANSFER_COMPLETE | I2C_EVENT_ERROR_NO_SLAVE | I2C_EVENT_TRANSFER_EARLY_NACK)
 
 /**@}*/
 
@@ -55,17 +56,14 @@ typedef struct i2c_s i2c_t;
 
 #endif
 
-enum {
-    I2C_ERROR_NO_SLAVE = -1,
-    I2C_ERROR_BUS_BUSY = -2
-};
+enum { I2C_ERROR_NO_SLAVE = -1, I2C_ERROR_BUS_BUSY = -2 };
 
 typedef struct {
-    int peripheral;
+    int     peripheral;
     PinName sda_pin;
-    int sda_function;
+    int     sda_function;
     PinName scl_pin;
-    int scl_function;
+    int     scl_function;
 } i2c_pinmap_t;
 
 #ifdef __cplusplus
@@ -93,7 +91,8 @@ extern "C" {
  * * ::i2c_byte_write writes one byte to the specified I2C slave
  * * ::i2c_byte_write returns 0 if NAK was received, 1 if ACK was received, 2 for timeout
  * * ::i2c_slave_mode enables/disables I2S slave mode
- * * ::i2c_slave_receive returns: 1 - read addresses, 2 - write to all slaves, 3 write addressed, 0 - the slave has not been addressed
+ * * ::i2c_slave_receive returns: 1 - read addresses, 2 - write to all slaves, 3 write addressed, 0 - the slave has not
+ * been addressed
  * * ::i2c_slave_read reads `length` bytes from the I2C master to the `data` buffer
  * * ::i2c_slave_read returns non-zero if a value is available, 0 otherwise
  * * ::i2c_slave_write writes `length` bytes to the I2C master from the `data` buffer
@@ -102,7 +101,8 @@ extern "C" {
  * * ::i2c_transfer_asynch starts I2C asynchronous transfer
  * * ::i2c_transfer_asynch writes `tx_length` bytes to the I2C slave specified by `address` from the `tx` buffer
  * * ::i2c_transfer_asynch reads `rx_length` bytes from the I2C slave specified by `address` to the `rx` buffer
- * * ::i2c_transfer_asynch generates a stop condition on the bus at the end of the transfer if `stop` parameter is non-zero
+ * * ::i2c_transfer_asynch generates a stop condition on the bus at the end of the transfer if `stop` parameter is
+ * non-zero
  * * The callback given to ::i2c_transfer_asynch is invoked when the transfer completes
  * * ::i2c_transfer_asynch specifies the logical OR of events to be registered
  * * ::i2c_irq_handler_asynch returns event flags if a transfer termination condition was met, otherwise returns 0.
@@ -164,13 +164,13 @@ void i2c_frequency(i2c_t *obj, int hz);
  *
  *  @param obj The I2C object
  */
-int  i2c_start(i2c_t *obj);
+int i2c_start(i2c_t *obj);
 
 /** Send STOP command
  *
  *  @param obj The I2C object
  */
-int  i2c_stop(i2c_t *obj);
+int i2c_stop(i2c_t *obj);
 
 /** Blocking reading data
  *
@@ -275,7 +275,7 @@ void i2c_slave_mode(i2c_t *obj, int enable_slave);
  *  @return The status - 1 - read addresses, 2 - write to all slaves,
  *         3 write addressed, 0 - the slave has not been addressed
  */
-int  i2c_slave_receive(i2c_t *obj);
+int i2c_slave_receive(i2c_t *obj);
 
 /** Configure I2C as slave or master.
  *  @param obj The I2C object
@@ -283,7 +283,7 @@ int  i2c_slave_receive(i2c_t *obj);
  *  @param length  Number of bytes to read
  *  @return non-zero if a value is available
  */
-int  i2c_slave_read(i2c_t *obj, char *data, int length);
+int i2c_slave_read(i2c_t *obj, char *data, int length);
 
 /** Configure I2C as slave or master.
  *  @param obj The I2C object
@@ -291,7 +291,7 @@ int  i2c_slave_read(i2c_t *obj, char *data, int length);
  *  @param length  Number of bytes to write
  *  @return non-zero if a value is available
  */
-int  i2c_slave_write(i2c_t *obj, const char *data, int length);
+int i2c_slave_write(i2c_t *obj, const char *data, int length);
 
 /** Configure I2C address.
  *  @param obj     The I2C object
@@ -324,7 +324,15 @@ void i2c_slave_address(i2c_t *obj, int idx, uint32_t address, uint32_t mask);
  *  @param handler   The I2C IRQ handler to be set
  *  @param event     Event mask for the transfer. See \ref hal_I2CEvents
  */
-void i2c_transfer_asynch(i2c_t *obj, const void *tx, size_t tx_length, void *rx, size_t rx_length, uint32_t address, uint32_t stop, uint32_t handler, uint32_t event);
+void i2c_transfer_asynch(i2c_t *     obj,
+                         const void *tx,
+                         size_t      tx_length,
+                         void *      rx,
+                         size_t      rx_length,
+                         uint32_t    address,
+                         uint32_t    stop,
+                         uint32_t    handler,
+                         uint32_t    event);
 
 /** The asynchronous IRQ handler
  *

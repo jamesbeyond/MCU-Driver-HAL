@@ -30,14 +30,14 @@ static void default_lp_ticker_irq_handler(const ticker_data_t *const ticker)
 static ticker_irq_handler_type irq_handler = default_lp_ticker_irq_handler;
 
 static const ticker_interface_t lp_interface = {
-    .init = lp_ticker_init,
-    .read = lp_ticker_read,
-    .disable_interrupt = lp_ticker_disable_interrupt,
-    .clear_interrupt = lp_ticker_clear_interrupt,
-    .set_interrupt = lp_ticker_set_interrupt,
-    .fire_interrupt = lp_ticker_fire_interrupt,
-    .get_info = lp_ticker_get_info,
-    .free = lp_ticker_free,
+    .init               = lp_ticker_init,
+    .read               = lp_ticker_read,
+    .disable_interrupt  = lp_ticker_disable_interrupt,
+    .clear_interrupt    = lp_ticker_clear_interrupt,
+    .set_interrupt      = lp_ticker_set_interrupt,
+    .fire_interrupt     = lp_ticker_fire_interrupt,
+    .get_info           = lp_ticker_get_info,
+    .free               = lp_ticker_free,
     .runs_in_deep_sleep = true,
 };
 

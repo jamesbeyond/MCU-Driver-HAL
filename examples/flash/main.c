@@ -19,21 +19,21 @@
 #include "hal/flash_api.h"
 
 #ifndef ALIGN_DOWN
-#define ALIGN_DOWN(x, a) ((x)& ~((a) - 1))
+#define ALIGN_DOWN(x, a) ((x) & ~((a)-1))
 #endif
 
 int main()
-{      
+{
     flash_t test_flash;
     int32_t ret;
-    
+
     ret = flash_init(&test_flash);
-    //TEST_ASSERT_EQUAL_INT32(0, ret);
+    // TEST_ASSERT_EQUAL_INT32(0, ret);
 
     uint32_t test_size = flash_get_page_size(&test_flash);
 
-    uint8_t *data = (uint8_t*) malloc(test_size);
-    uint8_t *data_flashed = (uint8_t*) malloc(test_size);
+    uint8_t *data         = (uint8_t *)malloc(test_size);
+    uint8_t *data_flashed = (uint8_t *)malloc(test_size);
 
     memset(data, 0xCE, test_size);
 
@@ -42,38 +42,40 @@ int main()
 
     // sector size might not be same as page size
     uint32_t erase_sector_boundary = ALIGN_DOWN(address, flash_get_sector_size(&test_flash, address));
-    //utest_printf("ROM ends at 0x%lx, test starts at 0x%lx\n", FLASHIAP_APP_ROM_END_ADDR, erase_sector_boundary);
-    //TEST_SKIP_UNLESS_MESSAGE(erase_sector_boundary >= FLASHIAP_APP_ROM_END_ADDR, "Test skipped. Test region overlaps code.");
+    // utest_printf("ROM ends at 0x%lx, test starts at 0x%lx\n", FLASHIAP_APP_ROM_END_ADDR, erase_sector_boundary);
+    // TEST_SKIP_UNLESS_MESSAGE(erase_sector_boundary >= FLASHIAP_APP_ROM_END_ADDR, "Test skipped. Test region overlaps
+    // code.");
 
     ret = flash_erase_sector(&test_flash, erase_sector_boundary);
-    //TEST_ASSERT_EQUAL_INT32(0, ret);
+    // TEST_ASSERT_EQUAL_INT32(0, ret);
 
     ret = flash_program_page(&test_flash, address, data, test_size);
-    //TEST_ASSERT_EQUAL_INT32(0, ret);
+    // TEST_ASSERT_EQUAL_INT32(0, ret);
 
     ret = flash_read(&test_flash, address, data_flashed, test_size);
-    //TEST_ASSERT_EQUAL_INT32(0, ret);
-    //TEST_ASSERT_EQUAL_UINT8_ARRAY(data, data_flashed, test_size);
+    // TEST_ASSERT_EQUAL_INT32(0, ret);
+    // TEST_ASSERT_EQUAL_UINT8_ARRAY(data, data_flashed, test_size);
 
     // sector size might not be same as page size
     erase_sector_boundary = ALIGN_DOWN(address, flash_get_sector_size(&test_flash, address));
-    ret = flash_erase_sector(&test_flash, erase_sector_boundary);
-    //TEST_ASSERT_EQUAL_INT32(0, ret);
+    ret                   = flash_erase_sector(&test_flash, erase_sector_boundary);
+    // TEST_ASSERT_EQUAL_INT32(0, ret);
 
     // write another data to be certain we are re-flashing
     memset(data, 0xAC, test_size);
-    
+
     ret = flash_program_page(&test_flash, address, data, test_size);
-    //TEST_ASSERT_EQUAL_INT32(0, ret);
+    // TEST_ASSERT_EQUAL_INT32(0, ret);
 
     ret = flash_read(&test_flash, address, data_flashed, test_size);
-    //TEST_ASSERT_EQUAL_INT32(0, ret);
-    //TEST_ASSERT_EQUAL_UINT8_ARRAY(data, data_flashed, test_size);
+    // TEST_ASSERT_EQUAL_INT32(0, ret);
+    // TEST_ASSERT_EQUAL_UINT8_ARRAY(data, data_flashed, test_size);
 
     ret = flash_free(&test_flash);
-    //TEST_ASSERT_EQUAL_INT32(0, ret);
+    // TEST_ASSERT_EQUAL_INT32(0, ret);
     free(data);
     free(data_flashed);
 
-    while(1);
+    while (1)
+        ;
 }

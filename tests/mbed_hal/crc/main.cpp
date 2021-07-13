@@ -24,7 +24,7 @@
 #include "crc_api.h"
 
 #if !DEVICE_CRC
-#error [NOT_SUPPORTED] CRC not supported for this target
+#error[NOT_SUPPORTED] CRC not supported for this target
 #else
 
 using namespace utest::v1;
@@ -32,90 +32,90 @@ using namespace utest::v1;
 #define POLY_8BIT_MAXIM 0x31
 
 #define UNSUPPORTED (-1)
-#define POL_CNT (2)
+#define POL_CNT     (2)
 
 const uint8_t input_data[] = "123456789";
 
 typedef struct {
     const crc_mbed_config config_data;
-    uint32_t expected_result;
+    uint32_t              expected_result;
 
 } TEST_CASE;
 
 static const TEST_CASE test_cases[] = {
     /* Predefined polynomials. */
-    { {POLY_7BIT_SD     ,  7, 0x00000000, 0x00000000, false, false}, 0x75       },
-    { {POLY_7BIT_SD     ,  7, 0x0000007F, 0x00000000, false, false}, 0x50       },
-    { {POLY_7BIT_SD     ,  7, 0x0000002B, 0x00000000, false, false}, 0x3A       },
-    { {POLY_7BIT_SD     ,  7, 0x00000000, 0x0000007F, false, false}, 0x0A       },
-    { {POLY_7BIT_SD     ,  7, 0x00000000, 0x0000002B, false, false}, 0x5E       },
-    { {POLY_7BIT_SD     ,  7, 0x00000000, 0x00000000, true , false}, 0x52       },
-    { {POLY_7BIT_SD     ,  7, 0x00000000, 0x00000000, false, true }, 0x57       },
-    { {POLY_7BIT_SD     ,  7, 0x0000002B, 0x00000000, true , false}, 0x1D       },
-    { {POLY_7BIT_SD     ,  7, 0x0000002B, 0x00000000, false, true }, 0x2E       },
-    { {POLY_7BIT_SD     ,  7, 0x0000002B, 0x00000000, true , true }, 0x5C       },
-    { {POLY_7BIT_SD     ,  7, 0x00000000, 0x0000002B, false, true }, 0x7C       },
+    {{POLY_7BIT_SD, 7, 0x00000000, 0x00000000, false, false}, 0x75},
+    {{POLY_7BIT_SD, 7, 0x0000007F, 0x00000000, false, false}, 0x50},
+    {{POLY_7BIT_SD, 7, 0x0000002B, 0x00000000, false, false}, 0x3A},
+    {{POLY_7BIT_SD, 7, 0x00000000, 0x0000007F, false, false}, 0x0A},
+    {{POLY_7BIT_SD, 7, 0x00000000, 0x0000002B, false, false}, 0x5E},
+    {{POLY_7BIT_SD, 7, 0x00000000, 0x00000000, true, false}, 0x52},
+    {{POLY_7BIT_SD, 7, 0x00000000, 0x00000000, false, true}, 0x57},
+    {{POLY_7BIT_SD, 7, 0x0000002B, 0x00000000, true, false}, 0x1D},
+    {{POLY_7BIT_SD, 7, 0x0000002B, 0x00000000, false, true}, 0x2E},
+    {{POLY_7BIT_SD, 7, 0x0000002B, 0x00000000, true, true}, 0x5C},
+    {{POLY_7BIT_SD, 7, 0x00000000, 0x0000002B, false, true}, 0x7C},
 
-    { {POLY_8BIT_CCITT  ,  8, 0x00000000, 0x00000000, false, false}, 0xF4       },
-    { {POLY_8BIT_CCITT  ,  8, 0x000000FF, 0x00000000, false, false}, 0xFB       },
-    { {POLY_8BIT_CCITT  ,  8, 0x000000AB, 0x00000000, false, false}, 0x87       },
-    { {POLY_8BIT_CCITT  ,  8, 0x00000000, 0x000000FF, false, false}, 0x0B       },
-    { {POLY_8BIT_CCITT  ,  8, 0x00000000, 0x000000AB, false, false}, 0x5F       },
-    { {POLY_8BIT_CCITT  ,  8, 0x00000000, 0x00000000, true , false}, 0x04       },
-    { {POLY_8BIT_CCITT  ,  8, 0x00000000, 0x00000000, false, true }, 0x2F       },
-    { {POLY_8BIT_CCITT  ,  8, 0x000000AB, 0x00000000, true,  false}, 0x77       },
-    { {POLY_8BIT_CCITT  ,  8, 0x000000AB, 0x00000000, false, true }, 0xE1       },
-    { {POLY_8BIT_CCITT  ,  8, 0x000000AB, 0x00000000, true,  true }, 0xEE       },
-    { {POLY_8BIT_CCITT  ,  8, 0x00000000, 0x000000AB, false, true }, 0x84       },
+    {{POLY_8BIT_CCITT, 8, 0x00000000, 0x00000000, false, false}, 0xF4},
+    {{POLY_8BIT_CCITT, 8, 0x000000FF, 0x00000000, false, false}, 0xFB},
+    {{POLY_8BIT_CCITT, 8, 0x000000AB, 0x00000000, false, false}, 0x87},
+    {{POLY_8BIT_CCITT, 8, 0x00000000, 0x000000FF, false, false}, 0x0B},
+    {{POLY_8BIT_CCITT, 8, 0x00000000, 0x000000AB, false, false}, 0x5F},
+    {{POLY_8BIT_CCITT, 8, 0x00000000, 0x00000000, true, false}, 0x04},
+    {{POLY_8BIT_CCITT, 8, 0x00000000, 0x00000000, false, true}, 0x2F},
+    {{POLY_8BIT_CCITT, 8, 0x000000AB, 0x00000000, true, false}, 0x77},
+    {{POLY_8BIT_CCITT, 8, 0x000000AB, 0x00000000, false, true}, 0xE1},
+    {{POLY_8BIT_CCITT, 8, 0x000000AB, 0x00000000, true, true}, 0xEE},
+    {{POLY_8BIT_CCITT, 8, 0x00000000, 0x000000AB, false, true}, 0x84},
 
-    { {POLY_16BIT_CCITT , 16, 0x00000000, 0x00000000, false, false}, 0x31C3     },
-    { {POLY_16BIT_CCITT , 16, 0x0000FFFF, 0x00000000, false, false}, 0x29B1     },
-    { {POLY_16BIT_CCITT , 16, 0x0000ABAB, 0x00000000, false, false}, 0x7D70     },
-    { {POLY_16BIT_CCITT , 16, 0x00000000, 0x0000FFFF, false, false}, 0xCE3C     },
-    { {POLY_16BIT_CCITT , 16, 0x00000000, 0x0000ABAB, false, false}, 0x9A68     },
-    { {POLY_16BIT_CCITT , 16, 0x00000000, 0x00000000, true , false}, 0x9184     },
-    { {POLY_16BIT_CCITT , 16, 0x00000000, 0x00000000, false, true }, 0xC38C     },
-    { {POLY_16BIT_CCITT , 16, 0x0000ABAB, 0x00000000, true,  false}, 0xDD37     },
-    { {POLY_16BIT_CCITT , 16, 0x0000ABAB, 0x00000000, false, true }, 0x0EBE     },
-    { {POLY_16BIT_CCITT , 16, 0x0000ABAB, 0x00000000, true,  true }, 0xECBB     },
-    { {POLY_16BIT_CCITT , 16, 0x00000000, 0x0000ABAB, false, true }, 0x6827     },
+    {{POLY_16BIT_CCITT, 16, 0x00000000, 0x00000000, false, false}, 0x31C3},
+    {{POLY_16BIT_CCITT, 16, 0x0000FFFF, 0x00000000, false, false}, 0x29B1},
+    {{POLY_16BIT_CCITT, 16, 0x0000ABAB, 0x00000000, false, false}, 0x7D70},
+    {{POLY_16BIT_CCITT, 16, 0x00000000, 0x0000FFFF, false, false}, 0xCE3C},
+    {{POLY_16BIT_CCITT, 16, 0x00000000, 0x0000ABAB, false, false}, 0x9A68},
+    {{POLY_16BIT_CCITT, 16, 0x00000000, 0x00000000, true, false}, 0x9184},
+    {{POLY_16BIT_CCITT, 16, 0x00000000, 0x00000000, false, true}, 0xC38C},
+    {{POLY_16BIT_CCITT, 16, 0x0000ABAB, 0x00000000, true, false}, 0xDD37},
+    {{POLY_16BIT_CCITT, 16, 0x0000ABAB, 0x00000000, false, true}, 0x0EBE},
+    {{POLY_16BIT_CCITT, 16, 0x0000ABAB, 0x00000000, true, true}, 0xECBB},
+    {{POLY_16BIT_CCITT, 16, 0x00000000, 0x0000ABAB, false, true}, 0x6827},
 
-    { {POLY_16BIT_IBM   , 16, 0x00000000, 0x00000000, false, false}, 0xFEE8     },
-    { {POLY_16BIT_IBM   , 16, 0x0000FFFF, 0x00000000, false, false}, 0xAEE7     },
-    { {POLY_16BIT_IBM   , 16, 0x0000ABAB, 0x00000000, false, false}, 0x0887     },
-    { {POLY_16BIT_IBM   , 16, 0x00000000, 0x0000FFFF, false, false}, 0x0117     },
-    { {POLY_16BIT_IBM   , 16, 0x00000000, 0x0000ABAB, false, false}, 0x5543     },
-    { {POLY_16BIT_IBM   , 16, 0x00000000, 0x00000000, true , false}, 0xBCDD     },
-    { {POLY_16BIT_IBM   , 16, 0x00000000, 0x00000000, false, true }, 0x177F     },
-    { {POLY_16BIT_IBM   , 16, 0x0000ABAB, 0x00000000, true,  false}, 0x4AB2     },
-    { {POLY_16BIT_IBM   , 16, 0x0000ABAB, 0x00000000, false, true }, 0xE110     },
-    { {POLY_16BIT_IBM   , 16, 0x0000ABAB, 0x00000000, true,  true }, 0x4D52     },
-    { {POLY_16BIT_IBM   , 16, 0x00000000, 0x0000ABAB, false, true }, 0xBCD4     },
+    {{POLY_16BIT_IBM, 16, 0x00000000, 0x00000000, false, false}, 0xFEE8},
+    {{POLY_16BIT_IBM, 16, 0x0000FFFF, 0x00000000, false, false}, 0xAEE7},
+    {{POLY_16BIT_IBM, 16, 0x0000ABAB, 0x00000000, false, false}, 0x0887},
+    {{POLY_16BIT_IBM, 16, 0x00000000, 0x0000FFFF, false, false}, 0x0117},
+    {{POLY_16BIT_IBM, 16, 0x00000000, 0x0000ABAB, false, false}, 0x5543},
+    {{POLY_16BIT_IBM, 16, 0x00000000, 0x00000000, true, false}, 0xBCDD},
+    {{POLY_16BIT_IBM, 16, 0x00000000, 0x00000000, false, true}, 0x177F},
+    {{POLY_16BIT_IBM, 16, 0x0000ABAB, 0x00000000, true, false}, 0x4AB2},
+    {{POLY_16BIT_IBM, 16, 0x0000ABAB, 0x00000000, false, true}, 0xE110},
+    {{POLY_16BIT_IBM, 16, 0x0000ABAB, 0x00000000, true, true}, 0x4D52},
+    {{POLY_16BIT_IBM, 16, 0x00000000, 0x0000ABAB, false, true}, 0xBCD4},
 
-    { {POLY_32BIT_ANSI  , 32, 0x00000000, 0x00000000, false, false}, 0x89A1897F },
-    { {POLY_32BIT_ANSI  , 32, 0xFFFFFFFF, 0x00000000, false, false}, 0x0376E6E7 },
-    { {POLY_32BIT_ANSI  , 32, 0xABABABAB, 0x00000000, false, false}, 0x871A2FAA },
-    { {POLY_32BIT_ANSI  , 32, 0x00000000, 0xFFFFFFFF, false, false}, 0x765E7680 },
-    { {POLY_32BIT_ANSI  , 32, 0x00000000, 0xABABABAB, false, false}, 0x220A22D4 },
-    { {POLY_32BIT_ANSI  , 32, 0x00000000, 0x00000000, true , false}, 0x11B4BFB4 },
-    { {POLY_32BIT_ANSI  , 32, 0x00000000, 0x00000000, false, true }, 0xFE918591 },
-    { {POLY_32BIT_ANSI  , 32, 0xABABABAB, 0x00000000, true,  false}, 0x1F0F1961 },
-    { {POLY_32BIT_ANSI  , 32, 0xABABABAB, 0x00000000, false, true }, 0x55F458E1 },
-    { {POLY_32BIT_ANSI  , 32, 0xABABABAB, 0x00000000, true,  true }, 0x8698F0F8 },
-    { {POLY_32BIT_ANSI  , 32, 0x00000000, 0xABABABAB, false, true }, 0x553A2E3A },
+    {{POLY_32BIT_ANSI, 32, 0x00000000, 0x00000000, false, false}, 0x89A1897F},
+    {{POLY_32BIT_ANSI, 32, 0xFFFFFFFF, 0x00000000, false, false}, 0x0376E6E7},
+    {{POLY_32BIT_ANSI, 32, 0xABABABAB, 0x00000000, false, false}, 0x871A2FAA},
+    {{POLY_32BIT_ANSI, 32, 0x00000000, 0xFFFFFFFF, false, false}, 0x765E7680},
+    {{POLY_32BIT_ANSI, 32, 0x00000000, 0xABABABAB, false, false}, 0x220A22D4},
+    {{POLY_32BIT_ANSI, 32, 0x00000000, 0x00000000, true, false}, 0x11B4BFB4},
+    {{POLY_32BIT_ANSI, 32, 0x00000000, 0x00000000, false, true}, 0xFE918591},
+    {{POLY_32BIT_ANSI, 32, 0xABABABAB, 0x00000000, true, false}, 0x1F0F1961},
+    {{POLY_32BIT_ANSI, 32, 0xABABABAB, 0x00000000, false, true}, 0x55F458E1},
+    {{POLY_32BIT_ANSI, 32, 0xABABABAB, 0x00000000, true, true}, 0x8698F0F8},
+    {{POLY_32BIT_ANSI, 32, 0x00000000, 0xABABABAB, false, true}, 0x553A2E3A},
 
     /* Not-predefined polynomials. */
-    { {POLY_8BIT_MAXIM  ,  8, 0x00000000, 0x00000000, false, false}, 0xA2       },
-    { {POLY_8BIT_MAXIM  ,  8, 0x000000FF, 0x00000000, false, false}, 0xF7       },
-    { {POLY_8BIT_MAXIM  ,  8, 0x000000AB, 0x00000000, false, false}, 0x71       },
-    { {POLY_8BIT_MAXIM  ,  8, 0x00000000, 0x000000FF, false, false}, 0x5D       },
-    { {POLY_8BIT_MAXIM  ,  8, 0x00000000, 0x000000AB, false, false}, 0x09       },
-    { {POLY_8BIT_MAXIM  ,  8, 0x00000000, 0x00000000, true , false}, 0x85       },
-    { {POLY_8BIT_MAXIM  ,  8, 0x00000000, 0x00000000, false, true }, 0x45       },
-    { {POLY_8BIT_MAXIM  ,  8, 0x000000AB, 0x00000000, true,  false}, 0x56       },
-    { {POLY_8BIT_MAXIM  ,  8, 0x000000AB, 0x00000000, false, true }, 0x8E       },
-    { {POLY_8BIT_MAXIM  ,  8, 0x000000AB, 0x00000000, true,  true }, 0x6A       },
-    { {POLY_8BIT_MAXIM  ,  8, 0x00000000, 0x000000AB, false, true }, 0xEE       },
+    {{POLY_8BIT_MAXIM, 8, 0x00000000, 0x00000000, false, false}, 0xA2},
+    {{POLY_8BIT_MAXIM, 8, 0x000000FF, 0x00000000, false, false}, 0xF7},
+    {{POLY_8BIT_MAXIM, 8, 0x000000AB, 0x00000000, false, false}, 0x71},
+    {{POLY_8BIT_MAXIM, 8, 0x00000000, 0x000000FF, false, false}, 0x5D},
+    {{POLY_8BIT_MAXIM, 8, 0x00000000, 0x000000AB, false, false}, 0x09},
+    {{POLY_8BIT_MAXIM, 8, 0x00000000, 0x00000000, true, false}, 0x85},
+    {{POLY_8BIT_MAXIM, 8, 0x00000000, 0x00000000, false, true}, 0x45},
+    {{POLY_8BIT_MAXIM, 8, 0x000000AB, 0x00000000, true, false}, 0x56},
+    {{POLY_8BIT_MAXIM, 8, 0x000000AB, 0x00000000, false, true}, 0x8E},
+    {{POLY_8BIT_MAXIM, 8, 0x000000AB, 0x00000000, true, true}, 0x6A},
+    {{POLY_8BIT_MAXIM, 8, 0x00000000, 0x000000AB, false, true}, 0xEE},
 };
 
 /* Test that hal_crc_is_supported() function returns true if given polynomial
@@ -143,7 +143,7 @@ void crc_calc_single_test()
         if (HAL_CRC_IS_SUPPORTED(test_cases[i].config_data.polynomial, test_cases[i].config_data.width)) {
 
             hal_crc_compute_partial_start(&test_cases[i].config_data);
-            hal_crc_compute_partial((uint8_t *) input_data, strlen((const char *) input_data));
+            hal_crc_compute_partial((uint8_t *)input_data, strlen((const char *)input_data));
             const uint32_t crc = hal_crc_get_result();
 
             TEST_ASSERT_EQUAL(test_cases[i].expected_result, crc);
@@ -158,16 +158,14 @@ void crc_calc_multi_test()
     for (unsigned int i = 0; i < (sizeof(test_cases) / sizeof(TEST_CASE)); i++) {
         if (HAL_CRC_IS_SUPPORTED(test_cases[i].config_data.polynomial, test_cases[i].config_data.width)) {
 
-            const uint32_t first_part_bytes = 3;
+            const uint32_t first_part_bytes  = 3;
             const uint32_t second_part_bytes = 1;
-            const uint32_t third_part_bytes = strlen((const char *) input_data) - first_part_bytes
-                                              - second_part_bytes;
+            const uint32_t third_part_bytes  = strlen((const char *)input_data) - first_part_bytes - second_part_bytes;
 
             hal_crc_compute_partial_start(&test_cases[i].config_data);
-            hal_crc_compute_partial((uint8_t *) input_data, first_part_bytes);
+            hal_crc_compute_partial((uint8_t *)input_data, first_part_bytes);
             hal_crc_compute_partial((uint8_t *)(input_data + first_part_bytes), second_part_bytes);
-            hal_crc_compute_partial((uint8_t *)(input_data + first_part_bytes + second_part_bytes),
-                                    third_part_bytes);
+            hal_crc_compute_partial((uint8_t *)(input_data + first_part_bytes + second_part_bytes), third_part_bytes);
             const uint32_t crc = hal_crc_get_result();
 
             TEST_ASSERT_EQUAL(test_cases[i].expected_result, crc);
@@ -179,9 +177,8 @@ void crc_calc_multi_test()
  * CRC calculation overrides the current configuration. */
 void crc_reconfigure_test()
 {
-    int pol_idx[POL_CNT] =
-    { UNSUPPORTED, UNSUPPORTED };
-    int pol_cnt = 0;
+    int           pol_idx[POL_CNT]   = {UNSUPPORTED, UNSUPPORTED};
+    int           pol_cnt            = 0;
     const uint8_t dummy_input_data[] = "abcdefghijklmnopqrstuvwxyz";
 
     /* At least one configuration must be supported. If two are supported, then
@@ -208,7 +205,7 @@ void crc_reconfigure_test()
 
     /* Init CRC module and provide some data, but do not read the result. */
     hal_crc_compute_partial_start(&test_cases[pol_idx[pol_cnt]].config_data);
-    hal_crc_compute_partial((uint8_t *) dummy_input_data, strlen((const char *) dummy_input_data));
+    hal_crc_compute_partial((uint8_t *)dummy_input_data, strlen((const char *)dummy_input_data));
 
     /* Change index only if more than one supported polynomial has been found. */
     if (pol_idx[POL_CNT - 1] != UNSUPPORTED) {
@@ -217,7 +214,7 @@ void crc_reconfigure_test()
 
     /* Now re-init CRC module and provide new data and check the result. */
     hal_crc_compute_partial_start(&test_cases[pol_idx[pol_cnt]].config_data);
-    hal_crc_compute_partial((uint8_t *) input_data, strlen((const char *) input_data));
+    hal_crc_compute_partial((uint8_t *)input_data, strlen((const char *)input_data));
     const uint32_t crc = hal_crc_get_result();
 
     TEST_ASSERT_EQUAL(test_cases[pol_idx[pol_cnt]].expected_result, crc);
@@ -236,12 +233,11 @@ void crc_compute_partial_invalid_param_test()
             hal_crc_compute_partial_start(&test_cases[i].config_data);
 
             /* Call hal_crc_compute_partial() with invalid parameters. */
-            hal_crc_compute_partial((uint8_t *) NULL, strlen((const char *) input_data));
-            hal_crc_compute_partial((uint8_t *) input_data, 0);
+            hal_crc_compute_partial((uint8_t *)NULL, strlen((const char *)input_data));
+            hal_crc_compute_partial((uint8_t *)input_data, 0);
 
             /* Now use valid parameters. */
-            hal_crc_compute_partial((uint8_t *) input_data,
-                                    strlen((const char *) input_data));
+            hal_crc_compute_partial((uint8_t *)input_data, strlen((const char *)input_data));
 
             crc = hal_crc_get_result();
 

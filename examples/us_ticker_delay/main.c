@@ -19,13 +19,13 @@
 
 int main()
 {
-    while(1) {
+    while (1) {
         gpio_t my_gpio1;
         gpio_t my_gpio2;
 
         gpio_init_out(&my_gpio1, LED1);
         gpio_init_out(&my_gpio2, LED2);
-        
+
         while (1) {
             gpio_write(&my_gpio1, 1);
             gpio_write(&my_gpio2, 0);

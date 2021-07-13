@@ -37,12 +37,8 @@ extern "C" {
  * \enum    CANFormat
  *
  * \brief   Values that represent CAN Format
-**/
-enum CANFormat {
-    CANStandard = 0,
-    CANExtended = 1,
-    CANAny = 2
-};
+ **/
+enum CANFormat { CANStandard = 0, CANExtended = 1, CANAny = 2 };
 typedef enum CANFormat CANFormat;
 
 /**
@@ -50,11 +46,8 @@ typedef enum CANFormat CANFormat;
  * \enum    CANType
  *
  * \brief   Values that represent CAN Type
-**/
-enum CANType {
-    CANData   = 0,
-    CANRemote = 1
-};
+ **/
+enum CANType { CANData = 0, CANRemote = 1 };
 typedef enum CANType CANType;
 
 /**
@@ -63,13 +56,13 @@ typedef enum CANType CANType;
  *
  * \brief   Holder for single CAN message.
  *
-**/
+ **/
 struct CAN_Message {
-    unsigned int   id;                 // 29 bit identifier
-    unsigned char  data[8];            // Data field
-    unsigned char  len;                // Length of data field in bytes
-    CANFormat      format;             // Format ::CANFormat
-    CANType        type;               // Type ::CANType
+    unsigned int  id;      // 29 bit identifier
+    unsigned char data[8]; // Data field
+    unsigned char len;     // Length of data field in bytes
+    CANFormat     format;  // Format ::CANFormat
+    CANType       type;    // Type ::CANType
 };
 typedef struct CAN_Message CAN_Message;
 
@@ -85,38 +78,30 @@ typedef enum {
     IRQ_READY
 } CanIrqType;
 
-
-typedef enum {
-    MODE_RESET,
-    MODE_NORMAL,
-    MODE_SILENT,
-    MODE_TEST_LOCAL,
-    MODE_TEST_GLOBAL,
-    MODE_TEST_SILENT
-} CanMode;
+typedef enum { MODE_RESET, MODE_NORMAL, MODE_SILENT, MODE_TEST_LOCAL, MODE_TEST_GLOBAL, MODE_TEST_SILENT } CanMode;
 
 typedef struct {
-    int peripheral;
+    int     peripheral;
     PinName rd_pin;
-    int rd_function;
+    int     rd_function;
     PinName td_pin;
-    int td_function;
+    int     td_function;
 } can_pinmap_t;
 
 typedef void (*can_irq_handler)(uint32_t id, CanIrqType type);
 
 typedef struct can_s can_t;
 
-void          can_init(can_t *obj, PinName rd, PinName td);
-void          can_init_direct(can_t *obj, const can_pinmap_t *pinmap);
-void          can_init_freq(can_t *obj, PinName rd, PinName td, int hz);
-void          can_init_freq_direct(can_t *obj, const can_pinmap_t *pinmap, int hz);
-void          can_free(can_t *obj);
-int           can_frequency(can_t *obj, int hz);
+void can_init(can_t *obj, PinName rd, PinName td);
+void can_init_direct(can_t *obj, const can_pinmap_t *pinmap);
+void can_init_freq(can_t *obj, PinName rd, PinName td, int hz);
+void can_init_freq_direct(can_t *obj, const can_pinmap_t *pinmap, int hz);
+void can_free(can_t *obj);
+int  can_frequency(can_t *obj, int hz);
 
-void          can_irq_init(can_t *obj, can_irq_handler handler, uint32_t id);
-void          can_irq_free(can_t *obj);
-void          can_irq_set(can_t *obj, CanIrqType irq, uint32_t enable);
+void can_irq_init(can_t *obj, can_irq_handler handler, uint32_t id);
+void can_irq_free(can_t *obj);
+void can_irq_set(can_t *obj, CanIrqType irq, uint32_t enable);
 
 int           can_write(can_t *obj, CAN_Message, int cc);
 int           can_read(can_t *obj, CAN_Message *msg, int handle);
@@ -149,7 +134,7 @@ const PinMap *can_td_pinmap(void);
 }
 #endif
 
-#endif    // MBED_CAN_API_H
+#endif // MBED_CAN_API_H
 
 #endif
 

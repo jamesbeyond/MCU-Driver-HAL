@@ -21,10 +21,7 @@
 
 gpio_t led1;
 
-void toggle_gpio(gpio_t *gpio)
-{
-    gpio_write(gpio, gpio_read(gpio) ? 0 : 1);
-}
+void toggle_gpio(gpio_t *gpio) { gpio_write(gpio, gpio_read(gpio) ? 0 : 1); }
 
 void irq_handler(const ticker_data_t *const ticker)
 {
@@ -33,10 +30,10 @@ void irq_handler(const ticker_data_t *const ticker)
 
     toggle_gpio(&led1);
 
-    const ticker_info_t *info = ticker->interface->get_info();
-    uint32_t delay_in_ticks = LED_PERIOD_S * info->frequency;
-    uint32_t counter_mask = (1 << info->bits) - 1;
-    uint32_t next_irq_tick = (current_tick + delay_in_ticks) & counter_mask;
+    const ticker_info_t *info           = ticker->interface->get_info();
+    uint32_t             delay_in_ticks = LED_PERIOD_S * info->frequency;
+    uint32_t             counter_mask   = (1 << info->bits) - 1;
+    uint32_t             next_irq_tick  = (current_tick + delay_in_ticks) & counter_mask;
     ticker->interface->set_interrupt(next_irq_tick);
 }
 
@@ -50,5 +47,6 @@ int main()
     // by the handler code.
     us_ticker_fire_interrupt();
 
-    while (1);
+    while (1)
+        ;
 }

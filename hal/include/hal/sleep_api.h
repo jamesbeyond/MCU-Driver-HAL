@@ -54,7 +54,6 @@ extern "C" {
  * @{
  */
 
-
 /** Send the microcontroller to sleep
  *
  * The processor is setup ready for sleep, and sent to sleep. In this mode, the

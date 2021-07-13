@@ -19,11 +19,12 @@
 #include "utest/utest.h"
 #include "unity/unity.h"
 
-#define ASSERT_CONTROL(value, expected_repeat, expected_timeout) { \
-    c = value; \
-    TEST_ASSERT_EQUAL_MESSAGE(expected_repeat, c.get_repeat(), "Repeat"); \
-    TEST_ASSERT_EQUAL_MESSAGE(expected_timeout, c.get_timeout(), "Timeout"); }
-
+#define ASSERT_CONTROL(value, expected_repeat, expected_timeout)                 \
+    {                                                                            \
+        c = value;                                                               \
+        TEST_ASSERT_EQUAL_MESSAGE(expected_repeat, c.get_repeat(), "Repeat");    \
+        TEST_ASSERT_EQUAL_MESSAGE(expected_timeout, c.get_timeout(), "Timeout"); \
+    }
 
 using namespace utest::v1;
 
@@ -52,13 +53,13 @@ void test_constants()
 
     ASSERT_CONTROL(CaseAwait, REPEAT_UNDECLR, TIMEOUT_FOREVER);
 
-    ASSERT_CONTROL(CaseTimeout(0),      REPEAT_UNDECLR,      0);
+    ASSERT_CONTROL(CaseTimeout(0), REPEAT_UNDECLR, 0);
     ASSERT_CONTROL(CaseTimeout(100000), REPEAT_UNDECLR, 100000);
 
-    ASSERT_CONTROL(CaseRepeatAllOnTimeout(0),      REPEAT_ALL_ON_TIMEOUT,      0);
+    ASSERT_CONTROL(CaseRepeatAllOnTimeout(0), REPEAT_ALL_ON_TIMEOUT, 0);
     ASSERT_CONTROL(CaseRepeatAllOnTimeout(100000), REPEAT_ALL_ON_TIMEOUT, 100000);
 
-    ASSERT_CONTROL(CaseRepeatHandlerOnTimeout(0),      REPEAT_HANDLER_ON_TIMEOUT,      0);
+    ASSERT_CONTROL(CaseRepeatHandlerOnTimeout(0), REPEAT_HANDLER_ON_TIMEOUT, 0);
     ASSERT_CONTROL(CaseRepeatHandlerOnTimeout(100000), REPEAT_HANDLER_ON_TIMEOUT, 100000);
 }
 
@@ -77,25 +78,27 @@ void test_same_group_combinations()
     ASSERT_CONTROL(CaseAwait + CaseAwait, REPEAT_UNDECLR, TIMEOUT_FOREVER);
 
     // same group _and_ same values
-    ASSERT_CONTROL(CaseTimeout(     0) + CaseTimeout(     0), REPEAT_UNDECLR,      0);
+    ASSERT_CONTROL(CaseTimeout(0) + CaseTimeout(0), REPEAT_UNDECLR, 0);
     ASSERT_CONTROL(CaseTimeout(100000) + CaseTimeout(100000), REPEAT_UNDECLR, 100000);
 
-    ASSERT_CONTROL(CaseRepeatAllOnTimeout(     0) + CaseRepeatAllOnTimeout(     0), REPEAT_ALL_ON_TIMEOUT,      0);
+    ASSERT_CONTROL(CaseRepeatAllOnTimeout(0) + CaseRepeatAllOnTimeout(0), REPEAT_ALL_ON_TIMEOUT, 0);
     ASSERT_CONTROL(CaseRepeatAllOnTimeout(100000) + CaseRepeatAllOnTimeout(100000), REPEAT_ALL_ON_TIMEOUT, 100000);
 
-    ASSERT_CONTROL(CaseRepeatHandlerOnTimeout(     0) + CaseRepeatHandlerOnTimeout(     0), REPEAT_HANDLER_ON_TIMEOUT,      0);
-    ASSERT_CONTROL(CaseRepeatHandlerOnTimeout(100000) + CaseRepeatHandlerOnTimeout(100000), REPEAT_HANDLER_ON_TIMEOUT, 100000);
+    ASSERT_CONTROL(CaseRepeatHandlerOnTimeout(0) + CaseRepeatHandlerOnTimeout(0), REPEAT_HANDLER_ON_TIMEOUT, 0);
+    ASSERT_CONTROL(
+        CaseRepeatHandlerOnTimeout(100000) + CaseRepeatHandlerOnTimeout(100000), REPEAT_HANDLER_ON_TIMEOUT, 100000);
 
     // same group but _different_ values
     // stricter value should win
-    ASSERT_CONTROL(CaseTimeout(100) + CaseTimeout(   12), REPEAT_UNDECLR,  12);
+    ASSERT_CONTROL(CaseTimeout(100) + CaseTimeout(12), REPEAT_UNDECLR, 12);
     ASSERT_CONTROL(CaseTimeout(267) + CaseTimeout(36756), REPEAT_UNDECLR, 267);
 
-    ASSERT_CONTROL(CaseRepeatAllOnTimeout(12145) + CaseRepeatAllOnTimeout(   592), REPEAT_ALL_ON_TIMEOUT,  592);
-    ASSERT_CONTROL(CaseRepeatAllOnTimeout( 3593) + CaseRepeatAllOnTimeout(294523), REPEAT_ALL_ON_TIMEOUT, 3593);
+    ASSERT_CONTROL(CaseRepeatAllOnTimeout(12145) + CaseRepeatAllOnTimeout(592), REPEAT_ALL_ON_TIMEOUT, 592);
+    ASSERT_CONTROL(CaseRepeatAllOnTimeout(3593) + CaseRepeatAllOnTimeout(294523), REPEAT_ALL_ON_TIMEOUT, 3593);
 
-    ASSERT_CONTROL(CaseRepeatHandlerOnTimeout(124001) + CaseRepeatHandlerOnTimeout(49610), REPEAT_HANDLER_ON_TIMEOUT, 49610);
-    ASSERT_CONTROL(CaseRepeatHandlerOnTimeout(    47) + CaseRepeatHandlerOnTimeout(  209), REPEAT_HANDLER_ON_TIMEOUT,    47);
+    ASSERT_CONTROL(
+        CaseRepeatHandlerOnTimeout(124001) + CaseRepeatHandlerOnTimeout(49610), REPEAT_HANDLER_ON_TIMEOUT, 49610);
+    ASSERT_CONTROL(CaseRepeatHandlerOnTimeout(47) + CaseRepeatHandlerOnTimeout(209), REPEAT_HANDLER_ON_TIMEOUT, 47);
 }
 
 void test_different_group_combinations()
@@ -252,13 +255,10 @@ void test_different_group_combinations()
     ASSERT_CONTROL(CaseRepeatHandlerOnTimeout(42) + CaseRepeatAllOnTimeout(21), REPEAT_ALL_ON_TIMEOUT, 21);
 }
 
-Case cases[] =
-{
-    Case("Testing constructors", test_constructors),
-    Case("Testing constants", test_constants),
-    Case("Testing combinations of same group", test_same_group_combinations),
-    Case("Testing combinations of different group", test_different_group_combinations)
-};
+Case cases[] = {Case("Testing constructors", test_constructors),
+                Case("Testing constants", test_constants),
+                Case("Testing combinations of same group", test_same_group_combinations),
+                Case("Testing combinations of different group", test_different_group_combinations)};
 
 utest::v1::status_t greentea_setup(const size_t number_of_cases)
 {

@@ -100,290 +100,119 @@ int $Sub$$__2vfprintf(FILE *stream, const char *format, va_list arguments)
  * Replace the built-in functions which the linker is unable to prune with dummy stubs
  * that take up less space.
  */
-int $Sub$$_printf_a(const char *format, ...)
-{
-    return 0;
-}
+int $Sub$$_printf_a(const char *format, ...) { return 0; }
 
-int $Sub$$_printf_c(const char *format, ...)
-{
-    return 0;
-}
+int $Sub$$_printf_c(const char *format, ...) { return 0; }
 
-int $Sub$$_printf_char(const char *format, ...)
-{
-    return 0;
-}
+int $Sub$$_printf_char(const char *format, ...) { return 0; }
 
-int $Sub$$_printf_char_common(const char *format, ...)
-{
-    return 0;
-}
+int $Sub$$_printf_char_common(const char *format, ...) { return 0; }
 
-int $Sub$$_printf_char_file_locked(const char *format, ...)
-{
-    return 0;
-}
+int $Sub$$_printf_char_file_locked(const char *format, ...) { return 0; }
 
-int $Sub$$_printf_charcount(const char *format, ...)
-{
-    return 0;
-}
+int $Sub$$_printf_charcount(const char *format, ...) { return 0; }
 
-int $Sub$$_printf_cs_common(const char *format, ...)
-{
-    return 0;
-}
+int $Sub$$_printf_cs_common(const char *format, ...) { return 0; }
 
-int $Sub$$_printf_d(const char *format, ...)
-{
-    return 0;
-}
+int $Sub$$_printf_d(const char *format, ...) { return 0; }
 
-int $Sub$$_printf_dec(const char *format, ...)
-{
-    return 0;
-}
+int $Sub$$_printf_dec(const char *format, ...) { return 0; }
 
-int $Sub$$_printf_e(const char *format, ...)
-{
-    return 0;
-}
+int $Sub$$_printf_e(const char *format, ...) { return 0; }
 
-int $Sub$$_printf_f(const char *format, ...)
-{
-    return 0;
-}
+int $Sub$$_printf_f(const char *format, ...) { return 0; }
 
-int $Sub$$_printf_fp_dec(const char *format, ...)
-{
-    return 0;
-}
+int $Sub$$_printf_fp_dec(const char *format, ...) { return 0; }
 
-int $Sub$$_printf_fp_dec_real(const char *format, ...)
-{
-    return 0;
-}
+int $Sub$$_printf_fp_dec_real(const char *format, ...) { return 0; }
 
-int $Sub$$_printf_fp_hex(const char *format, ...)
-{
-    return 0;
-}
+int $Sub$$_printf_fp_hex(const char *format, ...) { return 0; }
 
-int $Sub$$_printf_fp_hex_real(const char *format, ...)
-{
-    return 0;
-}
+int $Sub$$_printf_fp_hex_real(const char *format, ...) { return 0; }
 
-int $Sub$$_printf_fp_infnan(const char *format, ...)
-{
-    return 0;
-}
+int $Sub$$_printf_fp_infnan(const char *format, ...) { return 0; }
 
-int $Sub$$_printf_g(const char *format, ...)
-{
-    return 0;
-}
+int $Sub$$_printf_g(const char *format, ...) { return 0; }
 
-int $Sub$$_printf_hex_int_ll_ptr(const char *format, ...)
-{
-    return 0;
-}
+int $Sub$$_printf_hex_int_ll_ptr(const char *format, ...) { return 0; }
 
-int $Sub$$_printf_hex_ptr(const char *format, ...)
-{
-    return 0;
-}
+int $Sub$$_printf_hex_ptr(const char *format, ...) { return 0; }
 
-int $Sub$$_printf_i(const char *format, ...)
-{
-    return 0;
-}
+int $Sub$$_printf_i(const char *format, ...) { return 0; }
 
-int $Sub$$_printf_int_common(const char *format, ...)
-{
-    return 0;
-}
+int $Sub$$_printf_int_common(const char *format, ...) { return 0; }
 
-int $Sub$$_printf_int_dec(const char *format, ...)
-{
-    return 0;
-}
+int $Sub$$_printf_int_dec(const char *format, ...) { return 0; }
 
-int $Sub$$_printf_int_hex(const char *format, ...)
-{
-    return 0;
-}
+int $Sub$$_printf_int_hex(const char *format, ...) { return 0; }
 
-int $Sub$$_printf_int_oct(const char *format, ...)
-{
-    return 0;
-}
+int $Sub$$_printf_int_oct(const char *format, ...) { return 0; }
 
-int $Sub$$_printf_l(const char *format, ...)
-{
-    return 0;
-}
+int $Sub$$_printf_l(const char *format, ...) { return 0; }
 
-int $Sub$$_printf_lc(const char *format, ...)
-{
-    return 0;
-}
+int $Sub$$_printf_lc(const char *format, ...) { return 0; }
 
-int $Sub$$_printf_lcs_common(const char *format, ...)
-{
-    return 0;
-}
+int $Sub$$_printf_lcs_common(const char *format, ...) { return 0; }
 
-int $Sub$$_printf_ll(const char *format, ...)
-{
-    return 0;
-}
+int $Sub$$_printf_ll(const char *format, ...) { return 0; }
 
-int $Sub$$_printf_ll_hex(const char *format, ...)
-{
-    return 0;
-}
+int $Sub$$_printf_ll_hex(const char *format, ...) { return 0; }
 
-int $Sub$$_printf_ll_oct(const char *format, ...)
-{
-    return 0;
-}
+int $Sub$$_printf_ll_oct(const char *format, ...) { return 0; }
 
-int $Sub$$_printf_lld(const char *format, ...)
-{
-    return 0;
-}
+int $Sub$$_printf_lld(const char *format, ...) { return 0; }
 
-int $Sub$$_printf_lli(const char *format, ...)
-{
-    return 0;
-}
+int $Sub$$_printf_lli(const char *format, ...) { return 0; }
 
-int $Sub$$_printf_llo(const char *format, ...)
-{
-    return 0;
-}
+int $Sub$$_printf_llo(const char *format, ...) { return 0; }
 
-int $Sub$$_printf_llu(const char *format, ...)
-{
-    return 0;
-}
+int $Sub$$_printf_llu(const char *format, ...) { return 0; }
 
-int $Sub$$_printf_llx(const char *format, ...)
-{
-    return 0;
-}
+int $Sub$$_printf_llx(const char *format, ...) { return 0; }
 
-int $Sub$$_printf_longlong_dec(const char *format, ...)
-{
-    return 0;
-}
+int $Sub$$_printf_longlong_dec(const char *format, ...) { return 0; }
 
-int $Sub$$_printf_longlong_hex(const char *format, ...)
-{
-    return 0;
-}
+int $Sub$$_printf_longlong_hex(const char *format, ...) { return 0; }
 
-int $Sub$$_printf_longlong_oct(const char *format, ...)
-{
-    return 0;
-}
+int $Sub$$_printf_longlong_oct(const char *format, ...) { return 0; }
 
-int $Sub$$_printf_ls(const char *format, ...)
-{
-    return 0;
-}
+int $Sub$$_printf_ls(const char *format, ...) { return 0; }
 
-int $Sub$$_printf_n(const char *format, ...)
-{
-    return 0;
-}
+int $Sub$$_printf_n(const char *format, ...) { return 0; }
 
-int $Sub$$_printf_o(const char *format, ...)
-{
-    return 0;
-}
+int $Sub$$_printf_o(const char *format, ...) { return 0; }
 
-int $Sub$$_printf_oct_int_ll(const char *format, ...)
-{
-    return 0;
-}
+int $Sub$$_printf_oct_int_ll(const char *format, ...) { return 0; }
 
-int $Sub$$_printf_p(const char *format, ...)
-{
-    return 0;
-}
+int $Sub$$_printf_p(const char *format, ...) { return 0; }
 
-int $Sub$$_printf_pad(const char *format, ...)
-{
-    return 0;
-}
+int $Sub$$_printf_pad(const char *format, ...) { return 0; }
 
-int $Sub$$_printf_percent(const char *format, ...)
-{
-    return 0;
-}
+int $Sub$$_printf_percent(const char *format, ...) { return 0; }
 
-int $Sub$$_printf_percent_end(const char *format, ...)
-{
-    return 0;
-}
+int $Sub$$_printf_percent_end(const char *format, ...) { return 0; }
 
-int $Sub$$_printf_s(const char *format, ...)
-{
-    return 0;
-}
+int $Sub$$_printf_s(const char *format, ...) { return 0; }
 
-int $Sub$$_printf_str(const char *format, ...)
-{
-    return 0;
-}
+int $Sub$$_printf_str(const char *format, ...) { return 0; }
 
-int $Sub$$_printf_string(const char *format, ...)
-{
-    return 0;
-}
+int $Sub$$_printf_string(const char *format, ...) { return 0; }
 
-int $Sub$$_printf_truncate(const char *format, ...)
-{
-    return 0;
-}
+int $Sub$$_printf_truncate(const char *format, ...) { return 0; }
 
-int $Sub$$_printf_truncate_signed(const char *format, ...)
-{
-    return 0;
-}
+int $Sub$$_printf_truncate_signed(const char *format, ...) { return 0; }
 
-int $Sub$$_printf_truncate_unsigned(const char *format, ...)
-{
-    return 0;
-}
+int $Sub$$_printf_truncate_unsigned(const char *format, ...) { return 0; }
 
-int $Sub$$_printf_u(const char *format, ...)
-{
-    return 0;
-}
+int $Sub$$_printf_u(const char *format, ...) { return 0; }
 
-int $Sub$$_printf_wchar(const char *format, ...)
-{
-    return 0;
-}
+int $Sub$$_printf_wchar(const char *format, ...) { return 0; }
 
-int $Sub$$_printf_wctomb(const char *format, ...)
-{
-    return 0;
-}
+int $Sub$$_printf_wctomb(const char *format, ...) { return 0; }
 
-int $Sub$$_printf_wstring(const char *format, ...)
-{
-    return 0;
-}
+int $Sub$$_printf_wstring(const char *format, ...) { return 0; }
 
-int $Sub$$_printf_x(const char *format, ...)
-{
-    return 0;
-}
+int $Sub$$_printf_x(const char *format, ...) { return 0; }
 
 #endif
 

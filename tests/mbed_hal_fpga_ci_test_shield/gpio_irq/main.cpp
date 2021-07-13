@@ -15,11 +15,11 @@
  */
 
 #if !DEVICE_INTERRUPTIN
-#error [NOT_SUPPORTED] test not supported
+#error[NOT_SUPPORTED] test not supported
 #elif !COMPONENT_FPGA_CI_TEST_SHIELD
-#error [NOT_SUPPORTED] FPGA CI Test Shield is needed to run this test
+#error[NOT_SUPPORTED] FPGA CI Test Shield is needed to run this test
 #elif !(defined(TARGET_FF_ARDUINO) || defined(TARGET_FF_ARDUINO_UNO)) && !defined(MBED_CONF_TARGET_DEFAULT_FORM_FACTOR)
-#error [NOT_SUPPORTED] Test not supported for this form factor
+#error[NOT_SUPPORTED] Test not supported for this form factor
 #else
 
 #include "utest/utest.h"
@@ -39,10 +39,7 @@ using namespace utest::v1;
 MbedTester tester(DefaultFormFactor::pins(), DefaultFormFactor::restricted_pins());
 
 static volatile uint32_t call_counter;
-void test_gpio_irq_handler(uint32_t id, gpio_irq_event event)
-{
-    call_counter++;
-}
+void                     test_gpio_irq_handler(uint32_t id, gpio_irq_event event) { call_counter++; }
 
 #define WAIT() wait_us(10)
 
@@ -62,7 +59,7 @@ void fpga_gpio_irq_test(PinName pin)
     gpio_init_in(&gpio, pin);
 
     gpio_irq_t gpio_irq;
-    uint32_t id = 123;
+    uint32_t   id = 123;
     TEST_ASSERT_EQUAL(0, gpio_irq_init(&gpio_irq, pin, test_gpio_irq_handler, id));
 
     gpio_irq_set(&gpio_irq, IRQ_RISE, true);
@@ -254,7 +251,7 @@ void fpga_gpio_irq_test(PinName pin)
 
 void fpga_gpio_irq_init_free_test(PinName pin)
 {
-    gpio_t gpio;
+    gpio_t     gpio;
     gpio_irq_t gpio_irq;
     gpio_init_in(&gpio, pin);
     TEST_ASSERT_EQUAL(0, gpio_irq_init(&gpio_irq, pin, test_gpio_irq_handler, 123));
@@ -274,9 +271,6 @@ utest::v1::status_t greentea_test_setup(const size_t number_of_cases)
 
 Specification specification(greentea_test_setup, cases, greentea_test_teardown_handler);
 
-int main()
-{
-    Harness::run(specification);
-}
+int main() { Harness::run(specification); }
 
 #endif /* !DEVICE_INTERRUPTIN */

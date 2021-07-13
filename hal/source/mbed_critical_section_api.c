@@ -22,7 +22,7 @@
 #include <stdbool.h>
 
 static bool critical_interrupts_enabled = false;
-static bool state_saved = false;
+static bool state_saved                 = false;
 
 static bool are_interrupts_enabled(void)
 {
@@ -32,7 +32,6 @@ static bool are_interrupts_enabled(void)
     return ((__get_PRIMASK() & 0x1) == 0);
 #endif
 }
-
 
 MBED_WEAK void hal_critical_section_enter(void)
 {
@@ -45,7 +44,7 @@ MBED_WEAK void hal_critical_section_enter(void)
     }
 
     critical_interrupts_enabled = interrupt_state;
-    state_saved = true;
+    state_saved                 = true;
 }
 
 MBED_WEAK void hal_critical_section_exit(void)
@@ -60,7 +59,4 @@ MBED_WEAK void hal_critical_section_exit(void)
     }
 }
 
-MBED_WEAK bool hal_in_critical_section(void)
-{
-    return (state_saved == true);
-}
+MBED_WEAK bool hal_in_critical_section(void) { return (state_saved == true); }

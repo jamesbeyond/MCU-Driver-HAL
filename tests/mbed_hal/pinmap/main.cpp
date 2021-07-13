@@ -29,12 +29,15 @@ using namespace utest::v1;
 #include "serial_api.h"
 #include "spi_api.h"
 
-#define PINMAP_TEST_ENTRY(function)     {function, #function}
+#define PINMAP_TEST_ENTRY(function) \
+    {                               \
+        function, #function         \
+    }
 
 typedef const PinMap *(*get_pinmap_func_t)(void);
 typedef struct {
     get_pinmap_func_t function;
-    const char *name;
+    const char *      name;
 } pinmap_info_t;
 
 const pinmap_info_t pinmap_functions[] = {
@@ -87,8 +90,7 @@ const pinmap_info_t pinmap_functions[] = {
     PINMAP_TEST_ENTRY(spi_slave_cs_pinmap),
 #endif
 #endif
-    {NULL, NULL}
-};
+    {NULL, NULL}};
 
 void pinmap_validation()
 {
@@ -109,9 +111,7 @@ void pinmap_validation()
     }
 }
 
-Case cases[] = {
-    Case("pinmap - validation", pinmap_validation)
-};
+Case cases[] = {Case("pinmap - validation", pinmap_validation)};
 
 utest::v1::status_t greentea_test_setup(const size_t number_of_cases)
 {
@@ -121,7 +121,4 @@ utest::v1::status_t greentea_test_setup(const size_t number_of_cases)
 
 Specification specification(greentea_test_setup, cases, greentea_test_teardown_handler);
 
-int main()
-{
-    Harness::run(specification);
-}
+int main() { Harness::run(specification); }

@@ -45,8 +45,7 @@
  * Then interrupts are enabled again
  *
  */
-template <int N>
-void test_critical_section();
+template <int N> void test_critical_section();
 
 /**@}*/
 /**@}*/

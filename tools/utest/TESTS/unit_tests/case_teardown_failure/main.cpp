@@ -24,11 +24,9 @@ using namespace utest::v1;
 static int call_counter(0);
 
 // Continue Teardown Handler ------------------------------------------------------------------------------------------
-void continue_case()
-{
-    TEST_ASSERT_EQUAL(0, call_counter++);
-}
-utest::v1::status_t continue_case_teardown(const Case *const source, const size_t passed, const size_t failed, const failure_t failure)
+void continue_case() { TEST_ASSERT_EQUAL(0, call_counter++); }
+utest::v1::status_t
+continue_case_teardown(const Case *const source, const size_t passed, const size_t failed, const failure_t failure)
 {
     TEST_ASSERT_EQUAL(1, passed);
     TEST_ASSERT_EQUAL(0, failed);
@@ -44,11 +42,9 @@ utest::v1::status_t continue_failure(const Case *const, const failure_t)
 }
 
 // Ignoring Teardown Handler ------------------------------------------------------------------------------------------
-void ignore_case()
-{
-    TEST_ASSERT_EQUAL(2, call_counter++);
-}
-utest::v1::status_t ignore_case_teardown(const Case *const source, const size_t passed, const size_t failed, const failure_t failure)
+void ignore_case() { TEST_ASSERT_EQUAL(2, call_counter++); }
+utest::v1::status_t
+ignore_case_teardown(const Case *const source, const size_t passed, const size_t failed, const failure_t failure)
 {
     TEST_ASSERT_EQUAL(1, passed);
     TEST_ASSERT_EQUAL(0, failed);
@@ -68,11 +64,9 @@ utest::v1::status_t ignore_failure(const Case *const source, const failure_t fai
 }
 
 // Aborting Teardown Handler ------------------------------------------------------------------------------------------
-void abort_case()
-{
-    TEST_ASSERT_EQUAL(5, call_counter++);
-}
-utest::v1::status_t abort_case_teardown(const Case *const source, const size_t passed, const size_t failed, const failure_t failure)
+void abort_case() { TEST_ASSERT_EQUAL(5, call_counter++); }
+utest::v1::status_t
+abort_case_teardown(const Case *const source, const size_t passed, const size_t failed, const failure_t failure)
 {
     TEST_ASSERT_EQUAL(1, passed);
     TEST_ASSERT_EQUAL(0, failed);
@@ -94,8 +88,7 @@ utest::v1::status_t abort_failure(const Case *const source, const failure_t fail
 Case cases[] = {
     Case("Teardown handler returns CONTINUE", continue_case, continue_case_teardown, continue_failure),
     Case("Teardown handler returns ABORT but is IGNORED", ignore_case, ignore_case_teardown, ignore_failure),
-    Case("Teardown handler returns ABORT", abort_case, abort_case_teardown, abort_failure)
-};
+    Case("Teardown handler returns ABORT", abort_case, abort_case_teardown, abort_failure)};
 
 // Specification: Setup & Teardown ------------------------------------------------------------------------------------
 utest::v1::status_t greentea_setup(const size_t number_of_cases)

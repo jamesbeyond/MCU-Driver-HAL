@@ -15,7 +15,7 @@
  */
 
 #if !DEVICE_WATCHDOG
-#error [NOT_SUPPORTED] Watchdog not supported for this target
+#error[NOT_SUPPORTED] Watchdog not supported for this target
 #else
 
 #include "greentea-client/test_env.h"
@@ -29,27 +29,27 @@
 #define TIMEOUT_LOWER_LIMIT_MS 1000ULL
 
 // A window to allow to process watchdog kick before timeout occurs.
-#define TIME_WINDOW_MS 2UL
+#define TIME_WINDOW_MS         2UL
 
-#define MSG_VALUE_DUMMY "0"
-#define CASE_DATA_INVALID 0xffffffffUL
+#define MSG_VALUE_DUMMY     "0"
+#define CASE_DATA_INVALID   0xffffffffUL
 #define CASE_DATA_PHASE2_OK 0xfffffffeUL
 
 #define MSG_VALUE_LEN 24
-#define MSG_KEY_LEN 24
+#define MSG_KEY_LEN   24
 
 #define MSG_KEY_DEVICE_READY "ready"
-#define MSG_KEY_START_CASE "start_case"
-#define MSG_KEY_HEARTBEAT "hb"
+#define MSG_KEY_START_CASE   "start_case"
+#define MSG_KEY_HEARTBEAT    "hb"
 #define MSG_KEY_DEVICE_RESET "dev_reset"
 
 using utest::v1::Case;
-using utest::v1::Specification;
 using utest::v1::Harness;
+using utest::v1::Specification;
 
 struct testcase_data {
-    int index;
-    int start_index;
+    int      index;
+    int      start_index;
     uint32_t received_data;
 };
 
@@ -58,7 +58,7 @@ testcase_data current_case;
 bool send_reset_notification(testcase_data *tcdata, uint32_t delay_ms)
 {
     char msg_value[12];
-    int str_len = snprintf(msg_value, sizeof msg_value, "%02x,%08lx", tcdata->start_index + tcdata->index, delay_ms);
+    int  str_len = snprintf(msg_value, sizeof msg_value, "%02x,%08lx", tcdata->start_index + tcdata->index, delay_ms);
     if (str_len < 0) {
         utest_printf("Failed to compose a value string to be sent to host.");
         return false;
@@ -67,8 +67,7 @@ bool send_reset_notification(testcase_data *tcdata, uint32_t delay_ms)
     return true;
 }
 
-template<uint32_t timeout_ms>
-void test_timing()
+template <uint32_t timeout_ms> void test_timing()
 {
     watchdog_features_t features = hal_watchdog_get_platform_features();
     if (timeout_ms > features.max_timeout) {
@@ -93,12 +92,12 @@ void test_timing()
     // Phase 1. -- run the test code.
     // Send heartbeat messages to host until the watchdeg resets the device.
     const ticker_data_t *const us_ticker = get_us_ticker_data();
-    us_timestamp_t current_ts, next_ts, expected_reset_ts, divider, ts_increment;
-    char msg_value[12];
+    us_timestamp_t             current_ts, next_ts, expected_reset_ts, divider, ts_increment;
+    char                       msg_value[12];
 
-    watchdog_config_t config = { timeout_ms };
+    watchdog_config_t config = {timeout_ms};
     TEST_ASSERT_EQUAL(WATCHDOG_STATUS_OK, hal_watchdog_init(&config));
-    next_ts = ticker_read_us(us_ticker);
+    next_ts           = ticker_read_us(us_ticker);
     expected_reset_ts = next_ts + 1000ULL * timeout_ms;
 
     divider = 0x2ULL;
@@ -108,8 +107,11 @@ void test_timing()
             continue;
         }
 
-        int str_len = snprintf(msg_value, sizeof msg_value, "%02x,%08lx", current_case.start_index + current_case.index,
-                               (uint32_t) current_ts);
+        int str_len = snprintf(msg_value,
+                               sizeof msg_value,
+                               "%02x,%08lx",
+                               current_case.start_index + current_case.index,
+                               (uint32_t)current_ts);
         if (str_len < 0) {
             utest_printf("Failed to compose a value string to be sent to host.");
             return;
@@ -146,8 +148,9 @@ void test_timeout_lower_limit()
     }
 
     // Phase 1. -- run the test code.
-    watchdog_config_t config = { TIMEOUT_LOWER_LIMIT_MS };
-    uint32_t sleep_time_ms = (TIMEOUT_LOWER_LIMIT_MS * features.clock_typical_frequency / features.clock_max_frequency) - TIME_WINDOW_MS;
+    watchdog_config_t config = {TIMEOUT_LOWER_LIMIT_MS};
+    uint32_t          sleep_time_ms =
+        (TIMEOUT_LOWER_LIMIT_MS * features.clock_typical_frequency / features.clock_max_frequency) - TIME_WINDOW_MS;
     TEST_ASSERT_EQUAL(WATCHDOG_STATUS_OK, hal_watchdog_init(&config));
 
     // Kick watchdog before timeout.
@@ -168,7 +171,7 @@ void test_timeout_lower_limit()
 
     // Watchdog reset should have occurred during that wait() above;
 
-    hal_watchdog_kick();  // Just to buy some time for testsuite failure handling.
+    hal_watchdog_kick(); // Just to buy some time for testsuite failure handling.
     TEST_ASSERT_MESSAGE(0, "Watchdog did not reset the device as expected.");
 }
 
@@ -186,8 +189,8 @@ int testsuite_setup(const size_t number_of_cases)
         return status;
     }
 
-    char key[MSG_KEY_LEN + 1] = { };
-    char value[MSG_VALUE_LEN + 1] = { };
+    char key[MSG_KEY_LEN + 1]     = {};
+    char value[MSG_VALUE_LEN + 1] = {};
 
     greentea_send_kv(MSG_KEY_DEVICE_READY, MSG_VALUE_DUMMY);
     greentea_parse_kv(key, value, MSG_KEY_LEN, MSG_VALUE_LEN);
@@ -203,20 +206,19 @@ int testsuite_setup(const size_t number_of_cases)
         return utest::v1::STATUS_ABORT;
     }
 
-    utest_printf("This test suite is composed of %i test cases. Starting at index %i.\n", number_of_cases,
+    utest_printf("This test suite is composed of %i test cases. Starting at index %i.\n",
+                 number_of_cases,
                  current_case.start_index);
     return current_case.start_index;
 }
 
-Case cases[] = {
-    Case("Timing, 200 ms", case_setup, test_timing<200UL>),
-    Case("Timing, 500 ms", case_setup, test_timing<500UL>),
-    Case("Timing, 1000 ms", case_setup, test_timing<1000UL>),
-    Case("Timing, 3000 ms", case_setup, test_timing<3000UL>),
-    Case("timeout accuracy", case_setup, test_timeout_lower_limit)
-};
+Case cases[] = {Case("Timing, 200 ms", case_setup, test_timing<200UL>),
+                Case("Timing, 500 ms", case_setup, test_timing<500UL>),
+                Case("Timing, 1000 ms", case_setup, test_timing<1000UL>),
+                Case("Timing, 3000 ms", case_setup, test_timing<3000UL>),
+                Case("timeout accuracy", case_setup, test_timeout_lower_limit)};
 
-Specification specification((utest::v1::test_setup_handler_t) testsuite_setup, cases);
+Specification specification((utest::v1::test_setup_handler_t)testsuite_setup, cases);
 
 int main()
 {
